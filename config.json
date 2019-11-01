@@ -1,0 +1,16 @@
+{
+  "main": {
+    "appName": "Stocked"
+  },
+  "api": {
+    "url": "http://127.0.0.1:8000/api/"
+  },
+  "oauth": {
+    "serverUrl": "http://127.0.0.1:8000/oauth/",
+    "internal": {
+      "appName": "Internal",
+      "clientId": "",
+      "clientSecret": ""
+    }
+  }
+}
