@@ -14,7 +14,7 @@ class UserAdminCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'mobile_phone', 'first_name', 'last_name', 'patronymic', 'birthday')
+        fields = ('email', 'mobile_phone', 'first_name', 'last_name', 'birthday')
 
     def clean_password2(self):
         # Check that the two password entries match

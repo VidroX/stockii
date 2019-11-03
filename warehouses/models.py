@@ -11,7 +11,13 @@ class Warehouse(models.Model):
     weekends = models.BooleanField(default=False)
     phone = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.location
+
 
 class WarehouseAccess(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['user', 'warehouse']

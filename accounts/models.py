@@ -10,14 +10,14 @@ class User(AbstractBaseUser):
     mobile_phone = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    patronymic = models.CharField(max_length=255)
+    patronymic = models.CharField(max_length=255, null=True)
     birthday = models.DateField()
     date_joined = models.DateTimeField(auto_now=False, auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['mobile_phone', 'first_name', 'last_name', 'patronymic', 'birthday']
+    REQUIRED_FIELDS = ['mobile_phone', 'first_name', 'last_name', 'birthday']
 
     objects = UserManager()
 
@@ -25,7 +25,10 @@ class User(AbstractBaseUser):
         return self.email
 
     def get_full_name(self):
-        return self.last_name + " " + self.first_name + " " + self.patronymic
+        if self.patronymic is not None:
+            return self.last_name + " " + self.first_name + " " + self.patronymic
+        else:
+            return self.last_name + " " + self.first_name
 
     def get_short_name(self):
         return self.first_name

@@ -3,8 +3,8 @@ from django.contrib.auth.base_user import BaseUserManager
 
 # Managers
 class UserManager(BaseUserManager):
-    def create_user(self, email, mobile_phone, password, last_name,
-                    first_name, patronymic, birthday, is_active=True, is_superuser=False):
+    def create_user(self, email, mobile_phone, password, birthday, last_name,
+                    first_name, patronymic=None, is_active=True, is_superuser=False):
         if not email:
             raise ValueError("E-Mail cannot be empty!")
         if not mobile_phone:
@@ -15,8 +15,6 @@ class UserManager(BaseUserManager):
             raise ValueError("Last name cannot be empty!")
         if not first_name:
             raise ValueError("First name cannot be empty!")
-        if not patronymic:
-            raise ValueError("Patronymic cannot be empty!")
         if not birthday:
             raise ValueError("Birthday cannot be empty!")
 
@@ -35,7 +33,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, mobile_phone, password, last_name, first_name, patronymic, birthday):
+    def create_superuser(self, email, mobile_phone, password, birthday, last_name, first_name, patronymic=None):
         user = self.create_user(
             email=self.normalize_email(email),
             mobile_phone=mobile_phone,
