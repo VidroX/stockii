@@ -35,7 +35,12 @@ def get_user_data_api(request, user_id):
     token = get_token_from_header(request.headers)
 
     if user_id is not None and user_id > 0:
-        is_valid = check_token(user_id, token)
+        user = request.user
+        if not user.is_superuser:
+            is_valid = check_token(user.id, token)
+        else:
+            is_valid = True
+
         if is_valid:
             return Response({
                 'status': 12,
