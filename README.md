@@ -1,2 +1,2 @@
-# stocked
-System for inventory management
+# Stocked
+Inventory management system
