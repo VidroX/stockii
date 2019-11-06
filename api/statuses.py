@@ -22,5 +22,12 @@ STATUS_CODE = {
     17: "User not found.",
     18: "Access to warehouse has been removed successfully.",
     19: "Unable to remove warehouse access.",
-    20: "Method not allowed."
+    20: "Method not allowed.",
+    21: "Please provider pk.",
+    22: "Minimum quantity is less than allowed.",
+    23: "Maximum quantity is more than allowed.",
+    24: "Minimum quantity is more than product quantity.",
+    25: "Maximum quantity is less than product quantity.",
+    26: "Incorrect quantity range.",
+    27: "Incorrect status."
 }

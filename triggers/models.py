@@ -20,5 +20,8 @@ class Trigger(models.Model):
     activation_date = models.DateField(auto_now_add=True)
     status = models.IntegerField(choices=TRIGGER_STATUSES, default=1)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ['name']

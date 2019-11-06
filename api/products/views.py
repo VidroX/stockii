@@ -1,0 +1,157 @@
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from api.permissions import SuperUserCreateOnly
+from api.products.serializers import ProductSerializer
+from api.statuses import STATUS_CODE
+from products.models import Product, ProductLimit
+
+
+class ProductsListView(generics.ListCreateAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Product.objects.all()
+
+
+@api_view(['DELETE', 'PUT', 'GET'])
+@permission_classes([IsAuthenticated])
+def change_product(request, product_id):
+    if product_id is not None and product_id > 0:
+        if request.method == "DELETE":
+            product = get_object_or_404(Product, id=product_id)
+            if product.delete():
+                return Response({
+                    'status': 12,
+                    'message': STATUS_CODE[12]
+                })
+            else:
+                return Response({
+                    'status': 9,
+                    'message': STATUS_CODE[9]
+                })
+        elif request.method == "GET":
+            product = get_object_or_404(Product, id=product_id)
+            serialized = ProductSerializer(product)
+            if serialized is not None:
+                return Response({
+                    'status': 12,
+                    'message': STATUS_CODE[12],
+                    'data': {
+                        'product': serialized.data
+                    }
+                })
+            else:
+                return Response({
+                    'status': 9,
+                    'message': STATUS_CODE[9]
+                })
+        elif request.method == "PUT":
+            product = get_object_or_404(Product, id=product_id)
+
+            try:
+                product_limit = ProductLimit.objects.get(product=product)
+            except ProductLimit.DoesNotExist:
+                product_limit = None
+
+            quantity = int(request.data.get('quantity', 0))
+
+            if product_limit is not None:
+                if quantity < product_limit.min_amount:
+                    return Response({
+                        'status': 22,
+                        'message': STATUS_CODE[22]
+                    })
+                if quantity > product_limit.max_amount:
+                    return Response({
+                        'status': 23,
+                        'message': STATUS_CODE[23]
+                    })
+
+            product.quantity = quantity
+            product.save()
+
+            return Response({
+                'status': 12,
+                'message': STATUS_CODE[12]
+            })
+        else:
+            response = Response({
+                'status': 20,
+                'message': STATUS_CODE[20]
+            })
+            response.status_code = 405
+            return response
+
+    else:
+        return Response({
+            'status': 21,
+            'message': STATUS_CODE[21]
+        })
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def set_product_limit(request, product_id):
+    if product_id is not None and product_id > 0:
+        if request.method == "PUT":
+            product = get_object_or_404(Product, id=product_id)
+
+            min_amount = int(request.data.get('min_amount', 0))
+            max_amount = int(request.data.get('max_amount', 0))
+
+            if min_amount >= max_amount:
+                return Response({
+                    'status': 26,
+                    'message': STATUS_CODE[26]
+                })
+
+            try:
+                product_limit = ProductLimit.objects.get(product=product)
+            except ProductLimit.DoesNotExist:
+                product_limit = ProductLimit(product=product, min_amount=min_amount, max_amount=max_amount)
+                if product_limit.min_amount > product.quantity:
+                    return Response({
+                        'status': 24,
+                        'message': STATUS_CODE[24]
+                    })
+                if product_limit.max_amount < product.quantity:
+                    return Response({
+                        'status': 25,
+                        'message': STATUS_CODE[25]
+                    })
+                product_limit.save()
+
+            if product.quantity < min_amount:
+                return Response({
+                    'status': 22,
+                    'message': STATUS_CODE[22]
+                })
+            if product.quantity > max_amount:
+                return Response({
+                    'status': 23,
+                    'message': STATUS_CODE[23]
+                })
+
+            product_limit.min_amount = min_amount
+            product_limit.max_amount = max_amount
+            product_limit.save()
+
+            return Response({
+                'status': 12,
+                'message': STATUS_CODE[12]
+            })
+        else:
+            response = Response({
+                'status': 20,
+                'message': STATUS_CODE[20]
+            })
+            response.status_code = 405
+            return response
+
+    else:
+        return Response({
+            'status': 21,
+            'message': STATUS_CODE[21]
+        })
