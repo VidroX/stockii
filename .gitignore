@@ -106,3 +106,8 @@ venv.bak/
 .idea/
 **/migrations/
 
+# React
+stocked-frontend/node_modules/
+stocked-frontend/.idea/
+stocked-frontend/yarn.lock
+
