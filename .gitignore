@@ -107,7 +107,28 @@ venv.bak/
 **/migrations/
 
 # React
-stocked-frontend/node_modules/
 stocked-frontend/.idea/
 stocked-frontend/yarn.lock
+
+# dependencies
+stocked-frontend/node_modules
+stocked-frontend/.pnp
+stocked-frontend/.pnp.js
+
+# testing
+stocked-frontend/coverage
+
+# production
+stocked-frontend/build
+
+# misc
+stocked-frontend/.DS_Store
+stocked-frontend/.env.local
+stocked-frontend/.env.development.local
+stocked-frontend/.env.test.local
+stocked-frontend/.env.production.local
+
+stocked-frontend/npm-debug.log*
+stocked-frontend/yarn-debug.log*
+stocked-frontend/yarn-error.log*
 

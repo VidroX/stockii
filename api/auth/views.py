@@ -10,7 +10,7 @@ from api.auth.serializers import LoginSerializer, RegisterSerializer
 from api.cookies import cookie_date
 from api.statuses import STATUS_CODE
 from api.users.views import get_user_data
-from stocked.settings import CONFIG, TOKEN_HTTP_ONLY
+from stocked.settings import CONFIG, TOKEN_HTTP_ONLY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
 
 from api.tokens import get_token_from_header, get_access_token
 
@@ -146,8 +146,8 @@ def refresh_token(request):
     data = {
         'grant_type': 'refresh_token',
         'refresh_token': request.data['refresh_token'],
-        'client_id': CONFIG['oauth']['internal']['clientId'],
-        'client_secret': CONFIG['oauth']['internal']['clientSecret'],
+        'client_id': OAUTH_CLIENT_ID,
+        'client_secret': OAUTH_CLIENT_SECRET,
     }
 
     r = requests.post(CONFIG['oauth']['serverUrl'] + 'token/', data=data)
@@ -197,8 +197,8 @@ def logout(request):
 
     data = {
         'token': token,
-        'client_id': CONFIG['oauth']['internal']['clientId'],
-        'client_secret': CONFIG['oauth']['internal']['clientSecret'],
+        'client_id': OAUTH_CLIENT_ID,
+        'client_secret': OAUTH_CLIENT_SECRET,
     }
 
     r = requests.post(CONFIG['oauth']['serverUrl'] + 'revoke_token/', data=data)

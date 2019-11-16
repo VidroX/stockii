@@ -1,5 +1,15 @@
 {
+  "common": {
+    "emptyField": "Це поле не може бути порожнім!"
+  },
   "main": {
-    "test": "Тест"
+    "homePage": "Головна"
+  },
+  "auth": {
+    "logIn": "Увійти",
+    "logInto": "Увійти у",
+    "password": "Пароль",
+    "smallPassword": "Пароль повинен бути більше 5 символів",
+    "incorrectFieldData": "Неправильний E-Mail або Пароль"
   }
 }

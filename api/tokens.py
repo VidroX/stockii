@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from api.statuses import STATUS_CODE
-from stocked.settings import CONFIG
+from stocked.settings import CONFIG, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
 
 
 def get_access_token(request):
@@ -18,8 +18,8 @@ def get_access_token(request):
         'grant_type': 'password',
         'username': request.data['email'],
         'password': request.data['password'],
-        'client_id': CONFIG['oauth']['internal']['clientId'],
-        'client_secret': CONFIG['oauth']['internal']['clientSecret'],
+        'client_id': OAUTH_CLIENT_ID,
+        'client_secret': OAUTH_CLIENT_SECRET,
     }
 
     return requests.post(url=token_endpoint, data=data)

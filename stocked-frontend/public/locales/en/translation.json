@@ -1,5 +1,15 @@
 {
+  "common": {
+    "emptyField": "This field cannot be empty!"
+  },
   "main": {
-    "test": "Test123"
+    "homePage": "Home"
+  },
+  "auth": {
+    "logIn": "Log In",
+    "logInto": "Log into",
+    "password": "Password",
+    "smallPassword": "Password should contain more than 5 characters",
+    "incorrectFieldData": "Incorrect E-Mail or Password"
   }
 }
