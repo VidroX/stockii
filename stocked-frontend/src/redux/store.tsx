@@ -32,10 +32,13 @@ const options = {
     interceptors: {
         request: [
             (action: any, config: any) => {
-                const token = Cookies.get(config_main.api.token_cookie);
+                const userData = Cookies.get('user_data');
+                if(userData != null) {
+                    const userDataParsed = JSON.parse(userData);
 
-                if(token != null) {
-                    config.headers.Authorization = 'Bearer ' + token;
+                    if (userDataParsed.auth_token != null) {
+                        config.headers.Authorization = 'Bearer ' + userDataParsed.auth_token;
+                    }
                 }
 
                 return config;

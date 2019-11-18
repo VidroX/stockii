@@ -32,9 +32,14 @@ const LoginPage: React.FC = (props: any) => {
                     let userData = props.authData.data.user;
 
                     if (userData != null) {
-                        const token = Cookies.get('token');
+                        let token = null;
+                        if(config.api.same_site) {
+                            token = Cookies.get('token');
+                        } else {
+                            token = props.authData.data.token;
+                        }
 
-                        console.log(token);
+                        console.log(props.authData);
 
                         if (token) {
                             userData = {
@@ -49,7 +54,7 @@ const LoginPage: React.FC = (props: any) => {
                             {
                                 expires: new Date(props.authData.data.token_expiry),
                                 secure: document.location.protocol === 'https:',
-                                sameSite: 'lax'
+                                sameSite: 'strict'
                             }
                         );
 

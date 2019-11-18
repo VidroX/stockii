@@ -125,8 +125,7 @@ def login(request):
         else:
             response = Response({
                 'status_code': 4,
-                'message': STATUS_CODE[4],
-                'data': r.json()
+                'message': STATUS_CODE[4]
             })
 
             return response

@@ -3,7 +3,9 @@
     "emptyField": "This field cannot be empty!"
   },
   "main": {
-    "homePage": "Home"
+    "homePage": "Home",
+    "logOut": "Sign out",
+    "myProfile": "My profile"
   },
   "auth": {
     "logIn": "Log In",

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import LoginPage from "./routes/login";
 import Cookies from "js-cookie";
 import { setUserData } from "./redux/actions";
+import config from "./config";
 
 
 const App: React.FC = () => {
@@ -16,23 +17,33 @@ const App: React.FC = () => {
 
     useEffect(() => {
         const userData = Cookies.get('user_data');
-        const token = Cookies.get('token');
-        if (userData == null || token == null) {
-            Cookies.remove('user_data');
-            Cookies.remove('token');
-            setShouldLogin(true);
-        } else {
-            const userDataParsed = JSON.parse(userData);
-            if (userDataParsed.auth_token !== token) {
+        if(config.api.same_site) {
+            const token = Cookies.get('token');
+            if (userData == null || token == null) {
                 Cookies.remove('user_data');
                 Cookies.remove('token');
-
-                dispatch(setUserData({}));
-
                 setShouldLogin(true);
             } else {
+                const userDataParsed = JSON.parse(userData);
+                if (userDataParsed.auth_token !== token) {
+                    Cookies.remove('user_data');
+                    Cookies.remove('token');
+
+                    dispatch(setUserData({}));
+
+                    setShouldLogin(true);
+                } else {
+                    dispatch(setUserData(userDataParsed));
+                    setShouldLogin(false);
+                }
+            }
+        } else {
+            if (userData != null) {
+                const userDataParsed = JSON.parse(userData);
                 dispatch(setUserData(userDataParsed));
                 setShouldLogin(false);
+            } else {
+                setShouldLogin(true);
             }
         }
     }, [dispatch, shouldLogin]);

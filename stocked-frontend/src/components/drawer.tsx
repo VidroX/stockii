@@ -17,10 +17,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import {isIOS, isMobile, withOrientationChange} from "react-device-detect";
-import {SwipeableDrawer} from "@material-ui/core";
+import {Button, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
 import Routes from "../routes/routes";
 import {connect} from "react-redux";
-import {setToolbarTitle} from "../redux/actions";
+import {setToolbarTitle, userLogout} from "../redux/actions";
+import {AccountCircle} from "@material-ui/icons";
+import {useTranslation} from "react-i18next";
+import Cookies from "js-cookie";
+import config from "../config";
 
 const drawerWidth = 240;
 
@@ -30,12 +34,23 @@ const StockedDrawer: React.FC = (props: any) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const isMenuOpened = Boolean(anchorEl);
+    const { t } = useTranslation();
 
     useEffect(() => {
         window.addEventListener("resize", () => {
             setWindowWidth(window.innerWidth)
         });
     }, [windowWidth]);
+    
+    useEffect(() => {
+        if (props.logoutInitiated && !props.logoutProgress) {
+            Cookies.remove('token');
+            Cookies.remove('user_data');
+            window.location.reload();
+        }
+    }, [props.logoutInitiated, props.logoutProgress]);
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -48,7 +63,9 @@ const StockedDrawer: React.FC = (props: any) => {
                     {renderCloseIcon()}
                 </div>
                 <Divider/>
-                <List>
+                <List classes={{
+                    padding: classes.listPadding
+                }}>
                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                         <ListItem button key={text}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
@@ -57,7 +74,9 @@ const StockedDrawer: React.FC = (props: any) => {
                     ))}
                 </List>
                 <Divider/>
-                <List>
+                <List classes={{
+                    padding: classes.listPadding
+                }}>
                     {['All mail', 'Trash', 'Spam'].map((text, index) => (
                         <ListItem button key={text}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
@@ -129,25 +148,80 @@ const StockedDrawer: React.FC = (props: any) => {
         }
     };
 
+    const handleMenu = (event: any) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMyProfile = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        setAnchorEl(null);
+        props.userLogout().catch((err: any) => {
+            if(config.main.debugMode) {
+                console.log(err);
+                console.log(err.message);
+            }
+            Cookies.remove('token');
+            Cookies.remove('user_data');
+            window.location.reload();
+        });
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <div className={classes.root}>
             <CssBaseline />
             <AppBar
-                className={clsx(classes.appBar)}
+                className={classes.appBar}
             >
-                <Toolbar>
+                <Toolbar className={classes.toolbarMain}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={toggleDrawer}
                         edge="start"
-                        className={clsx(classes.menuButton)}
+                        className={classes.menuButton}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>
+                    <Typography variant="h6" noWrap className={classes.toolbarTitle}>
                         {props.toolbarTitle}
                     </Typography>
+                    <div>
+                        <Button
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            <span className={classes.userButton}>{props.userData.first_name}</span>
+                            <AccountCircle />
+                        </Button>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={isMenuOpened}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={handleMyProfile}>{t('main.myProfile')}</MenuItem>
+                            <MenuItem onClick={handleLogout}>{t('main.logOut')}</MenuItem>
+                        </Menu>
+                    </div>
                 </Toolbar>
             </AppBar>
             {renderDrawer()}
@@ -163,17 +237,31 @@ const StockedDrawer: React.FC = (props: any) => {
 
 const mapStateToProps = (state: any) => {
     return {
-        toolbarTitle: state.main.toolbarTitle
+        toolbarTitle: state.main.toolbarTitle,
+        userData: state.main.userData,
+        logoutProgress: state.main.logoutProgress,
+        logoutInitiated: state.main.logoutInitiated
     };
 };
 
 const mapDispatchToProps = {
-    setToolbarTitle
+    setToolbarTitle,
+    userLogout
 };
 
 const useStyles = makeStyles(theme => ({
     root: {
+        display: 'flex'
+    },
+    toolbarMain: {
         display: 'flex',
+        flexDirection: 'row'
+    },
+    toolbarTitle: {
+        flexGrow: 1
+    },
+    userButton: {
+        marginRight: 8
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -183,7 +271,7 @@ const useStyles = makeStyles(theme => ({
         }),
     },
     menuButton: {
-        marginRight: 36,
+        marginRight: 20,
     },
     hide: {
         display: 'none',
@@ -223,7 +311,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: theme.spacing(1) - 4,
+        padding: theme.spacing(1) + 4,
         ...theme.mixins.toolbar,
     },
     content: {
@@ -231,6 +319,9 @@ const useStyles = makeStyles(theme => ({
         flexWrap: 'wrap',
         wordBreak: 'break-all'
     },
+    listPadding: {
+        padding: 8
+    }
 }));
 
 export default withOrientationChange(connect(mapStateToProps, mapDispatchToProps)(StockedDrawer));
