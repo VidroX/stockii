@@ -5,7 +5,13 @@
   "main": {
     "homePage": "Головна",
     "logOut": "Вийти з облікового запису",
-    "myProfile": "Мій профіль"
+    "myProfile": "Мій профіль",
+    "warehouses": "Склади",
+    "yourWarehouses": "Ваші склади"
+  },
+  "languages": {
+    "en": "English",
+    "uk": "Українська"
   },
   "auth": {
     "logIn": "Увійти",

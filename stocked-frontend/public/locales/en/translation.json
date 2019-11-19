@@ -5,7 +5,13 @@
   "main": {
     "homePage": "Home",
     "logOut": "Sign out",
-    "myProfile": "My profile"
+    "myProfile": "My profile",
+    "warehouses": "Warehouses",
+    "yourWarehouses": "Your warehouses"
+  },
+  "languages": {
+    "en": "English",
+    "uk": "Українська"
   },
   "auth": {
     "logIn": "Log In",

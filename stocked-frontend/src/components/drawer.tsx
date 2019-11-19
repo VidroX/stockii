@@ -14,8 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import {isIOS, isMobile, withOrientationChange} from "react-device-detect";
 import {Button, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
 import Routes from "../routes/routes";
@@ -25,6 +24,9 @@ import {AccountCircle} from "@material-ui/icons";
 import {useTranslation} from "react-i18next";
 import Cookies from "js-cookie";
 import config from "../config";
+import LanguageSelector from "./languageSelector";
+import {useLocation} from "react-router";
+
 
 const drawerWidth = 240;
 
@@ -37,6 +39,7 @@ const StockedDrawer: React.FC = (props: any) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const isMenuOpened = Boolean(anchorEl);
     const { t } = useTranslation();
+    const location = useLocation();
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -66,23 +69,10 @@ const StockedDrawer: React.FC = (props: any) => {
                 <List classes={{
                     padding: classes.listPadding
                 }}>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
-                            <ListItemText primary={text}/>
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider/>
-                <List classes={{
-                    padding: classes.listPadding
-                }}>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
-                            <ListItemText primary={text}/>
-                        </ListItem>
-                    ))}
+                    <ListItem className={classes.listRoot} button key="warehouses" selected={location.pathname === '/'}>
+                        <ListItemIcon><HomeWorkIcon /></ListItemIcon>
+                        <ListItemText primary={t('main.warehouses')}/>
+                    </ListItem>
                 </List>
             </React.Fragment>
         );
@@ -152,9 +142,9 @@ const StockedDrawer: React.FC = (props: any) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleMyProfile = () => {
+    /*const handleMyProfile = () => {
         setAnchorEl(null);
-    };
+    };*/
 
     const handleLogout = () => {
         setAnchorEl(null);
@@ -192,6 +182,7 @@ const StockedDrawer: React.FC = (props: any) => {
                     <Typography variant="h6" noWrap className={classes.toolbarTitle}>
                         {props.toolbarTitle}
                     </Typography>
+                    <LanguageSelector />
                     <div>
                         <Button
                             aria-label="account of current user"
@@ -218,7 +209,7 @@ const StockedDrawer: React.FC = (props: any) => {
                             open={isMenuOpened}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleMyProfile}>{t('main.myProfile')}</MenuItem>
+                            {/*<MenuItem onClick={handleMyProfile}>{t('main.myProfile')}</MenuItem>*/}
                             <MenuItem onClick={handleLogout}>{t('main.logOut')}</MenuItem>
                         </Menu>
                     </div>
@@ -321,6 +312,9 @@ const useStyles = makeStyles(theme => ({
     },
     listPadding: {
         padding: 8
+    },
+    listRoot: {
+        borderRadius: '4px'
     }
 }));
 

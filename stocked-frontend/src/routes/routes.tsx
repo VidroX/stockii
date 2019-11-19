@@ -1,5 +1,5 @@
 import {Route, Switch} from "react-router";
-import Main from "./main";
+import Warehouses from "./warehouses";
 import NoMatch from "./noMatch";
 import React from "react";
 
@@ -7,7 +7,7 @@ const Routes: React.FC = () => {
     return (
         <Switch>
             <Route exact path="/">
-                <Main />
+                <Warehouses />
             </Route>
             <Route path="*">
                 <NoMatch />

@@ -1,7 +1,11 @@
 from django.contrib.auth import get_user_model
+from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+
+from accounts.models import User
+from accounts.serializers import UserSerializer
 from api.statuses import STATUS_CODE
 from api.tokens import get_token_from_header, check_token
 
@@ -59,3 +63,9 @@ def get_user_data_api(request, user_id):
             'status': 13,
             'message': STATUS_CODE[13]
         })
+
+
+class UsersListView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser, IsAuthenticated]
+    queryset = User.objects.all()
