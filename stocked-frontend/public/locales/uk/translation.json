@@ -7,7 +7,9 @@
     "logOut": "Вийти з облікового запису",
     "myProfile": "Мій профіль",
     "warehouses": "Склади",
-    "yourWarehouses": "Ваші склади"
+    "yourWarehouses": "Ваші склади",
+    "OK": "Добре",
+    "cancel": "Скасувати"
   },
   "languages": {
     "en": "English",

@@ -9,9 +9,15 @@ export const USER_LOGOUT = "stocked/user/LOGOUT";
 export const USER_LOGOUT_SUCCESS = "stocked/user/LOGOUT_SUCCESS";
 export const USER_LOGOUT_FAIL = "stocked/user/LOGOUT_FAIL";
 
+export const WAREHOUSES_GET = "stocked/warehouses/GET";
+export const WAREHOUSES_GET_SUCCESS = "stocked/warehouses/GET_SUCCESS";
+export const WAREHOUSES_GET_FAIL = "stocked/warehouses/GET_FAIL";
+
 export const SET_USER_DATA = "stocked/user/DATA";
 
 export const SET_TOOLBAR_TITLE = "stocked/toolbar/TITLE_SET";
+
+export const SET_LOADING = "stocked/loading/SET";
 
 // Actions
 export function userLogin(email: string, password: string) {
@@ -48,6 +54,19 @@ export function userLogout() {
     }
 }
 
+export function getWarehouses() {
+    return {
+        type: WAREHOUSES_GET,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/api/warehouses/',
+                method: 'POST'
+            }
+        }
+    }
+}
+
 export function setToolbarTitle(title: string) {
     return {
         type: SET_TOOLBAR_TITLE,
@@ -62,6 +81,15 @@ export function setUserData(userData: object) {
         type: SET_USER_DATA,
         payload: {
             userData: userData
+        }
+    }
+}
+
+export function setLoading(loading: boolean) {
+    return {
+        type: SET_LOADING,
+        payload: {
+            isDataLoading: loading
         }
     }
 }

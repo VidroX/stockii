@@ -7,7 +7,9 @@
     "logOut": "Sign out",
     "myProfile": "My profile",
     "warehouses": "Warehouses",
-    "yourWarehouses": "Your warehouses"
+    "yourWarehouses": "Your warehouses",
+    "OK": "OK",
+    "cancel": "Cancel"
   },
   "languages": {
     "en": "English",

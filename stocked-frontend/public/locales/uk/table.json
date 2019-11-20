@@ -1,0 +1,34 @@
+{
+  "body": {
+    "noMatch": "На жаль, не знайдено відповідних записів",
+    "toolTip": "Сортувати"
+  },
+  "pagination": {
+    "next": "Наступна сторінка",
+    "previous": "Попередня сторінка",
+    "rowsPerPage": "Рядки на сторінку:",
+    "displayRows": "з"
+  },
+  "toolbar": {
+    "search": "Пошук",
+    "downloadCsv": "Завантажити CSV",
+    "print": "Друкувати",
+    "viewColumns": "Стовпці",
+    "filterTable": "Фільтр",
+    "add": "Додати"
+  },
+  "filter": {
+    "all": "Усе",
+    "title": "ФІЛЬТРИ",
+    "reset": "Збросити"
+  },
+  "viewColumns": {
+    "title": "Показати стовпці",
+    "titleAria": "Показати / приховати стовпці таблиці"
+  },
+  "selectedRows": {
+    "text": "рядок(-ків) вибрано",
+    "delete": "Видалити",
+    "deleteAria": "Видалити вибрані рядки"
+  }
+}

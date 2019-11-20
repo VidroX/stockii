@@ -16,16 +16,17 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import {isIOS, isMobile, withOrientationChange} from "react-device-detect";
-import {Button, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
+import {Button, LinearProgress, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
 import Routes from "../routes/routes";
 import {connect} from "react-redux";
-import {setToolbarTitle, userLogout} from "../redux/actions";
+import {userLogout} from "../redux/actions";
 import {AccountCircle} from "@material-ui/icons";
 import {useTranslation} from "react-i18next";
 import Cookies from "js-cookie";
 import config from "../config";
 import LanguageSelector from "./languageSelector";
 import {useLocation} from "react-router";
+import useToolbarTitle from "../hooks/toolbarTitle";
 
 
 const drawerWidth = 240;
@@ -40,6 +41,8 @@ const StockedDrawer: React.FC = (props: any) => {
     const isMenuOpened = Boolean(anchorEl);
     const { t } = useTranslation();
     const location = useLocation();
+    const toolbarTitle = useToolbarTitle();
+    const mobilePadding = isMobile ? getMobilePadding(props) : (windowWidth < 600 ? 16 : 24);
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -63,7 +66,7 @@ const StockedDrawer: React.FC = (props: any) => {
         return (
             <React.Fragment>
                 <div className={classes.toolbar}>
-                    {renderCloseIcon()}
+                    {renderTopbar()}
                 </div>
                 <Divider/>
                 <List classes={{
@@ -126,12 +129,15 @@ const StockedDrawer: React.FC = (props: any) => {
         }
     };
 
-    const renderCloseIcon = () => {
+    const renderTopbar = () => {
         if(isMobile || windowWidth < 600) {
             return (
-                <IconButton onClick={toggleDrawer}>
-                    <CloseIcon />
-                </IconButton>
+                <div className={classes.topBar}>
+                    <IconButton className={classes.marginRight} onClick={toggleDrawer}>
+                        <CloseIcon />
+                    </IconButton>
+                    <Typography className={classes.topBarTitle} variant="h6" component="h6">{config.main.appName}</Typography>
+                </div>
             );
         } else {
             return null;
@@ -163,9 +169,17 @@ const StockedDrawer: React.FC = (props: any) => {
         setAnchorEl(null);
     };
 
+    const renderProgress = () => {
+        if (props.isDataLoading) {
+            return <LinearProgress className={classes.loading} />;
+        }
+        return null;
+    };
+
     return (
         <div className={classes.root}>
             <CssBaseline />
+            { renderProgress() }
             <AppBar
                 className={classes.appBar}
             >
@@ -180,7 +194,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap className={classes.toolbarTitle}>
-                        {props.toolbarTitle}
+                        {toolbarTitle}
                     </Typography>
                     <LanguageSelector />
                     <div>
@@ -216,33 +230,47 @@ const StockedDrawer: React.FC = (props: any) => {
                 </Toolbar>
             </AppBar>
             {renderDrawer()}
-            <main className={classes.content} style={{
-                padding: isMobile ? getMobilePadding(props) : (windowWidth < 600 ? 16 : 24)
-            }}>
+            <div className={classes.mainContent}>
                 <div className={classes.toolbar} />
-                <Routes />
-            </main>
+                <main className={classes.content} style={{
+                    paddingLeft: mobilePadding,
+                    paddingRight: mobilePadding
+                }}>
+                    <Routes />
+                </main>
+            </div>
         </div>
     );
 };
 
 const mapStateToProps = (state: any) => {
     return {
-        toolbarTitle: state.main.toolbarTitle,
         userData: state.main.userData,
         logoutProgress: state.main.logoutProgress,
-        logoutInitiated: state.main.logoutInitiated
+        logoutInitiated: state.main.logoutInitiated,
+        isDataLoading: state.main.isDataLoading
     };
 };
 
 const mapDispatchToProps = {
-    setToolbarTitle,
     userLogout
 };
 
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex'
+    },
+    mainContent: {
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1
+    },
+    loading: {
+        display: 'block',
+        zIndex: 1600,
+        position: 'fixed',
+        width: '100%',
+        top: 0
     },
     toolbarMain: {
         display: 'flex',
@@ -262,7 +290,10 @@ const useStyles = makeStyles(theme => ({
         }),
     },
     menuButton: {
-        marginRight: 20,
+        marginRight: 37,
+        [theme.breakpoints.down('xs')]: {
+            marginRight: 12
+        }
     },
     hide: {
         display: 'none',
@@ -308,13 +339,27 @@ const useStyles = makeStyles(theme => ({
     content: {
         flexGrow: 1,
         flexWrap: 'wrap',
-        wordBreak: 'break-all'
+        wordBreak: 'break-all',
+        marginTop: 24
     },
     listPadding: {
-        padding: 8
+        padding: 8,
+        marginTop: 12
     },
     listRoot: {
-        borderRadius: '4px'
+        borderRadius: '4px',
+        marginTop: 4
+    },
+    marginRight: {
+        marginRight: 8
+    },
+    topBar: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    topBarTitle: {
+        marginLeft: 12
     }
 }));
 
