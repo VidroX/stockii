@@ -4,11 +4,11 @@ import './assets/sass/main.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { createMuiTheme, CssBaseline, Grid } from "@material-ui/core";
-import { blueGrey, cyan } from "@material-ui/core/colors";
+import { CssBaseline, Grid } from "@material-ui/core";
 import { ThemeProvider } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
 import store from "./redux/store";
+import { theme } from "./theme";
 
 import './i18n';
 
@@ -28,25 +28,6 @@ const Loader = () => (
 
     </Grid>
 );
-
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            light: blueGrey[300],
-            main: blueGrey[500],
-            dark: blueGrey[700]
-        },
-        secondary: {
-            light: cyan[300],
-            main: cyan[500],
-            dark: cyan[700]
-        },
-        background: {
-            default: "#fcfcfc"
-        }
-    },
-});
-
 
 ReactDOM.render(
     <Provider store={store}>

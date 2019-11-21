@@ -9,7 +9,12 @@
     "warehouses": "Warehouses",
     "yourWarehouses": "Your warehouses",
     "OK": "OK",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "location": "Location",
+    "workingFrom": "From",
+    "workingTo": "To",
+    "weekends": "Weekends",
+    "phone": "Phone"
   },
   "languages": {
     "en": "English",

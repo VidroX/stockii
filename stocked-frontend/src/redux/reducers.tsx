@@ -55,13 +55,34 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, isDataLoading: action.payload.isDataLoading}
         }
         case WAREHOUSES_GET:{
-            return {...state, warehousesFetchProgress: true}
+            return {
+                ...state,
+                warehousesData: {
+                    isFetching: true,
+                    data: null,
+                    error: false
+                }
+            }
         }
         case WAREHOUSES_GET_SUCCESS:{
-            return {...state, warehousesFetchProgress: false, warehousesData: action.payload.data}
+            return {
+                ...state,
+                warehousesData: {
+                    isFetching: false,
+                    data: action.payload.data,
+                    error: false
+                }
+            }
         }
         case WAREHOUSES_GET_FAIL:{
-            return {...state, warehousesFetchProgress: false, error: 'Cannot logout user'}
+            return {
+                ...state,
+                warehousesData: {
+                    isFetching: false,
+                    data: null,
+                    error: true
+                }
+            }
         }
         default:{
             return state;

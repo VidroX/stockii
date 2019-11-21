@@ -9,7 +9,12 @@
     "warehouses": "Склади",
     "yourWarehouses": "Ваші склади",
     "OK": "Добре",
-    "cancel": "Скасувати"
+    "cancel": "Скасувати",
+    "location": "Місцезнаходження",
+    "workingFrom": "З",
+    "workingTo": "По",
+    "weekends": "Вихідні дні",
+    "phone": "Телефон"
   },
   "languages": {
     "en": "English",

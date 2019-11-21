@@ -54,14 +54,18 @@ export function userLogout() {
     }
 }
 
-export function getWarehouses() {
+export function getWarehouses(page: number = 1) {
+    const offset = page * config.api.row_count;
     return {
         type: WAREHOUSES_GET,
         payload: {
             client: 'default',
             request: {
-                url: '/api/warehouses/',
-                method: 'POST'
+                url: '/warehouses/',
+                method: 'GET',
+                data: {
+                    'offset': offset
+                }
             }
         }
     }
