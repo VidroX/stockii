@@ -1,6 +1,7 @@
 {
   "common": {
-    "emptyField": "Це поле не може бути порожнім!"
+    "emptyField": "Це поле не може бути порожнім!",
+    "incorrectTime": "Неправильний час"
   },
   "main": {
     "homePage": "Головна",
@@ -8,8 +9,36 @@
     "myProfile": "Мій профіль",
     "warehouses": "Склади",
     "yourWarehouses": "Ваші склади",
+    "availableWarehouses": "Доступні склади",
     "OK": "Добре",
-    "cancel": "Скасувати"
+    "add": "Додати",
+    "cancel": "Скасувати",
+    "location": "Місцезнаходження",
+    "workingFrom": "Працює з",
+    "workingTo": "Працює до",
+    "weekends": "Вихідні дні",
+    "phone": "Телефон",
+    "actions": "Дії",
+    "giveAccess": "Видати доступ",
+    "access": "Доступ",
+    "selectUser": "Виберіть користувача",
+    "edit": "Редагувати",
+    "delete": "Видалити",
+    "userSearch": "Пошук користувача",
+    "user": "Користувач",
+    "addWarehouse": "Додати склад",
+    "removeWarehouseBody": "Ви впевнені, що хочете видалити цей склад?",
+    "removeWarehouseTitle": "Видалити склад",
+    "yes": "Так",
+    "no": "Ні",
+    "accessGranted": "Доступ до складу надано успішно.",
+    "unableToGrant": "Не вдалося надати користувачеві доступ до складу.",
+    "warehouseDeleted": "Склад успішно видалено.",
+    "unableToDeleteWarehouse": "Неможливо видалити склад.",
+    "warehouseAdded": "Склад додано успішно.",
+    "unableToAddWarehouse": "Неможливо додати склад.",
+    "workingOnWeekends": "Працює у вихідні дні?",
+    "warehouseAlreadyExists": "Склад із наданим місцезнаходженням вже існує."
   },
   "languages": {
     "en": "English",

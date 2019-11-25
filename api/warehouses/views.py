@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -14,6 +14,9 @@ from rest_framework.response import Response
 class WarehousesListView(generics.ListCreateAPIView):
     serializer_class = WarehousesSerializer
     permission_classes = [IsAuthenticated, SuperUserCreateOnly]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['id', 'location', 'working_from', 'working_to', 'weekends', 'phone']
+    search_fields = ['location', 'working_from', 'working_to', 'phone']
 
     def get_queryset(self):
         user = self.request.user
@@ -96,4 +99,34 @@ def change_warehouse_access(request, user_id, warehouse_id):
         return Response({
             'status': 13,
             'message': STATUS_CODE[13]
+        })
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def delete_warehouse(request, warehouse_id):
+    if warehouse_id is not None and warehouse_id > 0:
+        if request.method == "DELETE":
+            warehouse = get_object_or_404(Warehouse, id=warehouse_id)
+            if warehouse.delete():
+                return Response({
+                    'status': 12,
+                    'message': STATUS_CODE[12]
+                })
+            else:
+                return Response({
+                    'status': 9,
+                    'message': STATUS_CODE[9]
+                })
+        else:
+            response = Response({
+                        'status': 20,
+                        'message': STATUS_CODE[20]
+                    })
+            response.status_code = 405
+            return response
+    else:
+        return Response({
+            'status': 21,
+            'message': STATUS_CODE[21]
         })

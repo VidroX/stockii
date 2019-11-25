@@ -14,12 +14,9 @@ const TablePlaceholder: React.FC = () => {
                 <div className={classes.placeholderTopRight}>
                     <div className={classes.buttonPlaceholder} />
                     <div className={classes.buttonPlaceholder} />
-                    <div className={classes.buttonPlaceholder} />
                 </div>
             </div>
             <div className={classes.placeholderCenter}>
-                <div className={classes.rowPlaceholder} />
-                <div className={classes.rowPlaceholder} />
                 <div className={classes.rowPlaceholder} />
                 <div className={classes.rowPlaceholder} />
                 <div className={classes.rowPlaceholder} />
