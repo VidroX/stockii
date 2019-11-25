@@ -1,10 +1,9 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, filters, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from api.permissions import SuperUserCreateOnly
-from api.products.serializers import ProductSerializer
+from api.products.serializers import ProductSerializer, ProductCreateSerializer
 from api.statuses import STATUS_CODE
 from products.models import Product, ProductLimit
 
@@ -13,6 +12,17 @@ class ProductsListView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['id', 'name', 'warehouse', 'quantity']
+    search_fields = ['name', 'warehouse__location']
+
+    def post(self, request, *args, **kwargs):
+        create_serializer = ProductCreateSerializer(data=request.data)
+        if create_serializer.is_valid():
+            instance = create_serializer.save()
+            retrive_serializer = ProductSerializer(instance)
+            return Response(retrive_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(create_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['DELETE', 'PUT', 'GET'])
@@ -56,6 +66,7 @@ def change_product(request, product_id):
                 product_limit = None
 
             quantity = int(request.data.get('quantity', 0))
+            warehouse = request.data.get('warehouse', None)
 
             if product_limit is not None:
                 if quantity < product_limit.min_amount:
@@ -70,6 +81,8 @@ def change_product(request, product_id):
                     })
 
             product.quantity = quantity
+            if warehouse is not None and int(warehouse) > 0:
+                product.warehouse_id = int(warehouse)
             product.save()
 
             return Response({

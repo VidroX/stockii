@@ -13,6 +13,7 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['name']
+        unique_together = ['name', 'warehouse']
 
 
 class ProductLimit(models.Model):

@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import {Autocomplete} from "@material-ui/lab";
-import {addAccessToWarehouse, getUsers, setGlobalLoading, setSnackbar, showSnackbar} from "../redux/actions";
+import {addAccessToWarehouse, getUsers, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
 
 interface OptionType {
     id: number,

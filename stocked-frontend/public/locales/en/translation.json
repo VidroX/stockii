@@ -1,7 +1,8 @@
 {
   "common": {
     "emptyField": "This field cannot be empty!",
-    "incorrectTime": "Incorrect time"
+    "incorrectTime": "Incorrect time",
+    "requiredField": "This field is required!"
   },
   "main": {
     "homePage": "Home",
@@ -9,6 +10,7 @@
     "myProfile": "My profile",
     "warehouses": "Warehouses",
     "yourWarehouses": "Your warehouses",
+    "products": "Products",
     "availableWarehouses": "Available warehouses",
     "OK": "OK",
     "add": "Add",
@@ -38,7 +40,9 @@
     "warehouseAdded": "Warehouse added successfully.",
     "unableToAddWarehouse": "Unable to add warehouse.",
     "workingOnWeekends": "Is working on weekends?",
-    "warehouseAlreadyExists": "Warehouse with provided location already exists."
+    "warehouseAlreadyExists": "Warehouse with provided location already exists.",
+    "move": "Move",
+    "unknown": "Unknown"
   },
   "languages": {
     "en": "English",
@@ -50,5 +54,27 @@
     "password": "Password",
     "smallPassword": "Password should contain more than 5 characters",
     "incorrectFieldData": "Incorrect E-Mail or Password"
+  },
+  "products": {
+    "name": "Name",
+    "warehouse": "Warehouse location",
+    "quantity": "Quantity",
+    "viewLimits": "View product limits",
+    "setLimit": "Set limit",
+    "removeLimit": "Remove limit",
+    "moveProduct": "Move product",
+    "productDeleted": "Product removed successfully.",
+    "unableToDeleteProduct": "Unable to remove product.",
+    "productAdded": "Product added successfully.",
+    "unableToAddProduct": "Unable to add product.",
+    "productAlreadyExists": "Product with provided name and warehouse already exists.",
+    "orderProduct": "Order product",
+    "removeProductTitle": "Remove product",
+    "removeProductBody": "Are you sure you want to remove this product?",
+    "productExists": "Product already exists in the warehouse.",
+    "incorrectWarehouse": "Incorrect warehouse.",
+    "incorrectQuantity": "Incorrect quantity.",
+    "selectWarehouse": "Select warehouse",
+    "addProduct": "Add product"
   }
 }

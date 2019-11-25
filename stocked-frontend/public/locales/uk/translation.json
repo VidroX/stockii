@@ -1,7 +1,8 @@
 {
   "common": {
     "emptyField": "Це поле не може бути порожнім!",
-    "incorrectTime": "Неправильний час"
+    "incorrectTime": "Неправильний час",
+    "requiredField": "Це поле є обов'язковим!"
   },
   "main": {
     "homePage": "Головна",
@@ -9,6 +10,7 @@
     "myProfile": "Мій профіль",
     "warehouses": "Склади",
     "yourWarehouses": "Ваші склади",
+    "products": "Товари",
     "availableWarehouses": "Доступні склади",
     "OK": "Добре",
     "add": "Додати",
@@ -38,7 +40,9 @@
     "warehouseAdded": "Склад додано успішно.",
     "unableToAddWarehouse": "Неможливо додати склад.",
     "workingOnWeekends": "Працює у вихідні дні?",
-    "warehouseAlreadyExists": "Склад із наданим місцезнаходженням вже існує."
+    "warehouseAlreadyExists": "Склад із наданим місцезнаходженням вже існує.",
+    "move": "Перемістити",
+    "unknown": "Невідомо"
   },
   "languages": {
     "en": "English",
@@ -50,5 +54,27 @@
     "password": "Пароль",
     "smallPassword": "Пароль повинен бути більше 5 символів",
     "incorrectFieldData": "Неправильний E-Mail або Пароль"
+  },
+  "products": {
+    "name": "Назва",
+    "warehouse": "Місцезнаходження складу",
+    "quantity": "Кількість",
+    "viewLimits": "Переглянути ліміти товару",
+    "setLimit": "Встановити ліміт",
+    "moveProduct": "Перемістити товар",
+    "removeLimit": "Видалити ліміт",
+    "productDeleted": "Товар успішно видалено.",
+    "unableToDeleteProduct": "Не вдається видалити товар.",
+    "productAdded": "Товар успішно додано.",
+    "unableToAddProduct": "Не вдається додати товар.",
+    "productAlreadyExists": "Товар із вказаною назвою та складом вже існує.",
+    "orderProduct": "Замовити товар",
+    "removeProductTitle": "Видалити товар",
+    "removeProductBody": "Ви впевнені, що хочете видалити цей товар?",
+    "productExists": "Товар вже є на складі.",
+    "incorrectWarehouse": "Неправильний склад.",
+    "incorrectQuantity": "Неправильна кількість.",
+    "selectWarehouse": "Виберіть склад",
+    "addProduct": "Додати товар"
   }
 }

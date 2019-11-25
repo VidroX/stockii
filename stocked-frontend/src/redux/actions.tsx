@@ -25,6 +25,42 @@ export const WAREHOUSES_ADD = "stocked/warehouses/ADD";
 export const WAREHOUSES_ADD_SUCCESS = "stocked/warehouses/ADD_SUCCESS";
 export const WAREHOUSES_ADD_FAIL = "stocked/warehouses/ADD_FAIL";
 
+export const PRODUCTS_GET = "stocked/products/GET";
+export const PRODUCTS_GET_SUCCESS = "stocked/products/GET_SUCCESS";
+export const PRODUCTS_GET_FAIL = "stocked/products/GET_FAIL";
+export const PRODUCTS_REMOVE = "stocked/products/REMOVE";
+export const PRODUCTS_REMOVE_SUCCESS = "stocked/products/REMOVE_SUCCESS";
+export const PRODUCTS_REMOVE_FAIL = "stocked/products/REMOVE_FAIL";
+export const PRODUCTS_ADD = "stocked/products/ADD";
+export const PRODUCTS_ADD_SUCCESS = "stocked/products/ADD_SUCCESS";
+export const PRODUCTS_ADD_FAIL = "stocked/products/ADD_FAIL";
+export const PRODUCTS_UPDATE = "stocked/products/UPDATE";
+export const PRODUCTS_UPDATE_SUCCESS = "stocked/products/UPDATE_SUCCESS";
+export const PRODUCTS_UPDATE_FAIL = "stocked/products/UPDATE_FAIL";
+export const PRODUCT_SET_LIMITS = "stocked/products/SET_LIMITS";
+export const PRODUCT_SET_LIMITS_SUCCESS = "stocked/products/SET_LIMITS_SUCCESS";
+export const PRODUCT_SET_LIMITS_FAIL = "stocked/products/SET_LIMITS_FAIL";
+
+export const SHIPMENTS_GET = "stocked/shipments/GET";
+export const SHIPMENTS_GET_SUCCESS = "stocked/shipments/GET_SUCCESS";
+export const SHIPMENTS_GET_FAIL = "stocked/shipments/GET_FAIL";
+export const SHIPMENTS_CREATE = "stocked/shipments/CREATE";
+export const SHIPMENTS_CREATE_SUCCESS = "stocked/shipments/CREATE_SUCCESS";
+export const SHIPMENTS_CREATE_FAIL = "stocked/shipments/CREATE_FAIL";
+export const SHIPMENTS_UPDATE = "stocked/shipments/UPDATE";
+export const SHIPMENTS_UPDATE_SUCCESS = "stocked/shipments/UPDATE_SUCCESS";
+export const SHIPMENTS_UPDATE_FAIL = "stocked/shipments/UPDATE_FAIL";
+
+export const PROVIDERS_GET = "stocked/providers/GET";
+export const PROVIDERS_GET_SUCCESS = "stocked/providers/GET_SUCCESS";
+export const PROVIDERS_GET_FAIL = "stocked/providers/GET_FAIL";
+export const PROVIDERS_CREATE = "stocked/providers/CREATE";
+export const PROVIDERS_CREATE_SUCCESS = "stocked/providers/CREATE_SUCCESS";
+export const PROVIDERS_CREATE_FAIL = "stocked/providers/CREATE_FAIL";
+export const PROVIDERS_REMOVE = "stocked/providers/REMOVE";
+export const PROVIDERS_REMOVE_SUCCESS = "stocked/providers/REMOVE_SUCCESS";
+export const PROVIDERS_REMOVE_FAIL = "stocked/providers/REMOVE_FAIL";
+
 export const SET_TOOLBAR_TITLE = "stocked/toolbar/TITLE_SET";
 
 export const SHOW_SNACKBAR = "stocked/snackbar/SHOW";
@@ -152,6 +188,60 @@ export function getUsers(page: number = 0, search: string = '') {
                 url: '/users/',
                 method: 'GET',
                 params: params
+            }
+        }
+    }
+}
+
+export function getProducts(page: number = 0, ordering: string = '-id', search: string = '') {
+    const offset = page * config.api.row_count;
+
+    let params = {
+        'offset': offset,
+        'ordering': ordering,
+        'search': search
+    };
+
+    return {
+        type: PRODUCTS_GET,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/products/',
+                method: 'GET',
+                params: params
+            }
+        }
+    }
+}
+
+export function removeProduct(productId: number) {
+    return {
+        type: PRODUCTS_REMOVE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/products/' + productId + '/',
+                method: 'DELETE'
+            }
+        }
+    }
+}
+
+export function addProduct(name: string, warehouse: number, quantity: number = 0) {
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('warehouse', warehouse.toString());
+    formData.append('quantity', quantity.toString());
+
+    return {
+        type: PRODUCTS_ADD,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/products/',
+                method: 'POST',
+                data: formData
             }
         }
     }

@@ -28,7 +28,12 @@ import LanguageSelector from "./languageSelector";
 import {useLocation} from "react-router";
 import useToolbarTitle from "../hooks/toolbarTitle";
 import StockedSnackBar from "./StockedSnackBar";
+import AllInboxIcon from '@material-ui/icons/AllInbox';
+import {Link, LinkProps} from "react-router-dom";
 
+const RouterLink = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => (
+    <Link innerRef={ref} {...props} />
+));
 
 const drawerWidth = 240;
 
@@ -76,9 +81,27 @@ const StockedDrawer: React.FC = (props: any) => {
                 <List classes={{
                     padding: classes.listPadding
                 }}>
-                    <ListItem className={classes.listRoot} button key="warehouses" selected={location.pathname === '/'}>
+                    <ListItem
+                        button
+                        component={RouterLink}
+                        to="/"
+                        className={classes.listRoot}
+                        key="warehouses"
+                        selected={location.pathname === '/'}
+                    >
                         <ListItemIcon><HomeWorkIcon /></ListItemIcon>
                         <ListItemText primary={t('main.warehouses')}/>
+                    </ListItem>
+                    <ListItem
+                        button
+                        component={RouterLink}
+                        to="/products/"
+                        className={classes.listRoot}
+                        key="products"
+                        selected={location.pathname === '/products/'}
+                    >
+                        <ListItemIcon><AllInboxIcon /></ListItemIcon>
+                        <ListItemText primary={t('main.products')}/>
                     </ListItem>
                 </List>
             </React.Fragment>
