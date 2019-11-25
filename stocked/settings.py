@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.62']
+ALLOWED_HOSTS = ['192.168.1.62', '127.0.0.1']
 
 OAUTH_CLIENT_ID = os.environ.get('OAUTH_CLIENT_ID')
 OAUTH_CLIENT_SECRET = os.environ.get('OAUTH_CLIENT_SECRET')
@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 10,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ],
@@ -174,7 +174,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:3000",
     "http://192.168.1.62",
     "http://192.168.1.62:3000",
-    "http://192.168.1.62:8000"
+    "http://192.168.1.62:8000",
+    "http://192.168.1.62:5000"
 ]
 
 CORS_ALLOW_CREDENTIALS = True

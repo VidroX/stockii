@@ -1,6 +1,7 @@
 {
   "common": {
-    "emptyField": "This field cannot be empty!"
+    "emptyField": "This field cannot be empty!",
+    "incorrectTime": "Incorrect time"
   },
   "main": {
     "homePage": "Home",
@@ -8,13 +9,36 @@
     "myProfile": "My profile",
     "warehouses": "Warehouses",
     "yourWarehouses": "Your warehouses",
+    "availableWarehouses": "Available warehouses",
     "OK": "OK",
+    "add": "Add",
     "cancel": "Cancel",
     "location": "Location",
-    "workingFrom": "From",
-    "workingTo": "To",
+    "workingFrom": "Working from",
+    "workingTo": "Working to",
     "weekends": "Weekends",
-    "phone": "Phone"
+    "phone": "Phone",
+    "actions": "Actions",
+    "giveAccess": "Give access",
+    "access": "Access",
+    "selectUser": "Select user",
+    "edit": "Edit",
+    "delete": "Delete",
+    "userSearch": "User search",
+    "user": "User",
+    "addWarehouse": "Add warehouse",
+    "removeWarehouseBody": "Are you sure you want to remove this warehouse?",
+    "removeWarehouseTitle": "Remove warehouse",
+    "yes": "Yes",
+    "no": "No",
+    "accessGranted": "Access to warehouse has been granted successfully.",
+    "unableToGrant": "Could not grant user access to warehouse.",
+    "warehouseDeleted": "Warehouse deleted successfully.",
+    "unableToDeleteWarehouse": "Unable to delete warehouse.",
+    "warehouseAdded": "Warehouse added successfully.",
+    "unableToAddWarehouse": "Unable to add warehouse.",
+    "workingOnWeekends": "Is working on weekends?",
+    "warehouseAlreadyExists": "Warehouse with provided location already exists."
   },
   "languages": {
     "en": "English",

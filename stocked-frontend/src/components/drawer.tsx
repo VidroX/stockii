@@ -18,7 +18,7 @@ import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import {isIOS, isMobile, withOrientationChange} from "react-device-detect";
 import {Button, LinearProgress, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
 import Routes from "../routes/routes";
-import {connect} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import {userLogout} from "../redux/actions";
 import {AccountCircle} from "@material-ui/icons";
 import {useTranslation} from "react-i18next";
@@ -27,6 +27,7 @@ import config from "../config";
 import LanguageSelector from "./languageSelector";
 import {useLocation} from "react-router";
 import useToolbarTitle from "../hooks/toolbarTitle";
+import StockedSnackBar from "./StockedSnackBar";
 
 
 const drawerWidth = 240;
@@ -43,6 +44,9 @@ const StockedDrawer: React.FC = (props: any) => {
     const location = useLocation();
     const toolbarTitle = useToolbarTitle();
     const mobilePadding = isMobile ? getMobilePadding(props) : (windowWidth < 600 ? 16 : 24);
+
+    const snackbarData = useSelector((state: any) => state.main.snackBarData);
+    const showSnackbar = useSelector((state: any) => state.main.showSnackbar);
 
     useEffect(() => {
         window.addEventListener("resize", () => {
@@ -176,10 +180,19 @@ const StockedDrawer: React.FC = (props: any) => {
         return null;
     };
 
+    const renderSnackbar = () => {
+        if (snackbarData != null && snackbarData.type != null && snackbarData.body != null && showSnackbar != null) {
+            return <StockedSnackBar type={snackbarData.type} body={snackbarData.body} isShown={showSnackbar} />;
+        } else {
+            return null;
+        }
+    };
+
     return (
         <div className={classes.root}>
             <CssBaseline />
             { renderProgress() }
+            { renderSnackbar() }
             <AppBar
                 className={classes.appBar}
             >

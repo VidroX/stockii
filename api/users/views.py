@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -67,5 +67,7 @@ def get_user_data_api(request, user_id):
 
 class UsersListView(generics.ListAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser, IsAuthenticated]
+    permission_classes = [IsAdminUser]
     queryset = User.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['id', 'last_name', 'first_name', 'patronymic', 'email']
