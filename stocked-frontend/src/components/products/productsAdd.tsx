@@ -104,6 +104,7 @@ const ProductsAdd: React.FC<ProductAdd> = (props: ProductAdd) => {
                 errorText: "",
                 value: 0
             });
+            return;
         }
         setSuggestionsLoading(true);
         dispatch(getWarehouses(0));

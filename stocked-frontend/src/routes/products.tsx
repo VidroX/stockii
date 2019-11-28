@@ -19,29 +19,10 @@ import config from "../config";
 import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import {green, red} from "@material-ui/core/colors";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { Warehouse } from "./warehouses";
 import OpenWithIcon from '@material-ui/icons/OpenWith';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import ProductsAdd from "../components/products/productsAdd";
-import WarehouseAdd from "../components/warehouses/warehouseAdd";
-
-interface ProductLimit {
-    id: number,
-    minAmount: number,
-    maxAmount: number
-}
-
-interface Product {
-    name: string,
-    quantity: number,
-    warehouse: string
-}
-
-interface ProductInfo {
-    id: number,
-    limits: ProductLimit | null,
-    warehouse: Warehouse | null
-}
+import { Product, ProductInfo } from "../intefaces";
 
 const Products: React.FC = (props: any) => {
     const { t } = useTranslation();
@@ -139,11 +120,6 @@ const Products: React.FC = (props: any) => {
 
         setColumns(columns);
     }, [classes, productInfoArray, t, user.is_superuser]);
-
-    useEffect(() => {
-        setLoading(true);
-        dispatch(getProducts(0));
-    }, [dispatch]);
 
     useEffect(() => {
         if(loading || globalLoadingState) {
@@ -392,7 +368,7 @@ const Products: React.FC = (props: any) => {
                             searchText: searchVal,
                             onSearchClose: () => setSearchVal(""),
                             onTableChange: onTableChange,
-                            customToolbar: () => <DataTableToolbar onAddButtonClick={handleAddClick}/>
+                            customToolbar: () => <DataTableToolbar isVisible={true} onAddButtonClick={handleAddClick}/>
                         }}
                     />
                 </div>

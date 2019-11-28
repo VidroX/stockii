@@ -60,6 +60,7 @@ const WarehouseAccess: React.FC<WarehouseAccess> = (props: WarehouseAccess) => {
         if (!open) {
             setSuggestions([]);
             setValue({});
+            return;
         }
         setLoading(true);
         dispatch(getUsers(0));

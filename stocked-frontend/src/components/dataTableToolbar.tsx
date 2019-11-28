@@ -5,12 +5,12 @@ import AddIcon from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
-const DataTableToolbar: React.FC<{onAddButtonClick: any}> = (props: any) => {
+const DataTableToolbar: React.FC<{isVisible: boolean, onAddButtonClick: any}> = (props: any) => {
     const { t } = useTranslation("table");
     const { classes, onAddButtonClick } = props;
     const user = useSelector((state: any) => state.main.userData);
 
-    if(user.is_superuser) {
+    if(props.isVisible || user.is_superuser) {
         return (
             <React.Fragment>
                 <Tooltip title={t('toolbar.add')}>

@@ -23,14 +23,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import WarehouseAccess from "../components/warehouses/warehouseAccess";
 import WarehouseAdd from "../components/warehouses/warehouseAdd";
-
-export interface Warehouse {
-    location: string,
-    workingFrom: string,
-    workingTo: string,
-    weekends: boolean,
-    phone: string
-}
+import { Warehouse } from "../intefaces";
 
 const Warehouses: React.FC = (props: any) => {
     const { t } = useTranslation();
@@ -138,11 +131,6 @@ const Warehouses: React.FC = (props: any) => {
 
         setColumns(columns);
     }, [classes, t, user.is_superuser]);
-
-    useEffect(() => {
-        setLoading(true);
-        dispatch(getWarehouses(0));
-    }, [dispatch]);
 
     useEffect(() => {
         if(loading || globalLoadingState) {
@@ -383,7 +371,7 @@ const Warehouses: React.FC = (props: any) => {
                             searchText: searchVal,
                             onSearchClose: () => setSearchVal(""),
                             onTableChange: onTableChange,
-                            customToolbar: () => <DataTableToolbar onAddButtonClick={handleAddClick}/>
+                            customToolbar: () => <DataTableToolbar isVisible={false} onAddButtonClick={handleAddClick}/>
                         }}
                     />
                 </div>

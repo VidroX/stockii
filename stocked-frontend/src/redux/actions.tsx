@@ -103,14 +103,19 @@ export function userLogout() {
     }
 }
 
-export function getWarehouses(page: number = 0, ordering: string = '-id', search: string = '') {
+export function getWarehouses(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
     const offset = page * config.api.row_count;
 
-    let params = {
-        'offset': offset,
-        'ordering': ordering,
-        'search': search
+    let params: any = {
+        'offset': offset
     };
+
+    if (ordering != null) {
+        params.ordering = ordering;
+    }
+    if (search != null) {
+        params.search = search;
+    }
 
     return {
         type: WAREHOUSES_GET,
@@ -172,13 +177,16 @@ export function addAccessToWarehouse(userId: number, warehouseId: number) {
     }
 }
 
-export function getUsers(page: number = 0, search: string = '') {
+export function getUsers(page: number = 0, search: string | null = null) {
     const offset = page * config.api.row_count;
 
-    let params = {
-        'offset': offset,
-        'search': search
+    let params: any = {
+        'offset': offset
     };
+
+    if (search != null) {
+        params.search = search;
+    }
 
     return {
         type: USER_LIST,
@@ -193,14 +201,19 @@ export function getUsers(page: number = 0, search: string = '') {
     }
 }
 
-export function getProducts(page: number = 0, ordering: string = '-id', search: string = '') {
+export function getProducts(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
     const offset = page * config.api.row_count;
 
-    let params = {
-        'offset': offset,
-        'ordering': ordering,
-        'search': search
+    let params: any = {
+        'offset': offset
     };
+
+    if (ordering != null) {
+        params.ordering = ordering;
+    }
+    if (search != null) {
+        params.search = search;
+    }
 
     return {
         type: PRODUCTS_GET,

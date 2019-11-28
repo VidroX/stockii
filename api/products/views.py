@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from api.products.serializers import ProductSerializer, ProductCreateSerializer
 from api.statuses import STATUS_CODE
 from products.models import Product, ProductLimit
+from warehouses.models import WarehouseAccess, Warehouse
 
 
 class ProductsListView(generics.ListCreateAPIView):
@@ -23,6 +24,18 @@ class ProductsListView(generics.ListCreateAPIView):
             retrive_serializer = ProductSerializer(instance)
             return Response(retrive_serializer.data, status=status.HTTP_201_CREATED)
         return Response(create_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Product.objects.all()
+
+        warehouses = Warehouse.objects.filter(warehouseaccess__user=user)
+
+        try:
+            return Product.objects.filter(warehouse__in=warehouses)
+        except Product.DoesNotExist or Warehouse.DoesNotExist or WarehouseAccess.DoesNotExist:
+            return Product.objects.none()
 
 
 @api_view(['DELETE', 'PUT', 'GET'])
