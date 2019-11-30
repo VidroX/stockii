@@ -1,6 +1,6 @@
 export default {
     "main": {
-        "appName": "Stocked",
+        "appName": "Stockii",
         "debugMode": true,
         "connectionTimeout": 10 * 1000,
         "snackbarAutoHideDuration": 6 * 1000
