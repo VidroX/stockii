@@ -29,7 +29,7 @@
     "userSearch": "Пошук користувача",
     "user": "Користувач",
     "addWarehouse": "Додати склад",
-    "removeWarehouseBody": "Ви впевнені, що хочете видалити цей склад?",
+    "removeWarehouseBody": "Ви впевнені, що бажаєте видалити цей склад?",
     "removeWarehouseTitle": "Видалити склад",
     "yes": "Так",
     "no": "Ні",
@@ -42,7 +42,9 @@
     "workingOnWeekends": "Працює у вихідні дні?",
     "warehouseAlreadyExists": "Склад із наданим місцезнаходженням вже існує.",
     "move": "Перемістити",
-    "unknown": "Невідомо"
+    "unknown": "Невідомо",
+    "save": "Зберегти",
+    "selectProvider": "Виберіть постачальника"
   },
   "languages": {
     "en": "English",
@@ -63,6 +65,9 @@
     "setLimit": "Встановити ліміт",
     "moveProduct": "Перемістити товар",
     "removeLimit": "Видалити ліміт",
+    "limitsRemoved": "Ліміти успішно видалені.",
+    "limitsSet": "Ліміти успішно встановлено.",
+    "incorrectRange": "Неправильний діапазон меж.",
     "productDeleted": "Товар успішно видалено.",
     "unableToDeleteProduct": "Не вдається видалити товар.",
     "productAdded": "Товар успішно додано.",
@@ -70,11 +75,25 @@
     "productAlreadyExists": "Товар із вказаною назвою та складом вже існує.",
     "orderProduct": "Замовити товар",
     "removeProductTitle": "Видалити товар",
-    "removeProductBody": "Ви впевнені, що хочете видалити цей товар?",
+    "removeProductBody": "Ви впевнені, що бажаєте видалити цей товар?",
     "productExists": "Товар вже є на складі.",
     "incorrectWarehouse": "Неправильний склад.",
     "incorrectQuantity": "Неправильна кількість.",
     "selectWarehouse": "Виберіть склад",
-    "addProduct": "Додати товар"
+    "addProduct": "Додати товар",
+    "productLimits": "Ліміти на товар",
+    "unableToMoveProduct": "Неможливо перемістити товар!",
+    "productMoved": "Товар успішно переміщено.",
+    "noLimitsForProduct": "Ліміти на даний товар не встановлені",
+    "minAmount": "Мінімальна кількість",
+    "maxAmount": "Максимальна кількість",
+    "quantityLess": "Дана кількість менша за кількість товару.",
+    "quantityMore": "Дана кількість перевищує кількість товару."
+  },
+  "shipments": {
+    "incorrectProvider": "Неправильний постачальник",
+    "unableToCreateOrder": "Неможливо створити заказ!",
+    "orderCreated": "Замовлення успішно створено.",
+    "estimatedDelivery": "Приблизна дата доставки"
   }
 }

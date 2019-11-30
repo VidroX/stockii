@@ -16,20 +16,9 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {Autocomplete} from "@material-ui/lab";
 import {addAccessToWarehouse, getUsers, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
+import {OptionType, WarehouseAccessInterface} from "../../intefaces";
 
-interface OptionType {
-    id: number,
-    label: string
-}
-
-interface WarehouseAccess {
-    warehouseId: number,
-    open: boolean,
-    onOpen?(): void,
-    onClose?(): void
-}
-
-const WarehouseAccess: React.FC<WarehouseAccess> = (props: WarehouseAccess) => {
+const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAccessInterface) => {
     const {
         onOpen,
         onClose,

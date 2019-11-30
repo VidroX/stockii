@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'oauth2_provider',
     'rest_framework',
+    'background_task',
     # Own apps
     'accounts',
     'api',

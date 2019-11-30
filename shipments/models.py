@@ -19,12 +19,13 @@ class Provider(models.Model):
 
 class Shipment(models.Model):
     SHIPMENT_STATUSES = (
-        (1, 'Uncompleted'),
-        (2, 'Completed')
+        (1, 'In progress'),
+        (2, 'Delivered')
     )
 
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, null=False)
+    quantity = models.IntegerField(default=0, null=False)
     start_date = models.DateTimeField(auto_now_add=True)
     approximate_delivery = models.DateField(null=False)
     status = models.IntegerField(choices=SHIPMENT_STATUSES, default=1)

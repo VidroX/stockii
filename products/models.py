@@ -17,7 +17,7 @@ class Product(models.Model):
 
 
 class ProductLimit(models.Model):
-    product = models.OneToOneField(Product, related_name='limit', on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, related_name='limit', blank=True, null=True, on_delete=models.SET_NULL)
     max_amount = models.IntegerField(default=100)
     min_amount = models.IntegerField(default=10)
 

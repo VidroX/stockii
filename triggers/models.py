@@ -5,9 +5,8 @@ from products.models import Product
 # Create your models here
 class Trigger(models.Model):
     TRIGGER_TYPES = (
-        (1, 'Restock product in warehouse'),
-        (2, 'Move product from warehouse'),
-        (3, 'Move product to warehouse')
+        (1, 'Restock product'),
+        (2, 'Move product')
     )
     TRIGGER_STATUSES = (
         (1, 'Awaiting activation'),

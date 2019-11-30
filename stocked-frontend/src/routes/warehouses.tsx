@@ -43,6 +43,7 @@ const Warehouses: React.FC = (props: any) => {
     const [page, setPage] = React.useState<number>(0);
     const [shouldRefreshTable, setShouldRefreshTable] = React.useState<boolean>(true);
     const [searchVal, setSearchVal] = React.useState<string>("");
+    const [firstStart, setFirstStart] = React.useState<boolean>(true);
 
     const classes = useStyles();
 
@@ -165,14 +166,17 @@ const Warehouses: React.FC = (props: any) => {
                 setData(warehouseMap);
                 setCount(warehousesData.data.count);
             }
+            setFirstStart(false);
             setLoading(false);
             setGlobalLoadingState(false);
         }
         if(warehousesData != null && warehousesData.error) {
+            setFirstStart(false);
             setLoading(false);
             setGlobalLoadingState(false);
         }
         setTimeout(() => {
+            setFirstStart(false);
             setLoading(false);
             setGlobalLoadingState(false);
         }, config.main.connectionTimeout)
@@ -197,6 +201,9 @@ const Warehouses: React.FC = (props: any) => {
     
     useEffect(() => {
         if (shouldRefreshTable) {
+            if (firstStart) {
+                setLoading(true);
+            }
             if(currentSortColumn !== -1 && currentSortDirection !== 'none' && sortColumns[currentSortColumn] != null) {
                 let columnItem = sortColumns[currentSortColumn];
 
@@ -222,7 +229,7 @@ const Warehouses: React.FC = (props: any) => {
             
             setShouldRefreshTable(false);
         }
-    }, [currentSortColumn, currentSortDirection, dispatch, page, searchVal, shouldRefreshTable, sortColumns]);
+    }, [currentSortColumn, currentSortDirection, dispatch, firstStart, page, searchVal, shouldRefreshTable, sortColumns]);
 
     const onGiveAccessClick = (id: number) => {
         setColumnId(id);

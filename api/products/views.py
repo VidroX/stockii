@@ -78,10 +78,11 @@ def change_product(request, product_id):
             except ProductLimit.DoesNotExist:
                 product_limit = None
 
-            quantity = int(request.data.get('quantity', 0))
+            quantity = int(request.data.get('quantity', -1))
             warehouse = request.data.get('warehouse', None)
+            name = request.data.get('name', None)
 
-            if product_limit is not None:
+            if product_limit is not None and quantity >= 0:
                 if quantity < product_limit.min_amount:
                     return Response({
                         'status': 22,
@@ -93,10 +94,15 @@ def change_product(request, product_id):
                         'message': STATUS_CODE[23]
                     })
 
-            product.quantity = quantity
+            if name is not None:
+                product.name = name
+            if quantity >= 0:
+                product.quantity = quantity
             if warehouse is not None and int(warehouse) > 0:
-                product.warehouse_id = int(warehouse)
-            product.save()
+                _warehouse = get_object_or_404(Warehouse, id=warehouse)
+                product.warehouse = _warehouse
+            if (warehouse is not None and int(warehouse) > 0) or quantity >= 0 or name is not None:
+                product.save()
 
             return Response({
                 'status': 12,
@@ -126,6 +132,15 @@ def set_product_limit(request, product_id):
 
             min_amount = int(request.data.get('min_amount', 0))
             max_amount = int(request.data.get('max_amount', 0))
+
+            if min_amount == 0 and max_amount == 0:
+                if hasattr(product, 'limit') and product.limit is not None and\
+                        product.limit.id is not None and product.limit.id > 0:
+                    product.limit.delete()
+                return Response({
+                    'status': 12,
+                    'message': STATUS_CODE[12]
+                })
 
             if min_amount >= max_amount:
                 return Response({

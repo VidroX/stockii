@@ -42,7 +42,9 @@
     "workingOnWeekends": "Is working on weekends?",
     "warehouseAlreadyExists": "Warehouse with provided location already exists.",
     "move": "Move",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "save": "Save",
+    "selectProvider": "Select provider"
   },
   "languages": {
     "en": "English",
@@ -62,7 +64,12 @@
     "viewLimits": "View product limits",
     "setLimit": "Set limit",
     "removeLimit": "Remove limit",
+    "limitsRemoved": "Limits removed successfully.",
+    "limitsSet": "Limits have been successfully set.",
+    "incorrectRange": "Incorrect limits range.",
     "moveProduct": "Move product",
+    "unableToMoveProduct": "Unable to move product!",
+    "productMoved": "Product has been successfully moved.",
     "productDeleted": "Product removed successfully.",
     "unableToDeleteProduct": "Unable to remove product.",
     "productAdded": "Product added successfully.",
@@ -75,6 +82,18 @@
     "incorrectWarehouse": "Incorrect warehouse.",
     "incorrectQuantity": "Incorrect quantity.",
     "selectWarehouse": "Select warehouse",
-    "addProduct": "Add product"
+    "addProduct": "Add product",
+    "productLimits": "Product limits",
+    "noLimitsForProduct": "There are no limits for this product",
+    "minAmount": "Minimum amount",
+    "maxAmount": "Maximum amount",
+    "quantityLess": "Quantity is less than product quantity.",
+    "quantityMore": "Quantity is more than product quantity."
+  },
+  "shipments": {
+    "incorrectProvider": "Incorrect provider",
+    "unableToCreateShipment": "Unable to create order!",
+    "orderCreated": "Order has been successfully created.",
+    "estimatedDelivery": "Estimated delivery date"
   }
 }

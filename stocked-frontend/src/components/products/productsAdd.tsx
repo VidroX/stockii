@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useTranslation} from "react-i18next";
 import {
-    Button, CircularProgress,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -14,21 +14,11 @@ import {
 } from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import config from "../../config";
-import {addProduct, getWarehouses, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
-import {Autocomplete} from "@material-ui/lab";
+import {addProduct, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
+import {OptionType, ProductAddInterface} from "../../intefaces";
+import WarehouseSelector from "../warehouses/warehouseSelector";
 
-interface OptionType {
-    id: number,
-    label: string
-}
-
-interface ProductAdd {
-    open: boolean,
-    onOpen?(): void,
-    onClose?(shouldRefresh: boolean): void
-}
-
-const ProductsAdd: React.FC<ProductAdd> = (props: ProductAdd) => {
+const ProductsAdd: React.FC<ProductAddInterface> = (props: ProductAddInterface) => {
     const {
         onOpen,
         onClose,
@@ -58,14 +48,10 @@ const ProductsAdd: React.FC<ProductAdd> = (props: ProductAdd) => {
         value: 0 | NaN
     });
     const [loading, setLoading] = React.useState<boolean>(false);
-    const [autocompleteOpen, setAutocompleteOpen] = React.useState<boolean>(false);
-    const [suggestions, setSuggestions] = React.useState<OptionType[]>([]);
-    const [suggestionsLoading, setSuggestionsLoading] = React.useState<boolean>(false);
 
     const dispatch = useDispatch();
     const productsAddProgress = useSelector((state: any) => state.main.productsAddProgress);
     const productsAddData = useSelector((state: any) => state.main.productsAddData);
-    const warehousesData = useSelector((state: any) => state.main.warehousesData);
 
     const clearFields = (clearValues: boolean = false) => {
         setName({
@@ -106,27 +92,7 @@ const ProductsAdd: React.FC<ProductAdd> = (props: ProductAdd) => {
             });
             return;
         }
-        setSuggestionsLoading(true);
-        dispatch(getWarehouses(0));
-    }, [dispatch, open]);
-
-    useEffect(() => {
-        if (suggestionsLoading && !warehousesData.isFetching && warehousesData.data != null) {
-            if (warehousesData.data.error) {
-                dispatch(setSnackbar(warehousesData.data.error, 'error'));
-                dispatch(showSnackbar(true));
-            }
-
-            setSuggestions(warehousesData.data.results.map((obj: any) => {
-                return {
-                    id: obj.id,
-                    label: obj.location
-                };
-            }));
-
-            setSuggestionsLoading(false);
-        }
-    }, [dispatch, suggestionsLoading, warehousesData]);
+    }, [open]);
 
     useEffect(() => {
         if (loading && !productsAddProgress && productsAddData == null) {
@@ -226,71 +192,17 @@ const ProductsAdd: React.FC<ProductAdd> = (props: ProductAdd) => {
                             });
                         }}
                     />
-                    <Autocomplete
-                        className={classes.textField}
-                        open={autocompleteOpen}
-                        onOpen={() => {
-                            setAutocompleteOpen(true);
+                    <WarehouseSelector
+                        error={warehouse.error}
+                        helperText={warehouse.errorText}
+                        onSelect={(value: OptionType) => {
+                            setWarehouse({
+                                error: false,
+                                errorText: "",
+                                value: value.label,
+                                id: value.id
+                            });
                         }}
-                        onClose={() => {
-                            setAutocompleteOpen(false);
-                        }}
-                        getOptionLabel={option => option != null && option.label != null ? option.label : ""}
-                        options={suggestions}
-                        loading={suggestionsLoading}
-                        freeSolo={false}
-                        onChange={(event: object, value: OptionType) => {
-                            if (value != null) {
-                                setWarehouse({
-                                    error: false,
-                                    errorText: "",
-                                    value: value.label,
-                                    id: value.id
-                                });
-                            }
-                        }}
-                        onInputChange={(event: object, value: string) => {
-                            if(value != null && value.length <= 0) {
-                                setWarehouse({
-                                    error: false,
-                                    errorText: "",
-                                    value: "",
-                                    id: 0
-                                });
-                            }
-                            if (value == null) {
-                                setWarehouse({
-                                    error: false,
-                                    errorText: "",
-                                    value: "",
-                                    id: 0
-                                });
-                            }
-
-                            setSuggestionsLoading(true);
-                            dispatch(getWarehouses(0, '-id', value));
-                        }}
-                        renderInput={params => (
-                            <TextField
-                                {...params}
-                                label={t('products.selectWarehouse')}
-                                fullWidth
-                                required
-                                error={warehouse.error}
-                                helperText={warehouse.errorText}
-                                variant="outlined"
-                                value={warehouse.value}
-                                InputProps={{
-                                    ...params.InputProps,
-                                    endAdornment: (
-                                        <React.Fragment>
-                                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                                            {params.InputProps.endAdornment}
-                                        </React.Fragment>
-                                    ),
-                                }}
-                            />
-                        )}
                     />
                     <TextField
                         className={classes.textField}

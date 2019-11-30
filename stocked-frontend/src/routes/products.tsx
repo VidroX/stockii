@@ -23,19 +23,24 @@ import OpenWithIcon from '@material-ui/icons/OpenWith';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import ProductsAdd from "../components/products/productsAdd";
 import { Product, ProductInfo } from "../intefaces";
+import LimitsViewer from "../components/products/limitsViewer";
+import ProductMove from "../components/products/productMove";
+import ProductOrder from "../components/products/productsOrder";
 
 const Products: React.FC = (props: any) => {
     const { t } = useTranslation();
     const tableLocalization = useTableLocalization();
 
-    const [modalOpen, setModalOpen] = React.useState(false);
+    const [limitsModalOpen, setLimitsModalOpen] = React.useState(false);
     const [addModalOpen, setAddModalOpen] = React.useState(false);
+    const [moveModalOpen, setMoveModalOpen] = React.useState(false);
+    const [orderModalOpen, setOrderModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [removeLoading, setRemoveLoading] = React.useState(false);
     const [globalLoadingState, setGlobalLoadingState] = React.useState(false);
     const [data, setData] = React.useState<Product[]>([]);
-    const [productInfo, setProductInfo] = React.useState<ProductInfo | null>(null);
+    const [productInfo, setProductInfo] = React.useState<ProductInfo>({id: 0, limits: null, warehouse: null});
     const [count, setCount] = React.useState<number>(0);
     const [columns, setColumns] = React.useState<any[]>([]);
     const [currentSortColumn, setCurrentSortColumn] = React.useState<number>(-1);
@@ -44,6 +49,7 @@ const Products: React.FC = (props: any) => {
     const [shouldRefreshTable, setShouldRefreshTable] = React.useState<boolean>(true);
     const [searchVal, setSearchVal] = React.useState<string>("");
     const [productInfoArray] = React.useState<ProductInfo[]>([]);
+    const [firstStart, setFirstStart] = React.useState<boolean>(true);
 
     const classes = useStyles();
 
@@ -135,7 +141,7 @@ const Products: React.FC = (props: any) => {
                 const productsMap = productsData.results.map((obj: any) => {
                     productInfoArray[obj.id] = {
                         id: obj.id,
-                        limits: obj.limits,
+                        limits: obj.limit,
                         warehouse: obj.warehouse
                     };
                     return [
@@ -148,14 +154,17 @@ const Products: React.FC = (props: any) => {
                 setData(productsMap);
                 setCount(productsData.count);
             }
+            setFirstStart(false);
             setLoading(false);
             setGlobalLoadingState(false);
         }
         if(!productsGetProgress && productsData != null && productsData.error) {
+            setFirstStart(false);
             setLoading(false);
             setGlobalLoadingState(false);
         }
         setTimeout(() => {
+            setFirstStart(false);
             setLoading(false);
             setGlobalLoadingState(false);
         }, config.main.connectionTimeout)
@@ -180,6 +189,9 @@ const Products: React.FC = (props: any) => {
     
     useEffect(() => {
         if (shouldRefreshTable) {
+            if (firstStart) {
+                setLoading(true);
+            }
             if(currentSortColumn !== -1 && currentSortDirection !== 'none' && sortColumns[currentSortColumn] != null) {
                 let columnItem = sortColumns[currentSortColumn];
 
@@ -205,27 +217,36 @@ const Products: React.FC = (props: any) => {
             
             setShouldRefreshTable(false);
         }
-    }, [currentSortColumn, currentSortDirection, dispatch, page, searchVal, shouldRefreshTable, sortColumns]);
+    }, [currentSortColumn, currentSortDirection, dispatch, firstStart, page, searchVal, shouldRefreshTable, sortColumns]);
 
-    const onViewLimitsClick = (productInfo: ProductInfo) => {
-        setProductInfo(productInfo);
+    const onViewLimitsClick = (productInfoLocal: ProductInfo) => {
+        setProductInfo(productInfoLocal);
+        setLimitsModalOpen(true);
     };
-    const onViewLimitsCancel = () => {
-        setProductInfo(null);
+    const onViewLimitsCancel = (shouldRefresh: boolean) => {
+        setProductInfo({id: 0, limits: null, warehouse: null});
+        setLimitsModalOpen(false);
+        setShouldRefreshTable(shouldRefresh);
     };
 
-    const onMoveClick = (productInfo: ProductInfo) => {
-        setProductInfo(productInfo);
+    const onMoveClick = (productInfoLocal: ProductInfo) => {
+        setProductInfo(productInfoLocal);
+        setMoveModalOpen(true);
     };
-    const onMoveClickCancel = () => {
-        setProductInfo(null);
+    const onMoveClickCancel = (shouldRefresh: boolean) => {
+        setProductInfo({id: 0, limits: null, warehouse: null});
+        setShouldRefreshTable(shouldRefresh);
+        setMoveModalOpen(false);
     };
 
     const onOrderProductClick = (productInfo: ProductInfo) => {
         setProductInfo(productInfo);
+        setOrderModalOpen(true);
     };
-    const onOrderProductCancel = () => {
-        setProductInfo(null);
+    const onOrderProductCancel = (shouldRefresh: boolean) => {
+        setProductInfo({id: 0, limits: null, warehouse: null});
+        setShouldRefreshTable(shouldRefresh);
+        setOrderModalOpen(false);
     };
 
     let timeout: any;
@@ -320,7 +341,7 @@ const Products: React.FC = (props: any) => {
     };
 
     const onRemoveModalClose = () => {
-        setProductInfo(null);
+        setProductInfo({id: 0, limits: null, warehouse: null});
         setRemoveModalOpen(false);
     };
 
@@ -379,6 +400,9 @@ const Products: React.FC = (props: any) => {
     return (
         <React.Fragment>
             <ProductsAdd open={addModalOpen} onClose={onAddModalClose} />
+            <LimitsViewer open={limitsModalOpen} onClose={onViewLimitsCancel} productData={productInfo} />
+            <ProductMove open={moveModalOpen} onClose={onMoveClickCancel} productData={productInfo} />
+            <ProductOrder open={orderModalOpen} onClose={onOrderProductCancel} productData={productInfo} />
             <StockedModal
                 form
                 title={t('products.removeProductTitle')}

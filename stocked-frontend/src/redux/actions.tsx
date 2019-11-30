@@ -260,6 +260,99 @@ export function addProduct(name: string, warehouse: number, quantity: number = 0
     }
 }
 
+export function setProductLimits(productId: number, minAmount: number = 0, maxAmount: number = 0) {
+    let formData = new FormData();
+    formData.append('min_amount', minAmount.toString());
+    formData.append('max_amount', maxAmount.toString());
+
+    return {
+        type: PRODUCT_SET_LIMITS,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/products/limit/' + productId  + '/',
+                method: 'PUT',
+                data: formData
+            }
+        }
+    }
+}
+
+export function updateProduct(productId: number, name: string | null = null, warehouse: number | null = null, quantity: number | null = null) {
+    let formData = new FormData();
+    if (name != null) {
+        formData.append('name', name);
+    }
+    if (warehouse != null) {
+        formData.append('warehouse', warehouse.toString());
+    }
+    if (quantity != null) {
+        formData.append('quantity', quantity.toString());
+    }
+
+    return {
+        type: PRODUCTS_UPDATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/products/' + productId + '/',
+                method: 'PUT',
+                data: formData
+            }
+        }
+    }
+}
+
+export function getProviders(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
+    const offset = page * config.api.row_count;
+
+    let params: any = {
+        'offset': offset
+    };
+
+    if (ordering != null) {
+        params.ordering = ordering;
+    }
+    if (search != null) {
+        params.search = search;
+    }
+
+    return {
+        type: PROVIDERS_GET,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/providers/',
+                method: 'GET',
+                params: params
+            }
+        }
+    }
+}
+
+export function createShipment(providerId: number, productId: number, approximateDelivery: string, quantity: number = 0, status: number | null = null) {
+    let formData = new FormData();
+    formData.append('provider', providerId.toString());
+    formData.append('product', productId.toString());
+    formData.append('approximate_delivery', approximateDelivery);
+    formData.append('quantity', quantity.toString());
+    if (status != null) {
+        formData.append('status', status.toString());
+    }
+
+    return {
+        type: SHIPMENTS_CREATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/shipments/',
+                method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
 export function setToolbarTitle(title: string) {
     return {
         type: SET_TOOLBAR_TITLE,

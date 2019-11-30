@@ -30,6 +30,7 @@ export const theme = createMuiTheme({
         },
         MuiTableCell: {
             root: {
+                padding: '16px 24px',
                 [defaultTheme.breakpoints.down('sm')]: {
                     padding: 0
                 }
