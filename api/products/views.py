@@ -1,18 +1,41 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, filters, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from api.permissions import SuperUserCreateOnly
-from api.products.serializers import ProductSerializer
+from api.products.serializers import ProductSerializer, ProductCreateSerializer
 from api.statuses import STATUS_CODE
 from products.models import Product, ProductLimit
+from warehouses.models import WarehouseAccess, Warehouse
 
 
 class ProductsListView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['id', 'name', 'warehouse', 'quantity']
+    search_fields = ['name', 'warehouse__location']
+
+    def post(self, request, *args, **kwargs):
+        create_serializer = ProductCreateSerializer(data=request.data)
+        if create_serializer.is_valid():
+            instance = create_serializer.save()
+            retrive_serializer = ProductSerializer(instance)
+            return Response(retrive_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(create_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Product.objects.all()
+
+        warehouses = Warehouse.objects.filter(warehouseaccess__user=user)
+
+        try:
+            return Product.objects.filter(warehouse__in=warehouses)
+        except Product.DoesNotExist or Warehouse.DoesNotExist or WarehouseAccess.DoesNotExist:
+            return Product.objects.none()
 
 
 @api_view(['DELETE', 'PUT', 'GET'])
@@ -55,9 +78,11 @@ def change_product(request, product_id):
             except ProductLimit.DoesNotExist:
                 product_limit = None
 
-            quantity = int(request.data.get('quantity', 0))
+            quantity = int(request.data.get('quantity', -1))
+            warehouse = request.data.get('warehouse', None)
+            name = request.data.get('name', None)
 
-            if product_limit is not None:
+            if product_limit is not None and quantity >= 0:
                 if quantity < product_limit.min_amount:
                     return Response({
                         'status': 22,
@@ -69,8 +94,15 @@ def change_product(request, product_id):
                         'message': STATUS_CODE[23]
                     })
 
-            product.quantity = quantity
-            product.save()
+            if name is not None:
+                product.name = name
+            if quantity >= 0:
+                product.quantity = quantity
+            if warehouse is not None and int(warehouse) > 0:
+                _warehouse = get_object_or_404(Warehouse, id=warehouse)
+                product.warehouse = _warehouse
+            if (warehouse is not None and int(warehouse) > 0) or quantity >= 0 or name is not None:
+                product.save()
 
             return Response({
                 'status': 12,
@@ -100,6 +132,15 @@ def set_product_limit(request, product_id):
 
             min_amount = int(request.data.get('min_amount', 0))
             max_amount = int(request.data.get('max_amount', 0))
+
+            if min_amount == 0 and max_amount == 0:
+                if hasattr(product, 'limit') and product.limit is not None and\
+                        product.limit.id is not None and product.limit.id > 0:
+                    product.limit.delete()
+                return Response({
+                    'status': 12,
+                    'message': STATUS_CODE[12]
+                })
 
             if min_amount >= max_amount:
                 return Response({

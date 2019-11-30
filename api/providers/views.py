@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -13,6 +13,9 @@ class ProvidersListView(generics.ListCreateAPIView):
     serializer_class = ProvidersSerializer
     permission_classes = [IsAuthenticated, SuperUserCreateOnly]
     queryset = Provider.objects.all()
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['id', 'name', 'working_from', 'working_to', 'weekends']
+    search_fields = ['name', 'working_from', 'working_to']
 
 
 @api_view(['DELETE'])

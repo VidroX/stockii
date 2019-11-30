@@ -14,8 +14,8 @@ import {
 } from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import MaskedInput from "react-text-mask";
-import config from "../config";
-import {addWarehouse, setGlobalLoading, setSnackbar, showSnackbar} from "../redux/actions";
+import config from "../../config";
+import {addWarehouse, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
 
 interface WarehouseAdd {
     open: boolean,
