@@ -1,2 +1,2 @@
-# Stockie
+# Stockii
 Inventory management system
