@@ -1,2 +1,2 @@
-# StockedIMS
+# Stockie
 Inventory management system
