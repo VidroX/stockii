@@ -1,2 +1,2 @@
-# Stocked
+# StockedIMS
 Inventory management system
