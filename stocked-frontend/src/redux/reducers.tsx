@@ -58,16 +58,11 @@ import {
 
 const initialState = {
     userData: null,
-    toolbarTitle: 'Home',
+    toolbarTitle: '',
     authData: null,
     logoutInitiated: false,
     isDataLoading: false,
     showSnackbar: false,
-    warehousesData: {
-        isFetching: false,
-        data: null,
-        error: false
-    },
     snackBarData: {
         type: 'default',
         body: ""
@@ -87,7 +82,7 @@ export default function mainReducer(state = initialState, action: any){
             }
         }
         case USER_LOGIN_FAIL:{
-            return {...state, authProgress: false, error: 'Cannot authenticate user'}
+            return {...state, authProgress: false, authData: action.error.response.data, error: 'Cannot authenticate user'}
         }
         case USER_LOGOUT:{
             return {...state, logoutInitiated: true, logoutProgress: true}
@@ -105,7 +100,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, userListProgress: false, userListData: action.payload.data}
         }
         case USER_LIST_FAIL:{
-            return {...state, userListProgress: false, error: 'Cannot get user list'}
+            return {...state, userListProgress: false, userListData: action.error.response.data, error: 'Cannot get user list'}
         }
         case USER_ACCESS_ADD:{
             return {...state, userAccessProgress: true}
@@ -114,7 +109,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, userAccessProgress: false, userAccessData: action.payload.data}
         }
         case USER_ACCESS_ADD_FAIL:{
-            return {...state, userAccessProgress: false, error: 'Cannot give access to user'}
+            return {...state, userAccessProgress: false, userAccessData: action.error.response.data, error: 'Cannot give access to user'}
         }
         case WAREHOUSES_ADD:{
             return {...state, warehouseAddProgress: true}
@@ -123,7 +118,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, warehouseAddProgress: false, addWarehousesData: action.payload.data}
         }
         case WAREHOUSES_ADD_FAIL:{
-            return {...state, warehouseAddProgress: false, error: 'Cannot add warehouse'}
+            return {...state, warehouseAddProgress: false, addWarehousesData: action.error.response.data, error: 'Cannot add warehouse'}
         }
         case WAREHOUSES_REMOVE:{
             return {...state, warehouseRemoveProgress: true}
@@ -132,7 +127,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, warehouseRemoveProgress: false, removeWarehousesData: action.payload.data}
         }
         case WAREHOUSES_REMOVE_FAIL:{
-            return {...state, warehouseRemoveProgress: false, error: 'Cannot remove warehouse'}
+            return {...state, warehouseRemoveProgress: false, removeWarehousesData: action.error.response.data, error: 'Cannot remove warehouse'}
         }
         case PRODUCTS_ADD:{
             return {...state, productsAddProgress: true}
@@ -141,7 +136,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, productsAddProgress: false, productsAddData: action.payload.data}
         }
         case PRODUCTS_ADD_FAIL:{
-            return {...state, productsAddProgress: false, error: 'Cannot add product'}
+            return {...state, productsAddProgress: false, productsAddData: action.error.response.data, error: 'Cannot add product'}
         }
         case PRODUCTS_REMOVE:{
             return {...state, productsRemoveProgress: true}
@@ -150,7 +145,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, productsRemoveProgress: false, productsRemoveData: action.payload.data}
         }
         case PRODUCTS_REMOVE_FAIL:{
-            return {...state, productsRemoveProgress: false, error: 'Cannot remove product'}
+            return {...state, productsRemoveProgress: false, providersRemoveData: action.error.response.data, error: 'Cannot remove product'}
         }
         case PRODUCTS_GET:{
             return {...state, productsGetProgress: true}
@@ -159,7 +154,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, productsGetProgress: false, productsData: action.payload.data}
         }
         case PRODUCTS_GET_FAIL:{
-            return {...state, productsGetProgress: false, error: 'Cannot get products'}
+            return {...state, productsGetProgress: false, productsData: action.error.response.data, error: 'Cannot get products'}
         }
         case PRODUCTS_UPDATE:{
             return {...state, productsUpdateProgress: true}
@@ -168,7 +163,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, productsUpdateProgress: false, productsUpdateData: action.payload.data}
         }
         case PRODUCTS_UPDATE_FAIL:{
-            return {...state, productsUpdateProgress: false, error: 'Cannot update product'}
+            return {...state, productsUpdateProgress: false, productsUpdateData: action.error.response.data, error: 'Cannot update product'}
         }
         case PRODUCT_SET_LIMITS:{
             return {...state, productSetLimitsProgress: true}
@@ -177,7 +172,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, productSetLimitsProgress: false, productSetLimitsData: action.payload.data}
         }
         case PRODUCT_SET_LIMITS_FAIL:{
-            return {...state, productSetLimitsProgress: false, error: 'Cannot set limits on product'}
+            return {...state, productSetLimitsProgress: false, productSetLimitsData: action.error.response.data, error: 'Cannot set limits on product'}
         }
         case SHIPMENTS_CREATE:{
             return {...state, shipmentsCreateProgress: true}
@@ -186,7 +181,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, shipmentsCreateProgress: false, shipmentsCreateData: action.payload.data}
         }
         case SHIPMENTS_CREATE_FAIL:{
-            return {...state, shipmentsCreateProgress: false, error: 'Cannot create shipment'}
+            return {...state, shipmentsCreateProgress: false, shipmentsCreateData: action.error.response.data, error: 'Cannot create shipment'}
         }
         case SHIPMENTS_GET:{
             return {...state, shipmentsGetProgress: true}
@@ -195,7 +190,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, shipmentsGetProgress: false, shipmentsData: action.payload.data}
         }
         case SHIPMENTS_GET_FAIL:{
-            return {...state, shipmentsGetProgress: false, error: 'Cannot get shipments'}
+            return {...state, shipmentsGetProgress: false, shipmentsData: action.error.response.data, error: 'Cannot get shipments'}
         }
         case SHIPMENTS_UPDATE:{
             return {...state, shipmentsUpdateProgress: true}
@@ -204,7 +199,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, shipmentsUpdateProgress: false, shipmentsUpdateData: action.payload.data}
         }
         case SHIPMENTS_UPDATE_FAIL:{
-            return {...state, shipmentsUpdateProgress: false, error: 'Cannot update shipment'}
+            return {...state, shipmentsUpdateProgress: false, shipmentsUpdateData: action.error.response.data, error: 'Cannot update shipment'}
         }
         case PROVIDERS_CREATE:{
             return {...state, providersCreateProgress: true}
@@ -213,7 +208,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, providersCreateProgress: false, providersCreateData: action.payload.data}
         }
         case PROVIDERS_CREATE_FAIL:{
-            return {...state, providersCreateProgress: false, error: 'Cannot create provider'}
+            return {...state, providersCreateProgress: false, providersCreateData: action.error.response.data, error: 'Cannot create provider'}
         }
         case PROVIDERS_GET:{
             return {...state, providersGetProgress: true}
@@ -222,7 +217,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, providersGetProgress: false, providersData: action.payload.data}
         }
         case PROVIDERS_GET_FAIL:{
-            return {...state, providersGetProgress: false, error: 'Cannot get providers'}
+            return {...state, providersGetProgress: false, productsData: action.error.response.data, error: 'Cannot get providers'}
         }
         case PROVIDERS_REMOVE:{
             return {...state, providersRemoveProgress: true}
@@ -231,7 +226,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, providersRemoveProgress: false, providersRemoveData: action.payload.data}
         }
         case PROVIDERS_REMOVE_FAIL:{
-            return {...state, providersRemoveProgress: false, error: 'Cannot remove provider'}
+            return {...state, providersRemoveProgress: false, providersRemoveData: action.error.response.data, error: 'Cannot remove provider'}
         }
         case SET_TOOLBAR_TITLE:{
             return {...state, toolbarTitle: action.payload.toolbarTitle}

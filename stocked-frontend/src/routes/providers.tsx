@@ -4,35 +4,33 @@ import useToolbarTitle from "../hooks/toolbarTitle";
 import StockedModal from "../components/modal";
 import {IconButton, makeStyles, Theme, Tooltip} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
-import TablePlaceholder from "../components/tablePlaceholder";
 import {
-    getWarehouses,
-    removeWarehouse,
+    getProviders,
+    removeProvider,
     setGlobalLoading,
     setSnackbar,
     showSnackbar
 } from "../redux/actions";
 import config from "../config";
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
 import {green, red} from "@material-ui/core/colors";
-import FaceIcon from '@material-ui/icons/Face';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import WarehouseAccess from "../components/warehouses/warehouseAccess";
-import WarehouseAdd from "../components/warehouses/warehouseAdd";
-import { Warehouse } from "../intefaces";
+import {ProviderInterface} from "../intefaces";
+import DoneIcon from "@material-ui/icons/Done";
+import ClearIcon from '@material-ui/icons/Clear';
 import StockedTable from "../components/stockedTable";
+import TablePlaceholder from "../components/tablePlaceholder";
+import ProviderAdd from "../components/providers/providersAdd";
 
-const Warehouses: React.FC = (props: any) => {
+const Providers: React.FC = (props: any) => {
     const { t } = useTranslation();
+
     const [modalOpen, setModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
-    const [accessModalOpen, setAccessModalOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const [removeWarehouseLoading, setRemoveWarehouseLoading] = React.useState(false);
+    const [removeLoading, setRemoveLoading] = React.useState(false);
     const [globalLoadingState, setGlobalLoadingState] = React.useState(false);
-    const [data, setData] = React.useState<Warehouse[]>([]);
-    const [columnId, setColumnId] = React.useState<number>(0);
+    const [providerId, setProviderId] = React.useState<number>(0);
+    const [data, setData] = React.useState<ProviderInterface[]>([]);
     const [count, setCount] = React.useState<number>(0);
     const [columns, setColumns] = React.useState<any[]>([]);
     const [shouldRefreshTable, setShouldRefreshTable] = React.useState<boolean>(true);
@@ -42,18 +40,20 @@ const Warehouses: React.FC = (props: any) => {
 
     const classes = useStyles();
 
-    useToolbarTitle(t('main.warehouses'));
+    useToolbarTitle(t('main.providers'));
 
     const dispatch = useDispatch();
-    const warehousesData = useSelector((state: any) => state.main.warehousesData);
+    const providersGetProgress = useSelector((state: any) => state.main.providersGetProgress);
+    const providersData = useSelector((state: any) => state.main.providersData);
     const user = useSelector((state: any) => state.main.userData);
-    const warehouseRemoveProgress = useSelector((state: any) => state.main.warehouseRemoveProgress);
-    const removeWarehousesData = useSelector((state: any) => state.main.removeWarehousesData);
+    const providersRemoveProgress = useSelector((state: any) => state.main.providersRemoveProgress);
+    const providersRemoveData = useSelector((state: any) => state.main.providersRemoveData);
 
     const sortColumns = [
-        "location",
+        "name",
         "working_from",
         "working_to",
+        "average_delivery_time",
         "weekends",
         "phone"
     ];
@@ -61,7 +61,7 @@ const Warehouses: React.FC = (props: any) => {
     useEffect(() => {
         let columns: any[] = [
             {
-                name: t('main.location'),
+                name: t('main.name'),
                 options: {
                     sortDirection: 'none'
                 }
@@ -74,6 +74,12 @@ const Warehouses: React.FC = (props: any) => {
             },
             {
                 name: t('main.workingTo'),
+                options: {
+                    sortDirection: 'none'
+                }
+            },
+            {
+                name: t('main.averageDeliveryTime'),
                 options: {
                     sortDirection: 'none'
                 }
@@ -96,11 +102,8 @@ const Warehouses: React.FC = (props: any) => {
                 options: {
                     sortDirection: 'none'
                 }
-            }
-        ];
-
-        if(user.is_superuser) {
-            columns.push({
+            },
+            {
                 name: t('main.actions'),
                 options: {
                     sort: false,
@@ -108,11 +111,6 @@ const Warehouses: React.FC = (props: any) => {
                     customBodyRender: (id: number) => {
                         return (
                             <div className={classes.actions}>
-                                <Tooltip title={t('main.giveAccess')}>
-                                    <IconButton onClick={() => onGiveAccessClick(id)}>
-                                        <FaceIcon />
-                                    </IconButton>
-                                </Tooltip>
                                 <Tooltip title={t('main.delete')}>
                                     <IconButton onClick={() => onDeleteClick(id)}>
                                         <DeleteForeverIcon />
@@ -122,8 +120,8 @@ const Warehouses: React.FC = (props: any) => {
                         );
                     }
                 }
-            });
-        }
+            }
+        ];
 
         setColumns(columns);
     }, [classes, t, user.is_superuser]);
@@ -135,35 +133,27 @@ const Warehouses: React.FC = (props: any) => {
             dispatch(setGlobalLoading(false));
         }
     }, [dispatch, globalLoadingState, loading]);
-    
+
     useEffect(() => {
-        if (warehousesData != null && !warehousesData.isFetching) {
-            if(warehousesData.error) {
+        if (!providersGetProgress && providersData != null) {
+            if(providersData.error) {
                 setFirstStart(false);
                 setLoading(false);
                 setGlobalLoadingState(false);
-            } else if(warehousesData.data != null && warehousesData.data.results != null) {
-                let warehouseMap = [];
-                if(user.is_superuser) {
-                    warehouseMap = warehousesData.data.results.map((obj: any) => [
-                        obj.location,
+            } else if(providersData.results != null) {
+                const providersMap = providersData.results.map((obj: any) => {
+                    return [
+                        obj.name,
                         obj.working_from,
                         obj.working_to,
+                        obj.average_delivery_time,
                         obj.weekends,
                         obj.phone,
                         obj.id
-                    ]);
-                } else {
-                    warehouseMap = warehousesData.data.results.map((obj: any) => [
-                        obj.location,
-                        obj.working_from,
-                        obj.working_to,
-                        obj.weekends,
-                        obj.phone
-                    ]);
-                }
-                setData(warehouseMap);
-                setCount(warehousesData.data.count);
+                    ];
+                });
+                setData(providersMap);
+                setCount(providersData.count);
             }
             setFirstStart(false);
             setLoading(false);
@@ -174,33 +164,24 @@ const Warehouses: React.FC = (props: any) => {
             setLoading(false);
             setGlobalLoadingState(false);
         }, config.main.connectionTimeout)
-    }, [user.is_superuser, warehousesData]);
+    }, [providersData, providersGetProgress]);
 
     useEffect(() => {
-        if (removeWarehouseLoading && !warehouseRemoveProgress && removeWarehousesData != null) {
-            if (removeWarehousesData.detail == null && removeWarehousesData.status === 12) {
-                dispatch(setSnackbar(t('main.warehouseDeleted'), 'success'));
-            } else if (removeWarehousesData.detail == null && removeWarehousesData.status !== 12) {
-                dispatch(setSnackbar(t('main.unableToDeleteWarehouse'), 'error'));
+        if (removeLoading && !providersRemoveProgress && providersRemoveData != null) {
+            if (providersRemoveData.detail == null && providersRemoveData.status === 12) {
+                dispatch(setSnackbar(t('shipments.providerDeleted'), 'success'));
+            } else if (providersRemoveData.detail == null && providersRemoveData.status !== 12) {
+                dispatch(setSnackbar(t('shipments.unableToDeleteProvider'), 'error'));
             } else {
-                dispatch(setSnackbar(removeWarehousesData.detail, 'error'));
+                dispatch(setSnackbar(providersRemoveData.detail, 'error'));
             }
 
-            setRemoveWarehouseLoading(false);
+            setRemoveLoading(false);
             dispatch(setGlobalLoading(false));
             dispatch(showSnackbar(true));
             setShouldRefreshTable(true);
         }
-    }, [dispatch, removeWarehouseLoading, removeWarehousesData, t, warehouseRemoveProgress]);
-
-    const onGiveAccessClick = (id: number) => {
-        setColumnId(id);
-        setAccessModalOpen(true);
-    };
-    const onGiveAccessCancel = () => {
-        setColumnId(0);
-        setAccessModalOpen(false);
-    };
+    }, [dispatch, providersRemoveData, providersRemoveProgress, removeLoading, t]);
 
     const handleAddClick = () => {
         setModalOpen(true);
@@ -209,26 +190,28 @@ const Warehouses: React.FC = (props: any) => {
     const onModalClose = (shouldRefresh: boolean) => {
         setModalOpen(false);
         if(shouldRefresh) {
-            setShouldRefreshTable(true);
+            setShouldRefreshTable(shouldRefresh);
         }
     };
 
     const onRemoveModalClose = () => {
-        setColumnId(0);
+        setProviderId(0);
         setRemoveModalOpen(false);
     };
 
     const onDeleteClick = (id: number) => {
-        setColumnId(id);
+        setProviderId(id);
         setRemoveModalOpen(true);
     };
 
     const onDeleteClickSubmit = (e: any) => {
         e.preventDefault();
 
-        setRemoveWarehouseLoading(true);
-        dispatch(setGlobalLoading(true));
-        dispatch(removeWarehouse(columnId));
+        if (providerId != null && providerId > 0) {
+            setRemoveLoading(true);
+            dispatch(setGlobalLoading(true));
+            dispatch(removeProvider(providerId));
+        }
 
         setRemoveModalOpen(false);
     };
@@ -246,7 +229,7 @@ const Warehouses: React.FC = (props: any) => {
         if (sortItem != null) {
             setSortItem(sortItem);
         }
-        dispatch(getWarehouses(page, sortItem, searchVal));
+        dispatch(getProviders(page, sortItem, searchVal));
     };
 
     const onTableRefreshed = () => {
@@ -259,16 +242,16 @@ const Warehouses: React.FC = (props: any) => {
         } else {
             return (
                 <StockedTable
-                    page={page}
-                    title={user.is_superuser ? t('main.yourWarehouses') : t('main.availableWarehouses')}
+                    title={t('main.providers')}
                     count={count}
                     columns={columns}
                     data={data}
                     sortColumns={sortColumns}
                     sortItem={sortItem}
-                    addEnabled={false}
+                    addEnabled={user.is_superuser != null ? user.is_superuser : false}
                     onAddClick={handleAddClick}
                     onRequest={onRequest}
+                    page={page}
                     refreshTable={shouldRefreshTable}
                     onTableRefreshed={onTableRefreshed}
                 />
@@ -278,12 +261,11 @@ const Warehouses: React.FC = (props: any) => {
 
     return (
         <React.Fragment>
-            <WarehouseAccess open={accessModalOpen} warehouseId={columnId} onClose={onGiveAccessCancel} />
-            <WarehouseAdd open={modalOpen} onClose={onModalClose} />
+            <ProviderAdd open={modalOpen} onClose={onModalClose} />
             <StockedModal
                 form
-                title={t('main.removeWarehouseTitle')}
-                contentText={t('main.removeWarehouseBody')}
+                title={t('shipments.removeProviderTitle')}
+                contentText={t('shipments.removeProviderBody')}
                 actionOk={t('main.yes')}
                 actionCancel={t("main.no")}
                 open={removeModalOpen}
@@ -296,12 +278,6 @@ const Warehouses: React.FC = (props: any) => {
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
-    available: {
-        color: green[300]
-    },
-    notAvailable: {
-        color: red[300]
-    },
     paddingBottom: {
         paddingBottom: 24
     },
@@ -314,7 +290,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         [theme.breakpoints.down('sm')]: {
             marginLeft: -14
         }
+    },
+    available: {
+        color: green[300]
+    },
+    notAvailable: {
+        color: red[300]
     }
 }));
 
-export default Warehouses;
+export default Providers;

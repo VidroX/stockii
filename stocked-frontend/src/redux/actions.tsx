@@ -330,6 +330,19 @@ export function getProviders(page: number = 0, ordering: string | null = '-id', 
     }
 }
 
+export function removeProvider(providerId: number) {
+    return {
+        type: PROVIDERS_REMOVE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/providers/' + providerId + '/',
+                method: 'DELETE'
+            }
+        }
+    }
+}
+
 export function createShipment(providerId: number, productId: number, approximateDelivery: string, quantity: number = 0, status: number | null = null) {
     let formData = new FormData();
     formData.append('provider', providerId.toString());
@@ -346,6 +359,28 @@ export function createShipment(providerId: number, productId: number, approximat
             client: 'default',
             request: {
                 url: '/shipments/',
+                method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
+export function addProvider(name: string, workingFrom: string, workingTo: string, avgDeliveryTime: number, phone: string, weekends: boolean) {
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('working_from', workingFrom);
+    formData.append('working_to', workingTo);
+    formData.append('average_delivery_time', avgDeliveryTime.toString());
+    formData.append('phone', phone);
+    formData.append('weekends', weekends ? "True" : "False");
+
+    return {
+        type: PROVIDERS_CREATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/providers/',
                 method: 'POST',
                 data: formData
             }

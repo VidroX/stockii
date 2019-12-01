@@ -29,6 +29,7 @@ const clients = {
 };
 
 const options = {
+    returnRejectedPromiseOnError: true,
     interceptors: {
         request: [
             (action: any, config: any) => {

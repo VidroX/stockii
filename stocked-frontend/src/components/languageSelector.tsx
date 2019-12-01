@@ -35,9 +35,11 @@ const LanguageSelector: React.FC<LanguageSelectorInterface> = (props: LanguageSe
         i18n.changeLanguage(language);
         setAnchorLanguageEl(null);
 
+        document.documentElement.lang = i18n.language;
+
         Cookies.set(
             'language',
-            language,
+            i18n.language,
             {
                 expires: moment().add(1, 'year').toDate(),
                 secure: document.location.protocol === 'https:',

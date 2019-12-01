@@ -2,7 +2,8 @@
   "common": {
     "emptyField": "This field cannot be empty!",
     "incorrectTime": "Incorrect time",
-    "requiredField": "This field is required!"
+    "requiredField": "This field is required!",
+    "incorrectValue": "Incorrect value"
   },
   "main": {
     "homePage": "Home",
@@ -46,7 +47,14 @@
     "save": "Save",
     "selectProvider": "Select provider",
     "WMS": "Warehouse Management System",
-    "rights": "All rights reserved"
+    "rights": "All rights reserved",
+    "order": "Order",
+    "selectLanguage": "Select language",
+    "users": "Users",
+    "providers": "Providers",
+    "shipments": "Shipments",
+    "averageDeliveryTime": "Avg. delivery time (days)",
+    "name": "Name"
   },
   "languages": {
     "en": "English",
@@ -96,6 +104,13 @@
     "incorrectProvider": "Incorrect provider",
     "unableToCreateShipment": "Unable to create order!",
     "orderCreated": "Order has been successfully created.",
-    "estimatedDelivery": "Estimated delivery date"
+    "estimatedDelivery": "Estimated delivery date",
+    "removeProviderTitle": "Remove provider",
+    "removeProviderBody": "Are you sure you want to remove this provider from the system?",
+    "providerAdded": "Provider has been successfully added to the system.",
+    "providerAlreadyExists": "Provider with that name already exists.",
+    "addProvider": "Add provider",
+    "providerDeleted": "Provider has been successfully removed from the system.",
+    "unableToDeleteProvider": "Unable to delete provider."
   }
 }

@@ -30,6 +30,10 @@ import useToolbarTitle from "../hooks/toolbarTitle";
 import StockedSnackBar from "./StockedSnackBar";
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import {Link, LinkProps} from "react-router-dom";
+import StarIcon from '@material-ui/icons/Star';
+import PeopleIcon from '@material-ui/icons/People';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 
 const RouterLink = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => (
     <Link innerRef={ref} {...props} />
@@ -71,6 +75,40 @@ const StockedDrawer: React.FC = (props: any) => {
         setOpen(!open);
     };
 
+    const renderAdminItems = () => {
+        if(props.userData.is_superuser) {
+            return (
+                <React.Fragment>
+                    <Divider className={classes.divider} />
+                    <ListItem
+                        button
+                        component={RouterLink}
+                        to="/providers/"
+                        className={classes.listRoot}
+                        key="providers"
+                        selected={location.pathname === '/providers/'}
+                    >
+                        <ListItemIcon><EmojiPeopleIcon /></ListItemIcon>
+                        <ListItemText className={classes.drawerMenuItem} primary={t('main.providers')}/>
+                    </ListItem>
+                    <ListItem
+                        button
+                        component={RouterLink}
+                        to="/users/"
+                        className={classes.listRoot}
+                        key="users"
+                        selected={location.pathname === '/users/'}
+                    >
+                        <ListItemIcon><PeopleIcon /></ListItemIcon>
+                        <ListItemText className={classes.drawerMenuItem} primary={t('main.users')}/>
+                    </ListItem>
+                </React.Fragment>
+            );
+        } else {
+            return null;
+        }
+    };
+
     const renderItems = () => {
         return (
             <React.Fragment>
@@ -103,6 +141,18 @@ const StockedDrawer: React.FC = (props: any) => {
                         <ListItemIcon><AllInboxIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.products')}/>
                     </ListItem>
+                    <ListItem
+                        button
+                        component={RouterLink}
+                        to="/shipments/"
+                        className={classes.listRoot}
+                        key="shipments"
+                        selected={location.pathname === '/shipments/'}
+                    >
+                        <ListItemIcon><LocalShippingIcon /></ListItemIcon>
+                        <ListItemText className={classes.drawerMenuItem} primary={t('main.shipments')}/>
+                    </ListItem>
+                    { renderAdminItems() }
                 </List>
             </React.Fragment>
         );
@@ -160,7 +210,7 @@ const StockedDrawer: React.FC = (props: any) => {
         if(isMobile || windowWidth < 600) {
             return (
                 <div className={classes.topBar}>
-                    <IconButton className={classes.marginRight} onClick={toggleDrawer}>
+                    <IconButton size="small" className={classes.marginRight} onClick={toggleDrawer}>
                         <CloseIcon />
                     </IconButton>
                     <Typography className={classes.topBarTitle} variant="h6" component="h6">{config.main.appName}</Typography>
@@ -240,6 +290,7 @@ const StockedDrawer: React.FC = (props: any) => {
                             aria-haspopup="true"
                             onClick={handleMenu}
                             color="inherit"
+                            className={classes.lastButton}
                         >
                             <Avatar className={classes.avatar}>
                                 {props.userData.last_name.length > 0 ? props.userData.last_name.substr(0, 1) : <AccountCircle />}
@@ -260,12 +311,13 @@ const StockedDrawer: React.FC = (props: any) => {
                             open={isMenuOpened}
                             onClose={handleClose}
                         >
-                            {/*<MenuItem onClick={handleMyProfile}>{t('main.myProfile')}</MenuItem>*/}
                             <MenuItem disabled={true}>
+                                {props.userData.is_superuser && <ListItemIcon className={classes.adminIcon}><StarIcon /></ListItemIcon>}
                                 <Typography variant="inherit" noWrap className={classes.menuItem}>
                                     {props.userData.last_name} {props.userData.first_name}
                                 </Typography>
                             </MenuItem>
+                            {/*<MenuItem onClick={handleMyProfile}>{t('main.myProfile')}</MenuItem>*/}
                             <MenuItem onClick={handleLogout}>{t('main.logOut')}</MenuItem>
                         </Menu>
                     </div>
@@ -304,6 +356,9 @@ const mapDispatchToProps = {
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex'
+    },
+    adminIcon: {
+        minWidth: 36
     },
     footer: {
         display: 'flex',
@@ -395,12 +450,19 @@ const useStyles = makeStyles(theme => ({
         overflowX: 'hidden',
         width: drawerWidth
     },
+    divider: {
+        marginTop: 4
+    },
     toolbar: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: theme.spacing(1) + 4,
+        padding: theme.spacing(2) + 4,
         ...theme.mixins.toolbar,
+        [theme.breakpoints.down('xs')]: {
+            paddingBottom: 0,
+            paddingTop: 0
+        }
     },
     content: {
         flexGrow: 1,
@@ -410,7 +472,10 @@ const useStyles = makeStyles(theme => ({
     },
     listPadding: {
         padding: 8,
-        marginTop: 12
+        marginTop: 12,
+        [theme.breakpoints.down('xs')]: {
+            marginTop: 0
+        }
     },
     listRoot: {
         borderRadius: '4px',
@@ -426,6 +491,9 @@ const useStyles = makeStyles(theme => ({
     },
     topBarTitle: {
         marginLeft: 12
+    },
+    lastButton: {
+        marginRight: -12
     }
 }));
 

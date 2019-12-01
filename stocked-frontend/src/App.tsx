@@ -24,27 +24,38 @@ const App: React.FC = () => {
                 Cookies.remove('token');
                 setShouldLogin(true);
             } else {
-                const decodedUserData = Base64.decode(userData);
-                const userDataParsed = JSON.parse(decodedUserData);
-                if (userDataParsed.auth_token !== token) {
+                try {
+                    const decodedUserData = Base64.decode(userData);
+                    const userDataParsed = JSON.parse(decodedUserData);
+                    if (userDataParsed.auth_token !== token) {
+                        Cookies.remove('user_data');
+                        Cookies.remove('token');
+
+                        dispatch(setUserData({}));
+
+                        setShouldLogin(true);
+                    } else {
+                        dispatch(setUserData(userDataParsed));
+                        setShouldLogin(false);
+                    }
+                } catch (e) {
                     Cookies.remove('user_data');
-                    Cookies.remove('token');
-
-                    dispatch(setUserData({}));
-
                     setShouldLogin(true);
-                } else {
-                    dispatch(setUserData(userDataParsed));
-                    setShouldLogin(false);
                 }
             }
         } else {
             if (userData != null) {
-                const decodedUserData = Base64.decode(userData);
-                const userDataParsed = JSON.parse(decodedUserData);
-                dispatch(setUserData(userDataParsed));
-                setShouldLogin(false);
+                try {
+                    const decodedUserData = Base64.decode(userData);
+                    const userDataParsed = JSON.parse(decodedUserData);
+                    dispatch(setUserData(userDataParsed));
+                    setShouldLogin(false);
+                } catch (e) {
+                    Cookies.remove('user_data');
+                    setShouldLogin(true);
+                }
             } else {
+                dispatch(setUserData({}));
                 setShouldLogin(true);
             }
         }

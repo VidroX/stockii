@@ -2,7 +2,8 @@
   "common": {
     "emptyField": "Це поле не може бути порожнім!",
     "incorrectTime": "Неправильний час",
-    "requiredField": "Це поле є обов'язковим!"
+    "requiredField": "Це поле є обов'язковим!",
+    "incorrectValue": "Неправильне значення"
   },
   "main": {
     "homePage": "Головна",
@@ -46,7 +47,14 @@
     "save": "Зберегти",
     "selectProvider": "Виберіть постачальника",
     "WMS": "Система Управління Складами",
-    "rights": "Всі права захищені"
+    "rights": "Всі права захищені",
+    "order": "Замовити",
+    "selectLanguage": "Виберіть мову",
+    "users": "Користувачі",
+    "providers": "Постачальники",
+    "shipments": "Поставки",
+    "averageDeliveryTime": "Сер. час доставки (днів)",
+    "name": "Назва"
   },
   "languages": {
     "en": "English",
@@ -96,6 +104,13 @@
     "incorrectProvider": "Неправильний постачальник",
     "unableToCreateOrder": "Неможливо створити заказ!",
     "orderCreated": "Замовлення успішно створено.",
-    "estimatedDelivery": "Приблизна дата доставки"
+    "estimatedDelivery": "Приблизна дата доставки",
+    "removeProviderTitle": "Видалити постачальника",
+    "removeProviderBody": "Ви впевнені, що бажаєте видалити даного постачальника з системи?",
+    "providerAdded": "Постачальник був успішно доданий до системи.",
+    "providerAlreadyExists": "Постачальник з такою назвою вже існує.",
+    "addProvider": "Додати постачальника",
+    "providerDeleted": "Постачальник був успішно видалений із системи.",
+    "unableToDeleteProvider": "Неможливо видалити постачальника."
   }
 }

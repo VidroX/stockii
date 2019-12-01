@@ -4,11 +4,12 @@ from products.models import Product
 
 # Create your models here
 class Provider(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     working_from = models.TimeField()
     working_to = models.TimeField()
     average_delivery_time = models.IntegerField(default=0)
     weekends = models.BooleanField(default=False)
+    phone = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name

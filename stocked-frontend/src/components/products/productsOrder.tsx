@@ -117,6 +117,7 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
 
                 const day = today.toDate().getDay();
                 const isWeekend = (day === 6) || (day === 0);
+                const isSunday = day === 0;
 
                 let additionalDays = 0;
                 let estimated = placeholderDate;
@@ -127,7 +128,7 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
                 if (isWeekend === deliveryTimes.weekends) {
                     estimated = moment().add(deliveryTimes.averageDeliveryTime + additionalDays, 'days').format('YYYY-MM-DD');
                 } else {
-                    estimated = moment().day(8).add(deliveryTimes.averageDeliveryTime  + additionalDays, 'days').format('YYYY-MM-DD');
+                    estimated = moment().day(isSunday ? 1 : 8).add(deliveryTimes.averageDeliveryTime  + additionalDays, 'days').format('YYYY-MM-DD');
                 }
 
                 setEstimatedDate(estimated);
@@ -195,7 +196,7 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
     };
 
     const renderDeliveryTimes = () => {
-        return <p className={classes.textField}>{t('shipments.estimatedDelivery')}: {estimatedDate.length > 0 ? estimatedDate : "..."}</p>;
+        return <p className={classes.textField}>{t('shipments.estimatedDelivery')}: <span className={classes.deliveryDate}>{estimatedDate.length > 0 ? estimatedDate : "..."}</span></p>;
     };
 
     const isEverythingCompleted = (): boolean => {
@@ -220,7 +221,15 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
                     <ProviderSelector
                         error={provider.error}
                         helperText={provider.errorText}
-                        onClear={() => setEstimatedDate(placeholderDate)}
+                        onClear={() => {
+                            setProvider({
+                                error: false,
+                                errorText: "",
+                                value: "",
+                                id: 0
+                            });
+                            setEstimatedDate(placeholderDate);
+                        }}
                         onSelect={(obj: ProviderOptionType) => {
                             setProvider({
                                 error: false,
@@ -261,7 +270,7 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
                         { t('main.cancel') }
                     </Button>
                     <Button disabled={!isEverythingCompleted()} type="submit" color="primary">
-                        { t('main.add') }
+                        { t('main.order') }
                     </Button>
                 </DialogActions>
             </form>
@@ -291,6 +300,12 @@ const useStyles = makeStyles((theme: Theme) => ({
             width: 'auto',
             flex: 1
         }
+    },
+    deliveryDate: {
+        marginLeft: 8,
+        color: theme.palette.primary.main,
+        fontWeight: 'bold',
+        textDecoration: 'underline'
     }
 }));
 

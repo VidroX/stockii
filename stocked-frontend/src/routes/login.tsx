@@ -9,6 +9,7 @@ import { isMobile } from "react-device-detect";
 import LoadingSubmitButton from "../components/loadingSubmitButton";
 import Cookies from "js-cookie";
 import { Base64 } from 'js-base64';
+import LanguageSelector from "../components/languageSelector";
 
 const LoginPage: React.FC = (props: any) => {
     const classes = useStyles();
@@ -140,6 +141,10 @@ const LoginPage: React.FC = (props: any) => {
                     className={classes.form}
                     onSubmit={onFormSubmit}
                 >
+                    <div className={classes.topBar}>
+                        <Typography variant="inherit" className={classes.selectLanguage}>{t('main.selectLanguage')}:</Typography>
+                        <LanguageSelector type='IconButton' />
+                    </div>
                     <TextField
                         required
                         autoFocus
@@ -206,6 +211,16 @@ const useStyles = makeStyles(theme => ({
             minHeight: 'auto'
         }
     },
+    topBar: {
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+    selectLanguage: {
+        marginRight: 8
+    },
     button: {
         display: 'flex',
         flexGrow: 0,
@@ -224,7 +239,8 @@ const useStyles = makeStyles(theme => ({
         color: "#FFFFFF"
     },
     header: {
-        textAlign: 'center'
+        textAlign: 'center',
+        color: theme.palette.primary.dark
     },
     input: {
         padding: '18px 12px'

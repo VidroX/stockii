@@ -65,7 +65,9 @@ export const theme = createMuiTheme({
                     border: 0,
                     marginLeft: 24,
                     marginRight: 24,
-                    marginTop: 6
+                    marginTop: 8,
+                    marginBottom: 8,
+                    height: '1rem'
                 }
             },
             responsiveStacked: {
@@ -75,12 +77,13 @@ export const theme = createMuiTheme({
                         border: 0,
                         marginLeft: 24,
                         marginRight: 24,
-                        marginBottom: 6
+                        marginBottom: 8,
+                        height: '1rem'
                     }
                 },
                 "&&:last-child": {
                     [defaultTheme.breakpoints.down('sm')]: {
-                        marginBottom: 28
+                        marginBottom: 36
                     }
                 }
             }

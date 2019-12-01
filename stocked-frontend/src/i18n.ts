@@ -25,6 +25,8 @@ if (language != null && whitelistedLanguages.includes(language)) {
     );
 }
 
+document.documentElement.lang = lang;
+
 i18n
     .use(Backend)
     .use(LanguageDetector)
