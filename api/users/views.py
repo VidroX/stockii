@@ -28,6 +28,7 @@ def get_user_data(validated_data, full=False):
         return {
             'id': validated_data.id,
             'first_name': validated_data.first_name,
+            'last_name': validated_data.last_name,
             'is_superuser': validated_data.is_superuser,
             'is_active': validated_data.is_active
         }

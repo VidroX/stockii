@@ -1,5 +1,5 @@
 import {createMuiTheme} from "@material-ui/core";
-import {blueGrey, cyan} from "@material-ui/core/colors";
+import {blueGrey} from "@material-ui/core/colors";
 
 const defaultTheme = createMuiTheme();
 
@@ -11,9 +11,9 @@ export const theme = createMuiTheme({
             dark: blueGrey[700]
         },
         secondary: {
-            light: cyan[300],
-            main: cyan[500],
-            dark: cyan[700]
+            light: "#9198ca",
+            main: "#626a99",
+            dark: "#35406b"
         },
         background: {
             default: "#fcfcfc"

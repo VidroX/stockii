@@ -8,6 +8,7 @@ import config from "../config";
 import { isMobile } from "react-device-detect";
 import LoadingSubmitButton from "../components/loadingSubmitButton";
 import Cookies from "js-cookie";
+import { Base64 } from 'js-base64';
 
 const LoginPage: React.FC = (props: any) => {
     const classes = useStyles();
@@ -39,8 +40,6 @@ const LoginPage: React.FC = (props: any) => {
                             token = props.authData.data.token;
                         }
 
-                        console.log(props.authData);
-
                         if (token) {
                             userData = {
                                 auth_token: token,
@@ -50,7 +49,7 @@ const LoginPage: React.FC = (props: any) => {
 
                         Cookies.set(
                             'user_data',
-                            JSON.stringify(userData),
+                            Base64.encode(JSON.stringify(userData)),
                             {
                                 expires: new Date(props.authData.data.token_expiry),
                                 secure: document.location.protocol === 'https:',

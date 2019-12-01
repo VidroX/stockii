@@ -30,7 +30,7 @@ class WarehousesListView(generics.ListCreateAPIView):
 
 
 @api_view(['POST', 'DELETE'])
-@permission_classes([IsAuthenticated, IsAdminUser])
+@permission_classes([IsAdminUser])
 def change_warehouse_access(request, user_id, warehouse_id):
     if user_id is not None and user_id > 0 and warehouse_id is not None and warehouse_id > 0:
         user = request.user

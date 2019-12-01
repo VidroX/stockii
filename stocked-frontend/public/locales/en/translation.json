@@ -44,7 +44,9 @@
     "move": "Move",
     "unknown": "Unknown",
     "save": "Save",
-    "selectProvider": "Select provider"
+    "selectProvider": "Select provider",
+    "WMS": "Warehouse Management System",
+    "rights": "All rights reserved"
   },
   "languages": {
     "en": "English",

@@ -3,7 +3,7 @@ import time
 import requests
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from api.auth.serializers import LoginSerializer, RegisterSerializer
@@ -16,7 +16,7 @@ from api.tokens import get_token_from_header, get_access_token
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminUser])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():

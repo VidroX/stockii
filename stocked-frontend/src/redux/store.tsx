@@ -34,7 +34,8 @@ const options = {
             (action: any, config: any) => {
                 const userData = Cookies.get('user_data');
                 if(userData != null) {
-                    const userDataParsed = JSON.parse(userData);
+                    const decodedUserData = Base64.decode(userData);
+                    const userDataParsed = JSON.parse(decodedUserData);
 
                     if (userDataParsed.auth_token != null) {
                         config.headers.Authorization = 'Bearer ' + userDataParsed.auth_token;

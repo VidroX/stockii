@@ -52,7 +52,8 @@ const useStyles = makeStyles(theme => ({
         paddingRight: 24,
         paddingLeft: 24,
         paddingTop: 12,
-        paddingBottom: 12
+        paddingBottom: 12,
+        marginBottom: 24
     },
     placeholderTop: {
         display: 'flex',

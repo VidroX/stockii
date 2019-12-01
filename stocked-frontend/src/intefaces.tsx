@@ -6,6 +6,10 @@ export interface Warehouse {
     phone: string
 }
 
+export interface LanguageSelectorInterface {
+    type: "IconButton" | "Button"
+}
+
 export interface ProductLimit {
     id: number,
     min_amount: number,

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,7 +16,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import {isIOS, isMobile, withOrientationChange} from "react-device-detect";
-import {Button, LinearProgress, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
+import {Avatar, LinearProgress, Menu, MenuItem, SwipeableDrawer} from "@material-ui/core";
 import Routes from "../routes/routes";
 import {connect, useSelector} from "react-redux";
 import {userLogout} from "../redux/actions";
@@ -90,7 +90,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         selected={location.pathname === '/'}
                     >
                         <ListItemIcon><HomeWorkIcon /></ListItemIcon>
-                        <ListItemText primary={t('main.warehouses')}/>
+                        <ListItemText className={classes.drawerMenuItem} primary={t('main.warehouses')}/>
                     </ListItem>
                     <ListItem
                         button
@@ -101,7 +101,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         selected={location.pathname === '/products/'}
                     >
                         <ListItemIcon><AllInboxIcon /></ListItemIcon>
-                        <ListItemText primary={t('main.products')}/>
+                        <ListItemText className={classes.drawerMenuItem} primary={t('main.products')}/>
                     </ListItem>
                 </List>
             </React.Fragment>
@@ -232,18 +232,19 @@ const StockedDrawer: React.FC = (props: any) => {
                     <Typography variant="h6" noWrap className={classes.toolbarTitle}>
                         {toolbarTitle}
                     </Typography>
-                    <LanguageSelector />
+                    <LanguageSelector type="IconButton" />
                     <div>
-                        <Button
+                        <IconButton
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleMenu}
                             color="inherit"
                         >
-                            <span className={classes.userButton}>{props.userData.first_name}</span>
-                            <AccountCircle />
-                        </Button>
+                            <Avatar className={classes.avatar}>
+                                {props.userData.last_name.length > 0 ? props.userData.last_name.substr(0, 1) : <AccountCircle />}
+                            </Avatar>
+                        </IconButton>
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorEl}
@@ -260,6 +261,11 @@ const StockedDrawer: React.FC = (props: any) => {
                             onClose={handleClose}
                         >
                             {/*<MenuItem onClick={handleMyProfile}>{t('main.myProfile')}</MenuItem>*/}
+                            <MenuItem disabled={true}>
+                                <Typography variant="inherit" noWrap className={classes.menuItem}>
+                                    {props.userData.last_name} {props.userData.first_name}
+                                </Typography>
+                            </MenuItem>
                             <MenuItem onClick={handleLogout}>{t('main.logOut')}</MenuItem>
                         </Menu>
                     </div>
@@ -274,6 +280,9 @@ const StockedDrawer: React.FC = (props: any) => {
                 }}>
                     <Routes />
                 </main>
+                <footer className={classes.footer}>
+                    &copy; {new Date().getFullYear()}, {config.main.appName} - {t('main.WMS')}. {t('main.rights')}.
+                </footer>
             </div>
         </div>
     );
@@ -296,6 +305,16 @@ const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex'
     },
+    footer: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        padding: '0 24px 24px 24px',
+        [theme.breakpoints.down('xs')]: {
+            padding: '0 16px 24px 16px',
+        }
+    },
     mainContent: {
         display: 'flex',
         flexDirection: 'column',
@@ -315,8 +334,19 @@ const useStyles = makeStyles(theme => ({
     toolbarTitle: {
         flexGrow: 1
     },
-    userButton: {
-        marginRight: 8
+    avatar: {
+        width: 35,
+        height: 35,
+        backgroundColor: theme.palette.primary.dark
+    },
+    menuItem: {
+        maxWidth: 200
+    },
+    drawerMenuItem: {
+        maxWidth: 136,
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -326,7 +356,7 @@ const useStyles = makeStyles(theme => ({
         }),
     },
     menuButton: {
-        marginRight: 37,
+        marginRight: 20,
         [theme.breakpoints.down('xs')]: {
             marginRight: 12
         }

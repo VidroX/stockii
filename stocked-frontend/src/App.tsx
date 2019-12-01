@@ -24,7 +24,8 @@ const App: React.FC = () => {
                 Cookies.remove('token');
                 setShouldLogin(true);
             } else {
-                const userDataParsed = JSON.parse(userData);
+                const decodedUserData = Base64.decode(userData);
+                const userDataParsed = JSON.parse(decodedUserData);
                 if (userDataParsed.auth_token !== token) {
                     Cookies.remove('user_data');
                     Cookies.remove('token');
@@ -39,7 +40,8 @@ const App: React.FC = () => {
             }
         } else {
             if (userData != null) {
-                const userDataParsed = JSON.parse(userData);
+                const decodedUserData = Base64.decode(userData);
+                const userDataParsed = JSON.parse(decodedUserData);
                 dispatch(setUserData(userDataParsed));
                 setShouldLogin(false);
             } else {
