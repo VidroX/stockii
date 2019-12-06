@@ -10,6 +10,12 @@ export const USER_LOGOUT_FAIL = "stocked/user/LOGOUT_FAIL";
 export const USER_LIST = "stocked/user/LIST";
 export const USER_LIST_SUCCESS = "stocked/user/LIST_SUCCESS";
 export const USER_LIST_FAIL = "stocked/user/LIST_FAIL";
+export const USER_CREATE = "stocked/user/CREATE";
+export const USER_CREATE_SUCCESS = "stocked/user/CREATE_SUCCESS";
+export const USER_CREATE_FAIL = "stocked/user/CREATE_FAIL";
+export const USER_REMOVE = "stocked/user/REMOVE";
+export const USER_REMOVE_SUCCESS = "stocked/user/REMOVE_SUCCESS";
+export const USER_REMOVE_FAIL = "stocked/user/REMOVE_FAIL";
 export const USER_ACCESS_ADD = "stocked/user/ACCESS_ADD";
 export const USER_ACCESS_ADD_SUCCESS = "stocked/user/ACCESS_ADD_SUCCESS";
 export const USER_ACCESS_ADD_FAIL = "stocked/user/ACCESS_ADD_FAIL";
@@ -85,6 +91,43 @@ export function userLogin(email: string, password: string) {
                 url: '/auth/login/',
                 method: 'POST',
                 data: formData
+            }
+        }
+    }
+}
+
+export function register(email: string, password: string, mobilePhone: string, lastName: string, firstName: string, patronymic: string, birthday: string, setToken: boolean = false) {
+    let formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('mobile_phone', mobilePhone);
+    formData.append('last_name', lastName);
+    formData.append('first_name', firstName);
+    formData.append('patronymic', patronymic);
+    formData.append('birthday', birthday);
+    formData.append('set_token', setToken ? "True" : "False");
+
+    return {
+        type: USER_CREATE,
+        payload: {
+            client: 'auth',
+            request: {
+                url: '/auth/register/',
+                method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
+export function removeUser(userId: number) {
+    return {
+        type: USER_REMOVE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/users/' + userId + '/',
+                method: 'DELETE'
             }
         }
     }
@@ -177,13 +220,16 @@ export function addAccessToWarehouse(userId: number, warehouseId: number) {
     }
 }
 
-export function getUsers(page: number = 0, search: string | null = null) {
+export function getUsers(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
     const offset = page * config.api.row_count;
 
     let params: any = {
         'offset': offset
     };
 
+    if (ordering != null) {
+        params.ordering = ordering;
+    }
     if (search != null) {
         params.search = search;
     }

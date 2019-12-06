@@ -217,11 +217,9 @@ const Providers: React.FC = (props: any) => {
     };
 
     const onRequest = (type: "sort" | "changePage" | "search" | "refreshTable", page: number, sortItem: string | null, searchVal: string | null) => {
-        if (firstStart || type === 'changePage') {
+        if (firstStart) {
             setLoading(true);
-        }
-
-        if (type === 'sort' || type === 'search' || type === 'refreshTable') {
+        } else {
             setGlobalLoadingState(true);
         }
 

@@ -72,7 +72,7 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
             value: clearValues ? 1 : quantity.value
         });
     };
-    
+
     useEffect(() => {
         if (!open) {
             setProvider({
@@ -115,9 +115,9 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
                 });
                 const today = moment();
 
-                const day = today.toDate().getDay();
-                const isWeekend = (day === 6) || (day === 0);
-                const isSunday = day === 0;
+                const day = today.isoWeekday();
+                const isWeekend = (day === 6) || (day === 7);
+                const isSaturday = day === 6;
 
                 let additionalDays = 0;
                 let estimated = placeholderDate;
@@ -125,10 +125,25 @@ const ProductOrder: React.FC<ProductOrderInterface> = (props: ProductOrderInterf
                     additionalDays = 1;
                 }
 
-                if (isWeekend === deliveryTimes.weekends) {
+                if (deliveryTimes.weekends) {
                     estimated = moment().add(deliveryTimes.averageDeliveryTime + additionalDays, 'days').format('YYYY-MM-DD');
                 } else {
-                    estimated = moment().day(isSunday ? 1 : 8).add(deliveryTimes.averageDeliveryTime  + additionalDays, 'days').format('YYYY-MM-DD');
+                    if (isWeekend) {
+                        if (today.isAfter(workingTo)) {
+                            if (isSaturday) {
+                                additionalDays += 1;
+                            }
+                        } else {
+                            additionalDays += (isSaturday ? 2 : 1);
+                        }
+                    }
+                    const approximateDate = moment().add(deliveryTimes.averageDeliveryTime  + additionalDays, 'days');
+                    if (approximateDate.isoWeekday() === 6) {
+                        approximateDate.add(2, 'days');
+                    } else if (approximateDate.isoWeekday() === 7) {
+                        approximateDate.add(1, 'days');
+                    }
+                    estimated = approximateDate.format('YYYY-MM-DD');
                 }
 
                 setEstimatedDate(estimated);

@@ -11,6 +11,8 @@ import store from "./redux/store";
 import { theme } from "./theme";
 
 import './i18n';
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
 
 const Loader = () => (
     <Grid
@@ -32,10 +34,12 @@ const Loader = () => (
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
-            <Suspense fallback={<Loader/>}>
-                <CssBaseline />
-                <App />
-            </Suspense>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Suspense fallback={<Loader/>}>
+                    <CssBaseline />
+                    <App />
+                </Suspense>
+            </MuiPickersUtilsProvider>
         </ThemeProvider>
     </Provider>,
     document.getElementById('root')

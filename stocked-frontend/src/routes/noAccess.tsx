@@ -1,6 +1,11 @@
 import React from "react";
+import {useTranslation} from "react-i18next";
+import useToolbarTitle from "../hooks/toolbarTitle";
 
 const NoAccess: React.FC = () => {
+    const { t } = useTranslation();
+    useToolbarTitle(t('main.noAccess'));
+
     return (
         <React.Fragment>
             <div>

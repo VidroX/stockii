@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import MaskedInput from "react-text-mask";
 import config from "../../config";
 import {addWarehouse, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
+import PhoneMask from "../phoneMask";
 
 interface WarehouseAdd {
     open: boolean,
@@ -74,7 +75,8 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
     const [phone, setPhone] = React.useState({
         error: false,
         errorText: "",
-        value: ""
+        value: "",
+        clearValue: ""
     });
     const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -101,11 +103,12 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
         setPhone({
             error: false,
             errorText: "",
-            value: clearValues ? "" : phone.value
+            value: clearValues ? "" : phone.value,
+            clearValue: clearValues ? "" : phone.clearValue
         });
         setWeekends(clearValues ? false : weekends);
     };
-    
+
     useEffect(() => {
         if (!open) {
             setLocation({
@@ -126,7 +129,8 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
             setPhone({
                 error: false,
                 errorText: "",
-                value: ""
+                value: "",
+                clearValue: ""
             });
             setWeekends(false);
         }
@@ -185,7 +189,16 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
             setPhone({
                 error: true,
                 errorText: t('common.fieldEmpty'),
-                value: phone.value
+                value: phone.value,
+                clearValue: phone.clearValue
+            });
+        }
+        if (phone.value.length !== 13) {
+            setPhone({
+                error: true,
+                errorText: t('users.incorrectMobilePhone'),
+                value: phone.value,
+                clearValue: phone.clearValue
             });
         }
 
@@ -328,7 +341,7 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
         return (location.value.length > 0 && !location.error) &&
             (workingFrom.value.length === 8 && !workingFrom.error) &&
             (workingTo.value.length === 8 && !workingTo.error) &&
-            (phone.value.length > 0 && !phone.error);
+            (phone.value.length === 13 && !phone.error);
     };
 
     return (
@@ -406,7 +419,7 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
                         label={t('main.phone')}
                         variant="outlined"
                         margin={fullScreen ? "normal" : "dense"}
-                        value={phone.value}
+                        value={phone.clearValue}
                         required
                         error={phone.error}
                         helperText={phone.errorText}
@@ -414,8 +427,12 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
                             setPhone({
                                 error: false,
                                 errorText: "",
-                                value: e.target.value
+                                value: e.target.value.replace(/[_()\-\s]/gi, ''),
+                                clearValue: e.target.value
                             });
+                        }}
+                        InputProps={{
+                            inputComponent: PhoneMask as any,
                         }}
                     />
                     <FormControlLabel

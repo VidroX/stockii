@@ -3,7 +3,8 @@
     "emptyField": "Це поле не може бути порожнім!",
     "incorrectTime": "Неправильний час",
     "requiredField": "Це поле є обов'язковим!",
-    "incorrectValue": "Неправильне значення"
+    "incorrectValue": "Неправильне значення",
+    "incorrectDate": "Неправильна дата"
   },
   "main": {
     "homePage": "Головна",
@@ -54,7 +55,11 @@
     "providers": "Постачальники",
     "shipments": "Поставки",
     "averageDeliveryTime": "Сер. час доставки (днів)",
-    "name": "Назва"
+    "name": "Назва",
+    "notFound": "Не знайдено",
+    "noAccess": "Немає доступу",
+    "email": "E-Mail",
+    "create": "Створити"
   },
   "languages": {
     "en": "English",
@@ -112,5 +117,30 @@
     "addProvider": "Додати постачальника",
     "providerDeleted": "Постачальник був успішно видалений із системи.",
     "unableToDeleteProvider": "Неможливо видалити постачальника."
+  },
+  "users": {
+    "lastName": "Прізвище",
+    "firstName": "Ім'я",
+    "patronymic": "По батькові",
+    "addUser": "Додати користувача",
+    "removeUserTitle": "Видалити користувача",
+    "removeUserBody": "Ви впевнені, що хочете видалити цього користувача із системи?",
+    "userRemoved": "Користувача успішно видалено з системи!",
+    "userCreated": "Користувача успішно створено!",
+    "unableToRemoveUser": "Неможливо видалити користувача.",
+    "incorrectPass": "Неправильний пароль",
+    "userEmailExists": "Користувач з таким E-Mail вже існує",
+    "userPhoneExists": "Користувач з таким мобільним телефоном вже існує",
+    "fullInfo": "Повна інформація про користувача",
+    "user": "Користувач",
+    "fullName": "ПІБ",
+    "mobilePhone": "Мобільний телефон",
+    "birthday": "День народження",
+    "passwordsDNotMatch": "Паролі не збігаються",
+    "incorrectBirthday": "Неправильна дата",
+    "repeatPassword": "Повторіть пароль",
+    "incorrectMobilePhone": "Неправильний мобільний телефон",
+    "passwordToSmall": "Пароль занадто малий. Довжина має бути більше 5 символів.",
+    "selectDate": "Виберіть дату"
   }
 }

@@ -35,7 +35,7 @@ import {
     SHOW_SNACKBAR,
     USER_ACCESS_ADD,
     USER_ACCESS_ADD_FAIL,
-    USER_ACCESS_ADD_SUCCESS,
+    USER_ACCESS_ADD_SUCCESS, USER_CREATE, USER_CREATE_FAIL, USER_CREATE_SUCCESS,
     USER_LIST,
     USER_LIST_FAIL,
     USER_LIST_SUCCESS,
@@ -44,7 +44,7 @@ import {
     USER_LOGIN_SUCCESS,
     USER_LOGOUT,
     USER_LOGOUT_FAIL,
-    USER_LOGOUT_SUCCESS,
+    USER_LOGOUT_SUCCESS, USER_REMOVE, USER_REMOVE_FAIL, USER_REMOVE_SUCCESS,
     WAREHOUSES_ADD,
     WAREHOUSES_ADD_FAIL,
     WAREHOUSES_ADD_SUCCESS,
@@ -101,6 +101,24 @@ export default function mainReducer(state = initialState, action: any){
         }
         case USER_LIST_FAIL:{
             return {...state, userListProgress: false, userListData: action.error.response.data, error: 'Cannot get user list'}
+        }
+        case USER_CREATE:{
+            return {...state, userCreateProgress: true}
+        }
+        case USER_CREATE_SUCCESS:{
+            return {...state, userCreateProgress: false, userCreateData: action.payload.data}
+        }
+        case USER_CREATE_FAIL:{
+            return {...state, userCreateProgress: false, userCreateData: action.error.response.data, error: 'Cannot create user'}
+        }
+        case USER_REMOVE:{
+            return {...state, userRemoveProgress: true}
+        }
+        case USER_REMOVE_SUCCESS:{
+            return {...state, userRemoveProgress: false, userRemoveData: action.payload.data}
+        }
+        case USER_REMOVE_FAIL:{
+            return {...state, userRemoveProgress: false, userRemoveData: action.error.response.data, error: 'Cannot remove user'}
         }
         case USER_ACCESS_ADD:{
             return {...state, userAccessProgress: true}

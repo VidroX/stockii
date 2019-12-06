@@ -8,3 +8,12 @@ class SuperUserCreateOnly(BasePermission):
             return user.is_superuser
         else:
             return request.method in SAFE_METHODS
+
+
+class SuperUserDeleteOnly(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if request.method == "PUT" or request.method == "DELETE":
+            return user.is_superuser
+        else:
+            return request.method in SAFE_METHODS

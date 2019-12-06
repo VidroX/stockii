@@ -129,7 +129,7 @@ const Products: React.FC = (props: any) => {
             dispatch(setGlobalLoading(false));
         }
     }, [dispatch, globalLoadingState, loading]);
-    
+
     useEffect(() => {
         if (!productsGetProgress && productsData != null) {
             if(productsData.results != null) {
@@ -246,11 +246,9 @@ const Products: React.FC = (props: any) => {
     };
 
     const onRequest = (type: "sort" | "changePage" | "search" | "refreshTable", page: number, sortItem: string | null, searchVal: string | null) => {
-        if (firstStart || type === 'changePage') {
+        if (firstStart) {
             setLoading(true);
-        }
-
-        if (type === 'sort' || type === 'search' || type === 'refreshTable') {
+        } else {
             setGlobalLoadingState(true);
         }
 

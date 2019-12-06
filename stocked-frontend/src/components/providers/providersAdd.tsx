@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import MaskedInput from "react-text-mask";
 import config from "../../config";
 import {addProvider, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
+import PhoneMask from "../phoneMask";
 
 interface ProvidersAddInterface {
     open: boolean,
@@ -79,7 +80,8 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
     const [phone, setPhone] = React.useState({
         error: false,
         errorText: "",
-        value: ""
+        value: "",
+        clearValue: ""
     });
     const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -111,11 +113,12 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
         setPhone({
             error: false,
             errorText: "",
-            value: clearValues ? "" : phone.value
+            value: clearValues ? "" : phone.value,
+            clearValue: clearValues ? "" : phone.clearValue
         });
         setWeekends(clearValues ? false : weekends);
     };
-    
+
     useEffect(() => {
         if (!open) {
             setName({
@@ -141,7 +144,8 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
             setPhone({
                 error: false,
                 errorText: "",
-                value: ""
+                value: "",
+                clearValue: ""
             });
             setWeekends(false);
         }
@@ -207,7 +211,16 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
             setPhone({
                 error: true,
                 errorText: t('common.fieldEmpty'),
-                value: phone.value
+                value: phone.value,
+                clearValue: phone.clearValue
+            });
+        }
+        if (phone.value.length !== 13) {
+            setPhone({
+                error: true,
+                errorText: t('users.incorrectMobilePhone'),
+                value: phone.value,
+                clearValue: phone.clearValue
             });
         }
 
@@ -351,7 +364,7 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
                 (avgDelivery.value != null && avgDelivery.value > 0) &&
                 (workingFrom.value.length === 8 && !workingFrom.error) &&
                 (workingTo.value.length === 8 && !workingTo.error) &&
-                (phone.value.length > 0 && !phone.error);
+                (phone.value.length === 13 && !phone.error);
     };
 
     return (
@@ -448,7 +461,7 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
                         label={t('main.phone')}
                         variant="outlined"
                         margin={fullScreen ? "normal" : "dense"}
-                        value={phone.value}
+                        value={phone.clearValue}
                         required
                         error={phone.error}
                         helperText={phone.errorText}
@@ -456,8 +469,12 @@ const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterfa
                             setPhone({
                                 error: false,
                                 errorText: "",
-                                value: e.target.value
+                                value: e.target.value.replace(/[_()\-\s]/gi, ''),
+                                clearValue: e.target.value
                             });
+                        }}
+                        InputProps={{
+                            inputComponent: PhoneMask as any,
                         }}
                     />
                     <FormControlLabel

@@ -3,7 +3,8 @@
     "emptyField": "This field cannot be empty!",
     "incorrectTime": "Incorrect time",
     "requiredField": "This field is required!",
-    "incorrectValue": "Incorrect value"
+    "incorrectValue": "Incorrect value",
+    "incorrectDate": "Incorrect date"
   },
   "main": {
     "homePage": "Home",
@@ -54,7 +55,11 @@
     "providers": "Providers",
     "shipments": "Shipments",
     "averageDeliveryTime": "Avg. delivery time (days)",
-    "name": "Name"
+    "name": "Name",
+    "notFound": "Not found",
+    "noAccess": "No access",
+    "email": "E-Mail",
+    "create": "Create"
   },
   "languages": {
     "en": "English",
@@ -112,5 +117,30 @@
     "addProvider": "Add provider",
     "providerDeleted": "Provider has been successfully removed from the system.",
     "unableToDeleteProvider": "Unable to delete provider."
+  },
+  "users": {
+    "lastName": "Last Name",
+    "firstName": "First Name",
+    "patronymic": "Patronymic",
+    "addUser": "Add user",
+    "removeUserTitle": "Remove user",
+    "removeUserBody": "Are you sure you want to remove this user from the system?",
+    "userRemoved": "User has been successfully removed from the system!",
+    "userCreated": "User has been created successfully!",
+    "unableToRemoveUser": "Unable to remove user.",
+    "incorrectPass": "Incorrect password",
+    "userEmailExists": "User with the same E-Mail already exists",
+    "userPhoneExists": "User with the same mobile phone already exists",
+    "fullInfo": "Full information about user",
+    "user": "User",
+    "fullName": "fullName",
+    "mobilePhone": "Mobile phone",
+    "birthday": "Birthday",
+    "passwordsDNotMatch": "Passwords don't match",
+    "incorrectBirthday": "Incorrect date",
+    "repeatPassword": "Repeat password",
+    "incorrectMobilePhone": "Incorrect mobile phone",
+    "passwordToSmall": "Password is to small. It has to be more than 5 characters long.",
+    "selectDate": "Select date"
   }
 }

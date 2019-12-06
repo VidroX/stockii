@@ -6,6 +6,7 @@ import Products from "./products";
 import Providers from "./providers";
 import { useSelector } from "react-redux";
 import NoAccess from "./noAccess";
+import Users from "./users";
 
 const AdminRoute = ({ children, ...rest }: RouteProps) => {
     const user = useSelector((state: any) => state.main.userData);
@@ -35,6 +36,9 @@ const Routes: React.FC = () => {
             </Route>
             <AdminRoute exact path="/providers/">
                 <Providers />
+            </AdminRoute>
+            <AdminRoute exact path="/users/">
+                <Users />
             </AdminRoute>
             <Route path="*">
                 <NoMatch />
