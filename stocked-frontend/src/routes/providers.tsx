@@ -50,12 +50,12 @@ const Providers: React.FC = (props: any) => {
     const providersRemoveData = useSelector((state: any) => state.main.providersRemoveData);
 
     const sortColumns = [
-        "name",
-        "working_from",
-        "working_to",
-        "average_delivery_time",
-        "weekends",
-        "phone"
+        [{item: "name"}],
+        [{item: "working_from"}],
+        [{item: "working_to"}],
+        [{item: "average_delivery_time"}],
+        [{item: "weekends"}],
+        [{item: "phone"}]
     ];
 
     useEffect(() => {

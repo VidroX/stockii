@@ -25,7 +25,7 @@ import {
     SET_USER_DATA,
     SHIPMENTS_CREATE,
     SHIPMENTS_CREATE_FAIL,
-    SHIPMENTS_CREATE_SUCCESS,
+    SHIPMENTS_CREATE_SUCCESS, SHIPMENTS_DELETE, SHIPMENTS_DELETE_FAIL, SHIPMENTS_DELETE_SUCCESS,
     SHIPMENTS_GET,
     SHIPMENTS_GET_FAIL,
     SHIPMENTS_GET_SUCCESS,
@@ -163,7 +163,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, productsRemoveProgress: false, productsRemoveData: action.payload.data}
         }
         case PRODUCTS_REMOVE_FAIL:{
-            return {...state, productsRemoveProgress: false, providersRemoveData: action.error.response.data, error: 'Cannot remove product'}
+            return {...state, productsRemoveProgress: false, productsRemoveData: action.error.response.data, error: 'Cannot remove product'}
         }
         case PRODUCTS_GET:{
             return {...state, productsGetProgress: true}
@@ -219,6 +219,15 @@ export default function mainReducer(state = initialState, action: any){
         case SHIPMENTS_UPDATE_FAIL:{
             return {...state, shipmentsUpdateProgress: false, shipmentsUpdateData: action.error.response.data, error: 'Cannot update shipment'}
         }
+        case SHIPMENTS_DELETE:{
+            return {...state, shipmentsRemoveProgress: true}
+        }
+        case SHIPMENTS_DELETE_SUCCESS:{
+            return {...state, shipmentsRemoveProgress: false, shipmentsRemoveData: action.payload.data}
+        }
+        case SHIPMENTS_DELETE_FAIL:{
+            return {...state, shipmentsRemoveProgress: false, shipmentsRemoveData: action.error.response.data, error: 'Cannot remove shipment'}
+        }
         case PROVIDERS_CREATE:{
             return {...state, providersCreateProgress: true}
         }
@@ -235,7 +244,7 @@ export default function mainReducer(state = initialState, action: any){
             return {...state, providersGetProgress: false, providersData: action.payload.data}
         }
         case PROVIDERS_GET_FAIL:{
-            return {...state, providersGetProgress: false, productsData: action.error.response.data, error: 'Cannot get providers'}
+            return {...state, providersGetProgress: false, providersData: action.error.response.data, error: 'Cannot get providers'}
         }
         case PROVIDERS_REMOVE:{
             return {...state, providersRemoveProgress: true}

@@ -51,11 +51,11 @@ const Warehouses: React.FC = (props: any) => {
     const removeWarehousesData = useSelector((state: any) => state.main.removeWarehousesData);
 
     const sortColumns = [
-        "location",
-        "working_from",
-        "working_to",
-        "weekends",
-        "phone"
+        [{item: "location"}],
+        [{item: "working_from"}],
+        [{item: "working_to"}],
+        [{item: "weekends"}],
+        [{item: "phone"}]
     ];
 
     useEffect(() => {

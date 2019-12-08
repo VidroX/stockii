@@ -56,6 +56,9 @@ export const SHIPMENTS_CREATE_FAIL = "stocked/shipments/CREATE_FAIL";
 export const SHIPMENTS_UPDATE = "stocked/shipments/UPDATE";
 export const SHIPMENTS_UPDATE_SUCCESS = "stocked/shipments/UPDATE_SUCCESS";
 export const SHIPMENTS_UPDATE_FAIL = "stocked/shipments/UPDATE_FAIL";
+export const SHIPMENTS_DELETE = "stocked/shipments/DELETE";
+export const SHIPMENTS_DELETE_SUCCESS = "stocked/shipments/DELETE_SUCCESS";
+export const SHIPMENTS_DELETE_FAIL = "stocked/shipments/DELETE_FAIL";
 
 export const PROVIDERS_GET = "stocked/providers/GET";
 export const PROVIDERS_GET_SUCCESS = "stocked/providers/GET_SUCCESS";
@@ -389,6 +392,33 @@ export function removeProvider(providerId: number) {
     }
 }
 
+export function getShipments(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
+    const offset = page * config.api.row_count;
+
+    let params: any = {
+        'offset': offset
+    };
+
+    if (ordering != null) {
+        params.ordering = ordering;
+    }
+    if (search != null) {
+        params.search = search;
+    }
+
+    return {
+        type: SHIPMENTS_GET,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/shipments/',
+                method: 'GET',
+                params: params
+            }
+        }
+    }
+}
+
 export function createShipment(providerId: number, productId: number, approximateDelivery: string, quantity: number = 0, status: number | null = null) {
     let formData = new FormData();
     formData.append('provider', providerId.toString());
@@ -406,6 +436,36 @@ export function createShipment(providerId: number, productId: number, approximat
             request: {
                 url: '/shipments/',
                 method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
+export function removeShipment(shipmentId: number) {
+    return {
+        type: SHIPMENTS_DELETE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/shipments/' + shipmentId + '/',
+                method: 'DELETE'
+            }
+        }
+    }
+}
+
+export function setShipmentStatus(shipmentId: number, status: 1 | 2) {
+    let formData = new FormData();
+    formData.append('status', status.toString());
+
+    return {
+        type: SHIPMENTS_UPDATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/shipments/' + shipmentId  + '/',
+                method: 'PUT',
                 data: formData
             }
         }

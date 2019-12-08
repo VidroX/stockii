@@ -48,10 +48,10 @@ const Users: React.FC = (props: any) => {
     const user = useSelector((state: any) => state.main.userData);
 
     const sortColumns = [
-        "last_name",
-        "email",
-        "birthday",
-        "mobile_phone"
+        [{item: "last_name"}],
+        [{item: "email"}],
+        [{item: "birthday"}],
+        [{item: "mobile_phone"}]
     ];
 
     useEffect(() => {

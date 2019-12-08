@@ -33,6 +33,12 @@ export interface Product {
     warehouse: string
 }
 
+export interface ProductWithWarehouse {
+    name: string,
+    quantity: number,
+    warehouse: Warehouse
+}
+
 export interface ProductInfo {
     id: number,
     limits: ProductLimit | null,
@@ -69,9 +75,15 @@ export interface ProductAddInterface {
     onClose?(shouldRefresh: boolean): void
 }
 
-export interface ProductOrderInterface {
+export interface GenericProductInterface {
     open: boolean,
     productData: ProductInfo,
+    onOpen?(): void,
+    onClose?(shouldRefresh: boolean): void
+}
+
+export interface ShipmentsCreateInterface {
+    open: boolean,
     onOpen?(): void,
     onClose?(shouldRefresh: boolean): void
 }
@@ -80,6 +92,13 @@ export interface WarehouseSelectorInterface {
     error?: boolean,
     helperText?: string,
     onSelect?(value: OptionType): void
+}
+
+export interface GenericSelectorInterface {
+    error?: boolean,
+    helperText?: string,
+    onSelect?(value: OptionType): void,
+    onClear?(): void
 }
 
 export interface ProviderSelectorInterface {
@@ -103,13 +122,19 @@ export interface ProductMoveInterface {
     onClose?(shouldRefresh: boolean): void
 }
 
+export interface SortColumn {
+    item: string,
+    prefixAsc?: string,
+    prefixDesc?: string
+}
+
 export interface StockedTableInterface {
     title: string,
     count: number,
     page: number,
     columns: MUIDataTableColumnDef[],
     data: Array<object | number[] | string[]>,
-    sortColumns: Array<string>,
+    sortColumns: Array<SortColumn[]>,
     addEnabled: boolean,
     onRequest(type: "sort" | "changePage" | "search" | "refreshTable", page: number, sortItem: string | null, searchVal: string | null): void,
     refreshTable?: boolean,
@@ -118,17 +143,17 @@ export interface StockedTableInterface {
     onAddClick?(): void
 }
 
-/*
-export interface StockedTableInterface {
-    title: string,
-    count: number,
-    columns: MUIDataTableColumnDef[],
-    data: Array<object | number[] | string[]>,
-    sortColumns: Array<string>,
-    addEnabled: boolean,
-    refreshTable?: boolean,
-    onRequest?(localPage: number, sortItem: string | null, searchVal: string | null): void,
-    onRequestCompleted?(): boolean,
-    onAddClick?(): void,
-    onTableRefreshed?(): void
-}*/
+export interface ShipmentsInterface {
+    product: string,
+    provider: string,
+    warehouse: string,
+    quantity: number,
+    approximateDeliveryDate: number
+}
+
+export interface ShipmentObjectInterface {
+    id: number,
+    startDate: Date,
+    approximateDeliveryDate: Date,
+    delivered: boolean
+}

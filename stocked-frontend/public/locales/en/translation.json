@@ -59,7 +59,9 @@
     "notFound": "Not found",
     "noAccess": "No access",
     "email": "E-Mail",
-    "create": "Create"
+    "create": "Create",
+    "selectProduct": "Select product",
+    "update": "Update"
   },
   "languages": {
     "en": "English",
@@ -103,7 +105,11 @@
     "minAmount": "Minimum amount",
     "maxAmount": "Maximum amount",
     "quantityLess": "Quantity is less than product quantity.",
-    "quantityMore": "Quantity is more than product quantity."
+    "quantityMore": "Quantity is more than product quantity.",
+    "negativeQuantity": "Quantity can't be a negative number.",
+    "unableToUpdateProduct": "Unable to update product.",
+    "productUpdated": "Product has been successfully updated!",
+    "updateProductQuantity": "Update product quantity"
   },
   "shipments": {
     "incorrectProvider": "Incorrect provider",
@@ -116,7 +122,25 @@
     "providerAlreadyExists": "Provider with that name already exists.",
     "addProvider": "Add provider",
     "providerDeleted": "Provider has been successfully removed from the system.",
-    "unableToDeleteProvider": "Unable to delete provider."
+    "unableToDeleteProvider": "Unable to delete provider.",
+    "product": "Product",
+    "provider": "Provider",
+    "status": "Status",
+    "daysLeft": "{{count}} day left",
+    "daysLeft_plural": "{{count}} days left",
+    "shipmentRemoved": "Shipment has been successfully removed!",
+    "unableToRemoveShipment": "Unable to remove shipment.",
+    "removeShipmentTitle": "Remove shipment",
+    "removeShipmentBody": "Are you sure you want to remove this shipment from the system?",
+    "overdue": "Overdue",
+    "productArrived": "Product arrived",
+    "arrivingToday": "Arriving today",
+    "totalQuantityMoreThanAllowed": "Total quantity will be more than allowed.",
+    "markAsArrived": "Mark as \"Delivered\"",
+    "markAsInProgress": "Mark as \"In progress\"",
+    "statusChanged": "Delivery status has been changed successfully!",
+    "unableToChangeStatus": "Unable to change delivery status.",
+    "incorrectProduct": "Incorrect product"
   },
   "users": {
     "lastName": "Last Name",

@@ -5,7 +5,7 @@ import DataTableToolbar from "../components/dataTableToolbar";
 import { makeStyles, Theme } from "@material-ui/core";
 import config from "../config";
 import { green, red } from "@material-ui/core/colors";
-import { StockedTableInterface } from "../intefaces";
+import {SortColumn, StockedTableInterface} from "../intefaces";
 
 const StockedTable: React.FC<StockedTableInterface> = (props: StockedTableInterface) => {
     const {
@@ -90,10 +90,39 @@ const StockedTable: React.FC<StockedTableInterface> = (props: StockedTableInterf
                 prefix = '';
             }
 
-            const serverColumn = columnId !== -1 || null ? item.options.sortDirection !== 'none' ? (prefix + sortColumns[columnId]) : "-id" : "-id";
+            let columns = "";
+            if (sortColumns[columnId].length > 1) {
+                sortColumns[columnId].forEach((obj: SortColumn, index: number) => {
+                    let customPrefix: string = "";
+                    if (item.options.sortDirection === 'asc' && obj.prefixAsc != null) {
+                        customPrefix = obj.prefixAsc || '';
+                    } else if (item.options.sortDirection === 'desc' && obj.prefixDesc != null) {
+                        customPrefix = obj.prefixDesc || '';
+                    } else {
+                        customPrefix = prefix;
+                    }
+                    if (index + 1 === sortColumns[columnId].length) {
+                        columns += customPrefix + obj.item;
+                    } else {
+                        columns += customPrefix + obj.item + ",";
+                    }
+                });
+            } else if(sortColumns[columnId].length === 1) {
+                let customPrefix: string = "";
+                if (sortColumns[columnId][0].prefixAsc != null && item.options.sortDirection === 'asc') {
+                    customPrefix = sortColumns[columnId][0].prefixAsc || '';
+                } else if (sortColumns[columnId][0].prefixDesc != null && item.options.sortDirection === 'desc') {
+                    customPrefix = sortColumns[columnId][0].prefixDesc || '';
+                } else {
+                    customPrefix = prefix;
+                }
+                columns = customPrefix + sortColumns[columnId][0].item;
+            }
+
+            const serverColumn = columnId !== -1 || null ? item.options.sortDirection !== 'none' ? columns : "-id" : "-id";
 
             if (onRequest != null) {
-                onRequest("sort", tableState.page, serverColumn, null);
+                onRequest("sort", tableState.page, serverColumn, searchVal);
             }
         } else if (action === 'search') {
             setSearchVal(tableState.searchText);

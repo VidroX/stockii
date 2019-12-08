@@ -24,6 +24,8 @@ import LimitsViewer from "../components/products/limitsViewer";
 import ProductMove from "../components/products/productMove";
 import ProductOrder from "../components/products/productsOrder";
 import StockedTable from "../components/stockedTable";
+import EditIcon from '@material-ui/icons/Edit';
+import ProductQuantityUpdate from "../components/products/productsUpdate";
 
 const Products: React.FC = (props: any) => {
     const { t } = useTranslation();
@@ -31,6 +33,7 @@ const Products: React.FC = (props: any) => {
     const [limitsModalOpen, setLimitsModalOpen] = React.useState(false);
     const [addModalOpen, setAddModalOpen] = React.useState(false);
     const [moveModalOpen, setMoveModalOpen] = React.useState(false);
+    const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
     const [orderModalOpen, setOrderModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
@@ -58,9 +61,9 @@ const Products: React.FC = (props: any) => {
     const productsRemoveData = useSelector((state: any) => state.main.productsRemoveData);
 
     const sortColumns = [
-        "name",
-        "warehouse",
-        "quantity"
+        [{item: "name"}],
+        [{item: "warehouse"}],
+        [{item: "quantity"}]
     ];
 
     useEffect(() => {
@@ -107,6 +110,13 @@ const Products: React.FC = (props: any) => {
                                         <ShoppingBasketIcon />
                                     </IconButton>
                                 </Tooltip>
+                                { user.is_superuser &&
+                                    <Tooltip title={t('products.updateProductQuantity')}>
+                                        <IconButton onClick={() => onUpdateProductQuantity(productInfo)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                }
                                 <Tooltip title={t('main.delete')}>
                                     <IconButton onClick={() => onDeleteClick(productInfo)}>
                                         <DeleteForeverIcon />
@@ -202,6 +212,16 @@ const Products: React.FC = (props: any) => {
         setMoveModalOpen(false);
     };
 
+    const onUpdateProductQuantity = (productInfo: ProductInfo) => {
+        setProductInfo(productInfo);
+        setUpdateModalOpen(true);
+    };
+    const onUpdateProductQuantityCancel = (shouldRefresh: boolean) => {
+        setProductInfo({id: 0, limits: null, warehouse: null});
+        setShouldRefreshTable(shouldRefresh);
+        setUpdateModalOpen(false);
+    };
+
     const onOrderProductClick = (productInfo: ProductInfo) => {
         setProductInfo(productInfo);
         setOrderModalOpen(true);
@@ -292,6 +312,7 @@ const Products: React.FC = (props: any) => {
             <LimitsViewer open={limitsModalOpen} onClose={onViewLimitsCancel} productData={productInfo} />
             <ProductMove open={moveModalOpen} onClose={onMoveClickCancel} productData={productInfo} />
             <ProductOrder open={orderModalOpen} onClose={onOrderProductCancel} productData={productInfo} />
+            <ProductQuantityUpdate open={updateModalOpen} productData={productInfo} onClose={onUpdateProductQuantityCancel} />
             <StockedModal
                 form
                 title={t('products.removeProductTitle')}

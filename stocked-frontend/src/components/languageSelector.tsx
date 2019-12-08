@@ -32,20 +32,21 @@ const LanguageSelector: React.FC<LanguageSelectorInterface> = (props: LanguageSe
     };
 
     const changeLanguage = (language: string) => {
-        i18n.changeLanguage(language);
-        setAnchorLanguageEl(null);
+        i18n.changeLanguage(language).then(() => {
+            setAnchorLanguageEl(null);
 
-        document.documentElement.lang = i18n.language;
+            document.documentElement.lang = i18n.language;
 
-        Cookies.set(
-            'language',
-            i18n.language,
-            {
-                expires: moment().add(1, 'year').toDate(),
-                secure: document.location.protocol === 'https:',
-                sameSite: 'lax'
-            }
-        );
+            Cookies.set(
+                'language',
+                i18n.language,
+                {
+                    expires: moment().add(1, 'year').toDate(),
+                    secure: document.location.protocol === 'https:',
+                    sameSite: 'lax'
+                }
+            );
+        });
     };
 
     const renderButton = () => {

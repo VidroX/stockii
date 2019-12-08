@@ -59,7 +59,9 @@
     "notFound": "Не знайдено",
     "noAccess": "Немає доступу",
     "email": "E-Mail",
-    "create": "Створити"
+    "create": "Створити",
+    "selectProduct": "Виберіть товар",
+    "update": "Оновити"
   },
   "languages": {
     "en": "English",
@@ -103,7 +105,11 @@
     "minAmount": "Мінімальна кількість",
     "maxAmount": "Максимальна кількість",
     "quantityLess": "Дана кількість менша за кількість товару.",
-    "quantityMore": "Дана кількість перевищує кількість товару."
+    "quantityMore": "Дана кількість перевищує кількість товару.",
+    "negativeQuantity": "Кількість не може бути від’ємним числом.",
+    "unableToUpdateProduct": "Не вдається оновити продукт.",
+    "productUpdated": "Товар успішно оновлено!",
+    "updateProductQuantity": "Оновити кількість товару"
   },
   "shipments": {
     "incorrectProvider": "Неправильний постачальник",
@@ -116,7 +122,26 @@
     "providerAlreadyExists": "Постачальник з такою назвою вже існує.",
     "addProvider": "Додати постачальника",
     "providerDeleted": "Постачальник був успішно видалений із системи.",
-    "unableToDeleteProvider": "Неможливо видалити постачальника."
+    "unableToDeleteProvider": "Неможливо видалити постачальника.",
+    "product": "Товар",
+    "provider": "Постачальник",
+    "status": "Статус",
+    "daysLeft_2": "Залишилось {{count}} днів",
+    "daysLeft_0": "Залишився {{count}} день",
+    "daysLeft_1": "Залишилось {{count}} дні",
+    "shipmentRemoved": "Відправлення успішно видалено!",
+    "unableToRemoveShipment": "Неможливо видалити відправлення.",
+    "removeShipmentTitle": "Видалити відправлення",
+    "removeShipmentBody": "Ви впевнені, що бажаєте видалити це відправлення з системи?",
+    "overdue": "Прострочено",
+    "productArrived": "Товар надійшов",
+    "arrivingToday": "Прибуває сьогодні",
+    "totalQuantityMoreThanAllowed": "Загальна кількість товару буде більше, ніж дозволено.",
+    "markAsArrived": "Позначить як «Доставлено»",
+    "markAsInProgress": "Позначить як «В процесі доставки»",
+    "statusChanged": "Статус відправлення успішно змінено!",
+    "unableToChangeStatus": "Неможливо змінити статус відправлення.",
+    "incorrectProduct": "Неправильний товар"
   },
   "users": {
     "lastName": "Прізвище",
@@ -124,7 +149,7 @@
     "patronymic": "По батькові",
     "addUser": "Додати користувача",
     "removeUserTitle": "Видалити користувача",
-    "removeUserBody": "Ви впевнені, що хочете видалити цього користувача із системи?",
+    "removeUserBody": "Ви впевнені, що бажаєте видалити цього користувача із системи?",
     "userRemoved": "Користувача успішно видалено з системи!",
     "userCreated": "Користувача успішно створено!",
     "unableToRemoveUser": "Неможливо видалити користувача.",
