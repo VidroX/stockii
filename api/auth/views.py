@@ -3,7 +3,7 @@ import time
 import requests
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from api.auth.serializers import LoginSerializer, RegisterSerializer
@@ -16,17 +16,20 @@ from api.tokens import get_token_from_header, get_access_token
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminUser])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        r = get_access_token(request)
         return_token = request.data.get('return_token', False)
         full_user_data = request.data.get('full_user_data', False)
+        set_token = request.data.get('set_token', True)
+        r = None
+        if set_token:
+            r = get_access_token(request)
 
         if user:
-            if r:
+            if set_token and r is not None:
                 json = r.json()
                 expiry_time = str(cookie_date(json['expires_in']))
 
@@ -59,7 +62,18 @@ def register(request):
                     )
 
                 return response
+            elif not set_token:
+                data = {
+                    'user': get_user_data(user, full_user_data),
+                }
 
+                response = Response({
+                    'status': 0,
+                    'message': STATUS_CODE[0],
+                    'data': data
+                })
+
+                return response
             else:
                 return Response({
                     'status_code': 1,

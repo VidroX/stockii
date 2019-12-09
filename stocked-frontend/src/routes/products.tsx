@@ -1,9 +1,6 @@
 import React, {useEffect} from "react";
 import { useTranslation } from 'react-i18next';
-import MUIDataTable from "mui-datatables";
 import useToolbarTitle from "../hooks/toolbarTitle";
-import useTableLocalization from "../hooks/tableLocalization";
-import DataTableToolbar from "../components/dataTableToolbar";
 import StockedModal from "../components/modal";
 import {IconButton, makeStyles, Theme, Tooltip} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
@@ -26,14 +23,17 @@ import { Product, ProductInfo } from "../intefaces";
 import LimitsViewer from "../components/products/limitsViewer";
 import ProductMove from "../components/products/productMove";
 import ProductOrder from "../components/products/productsOrder";
+import StockedTable from "../components/stockedTable";
+import EditIcon from '@material-ui/icons/Edit';
+import ProductQuantityUpdate from "../components/products/productsUpdate";
 
 const Products: React.FC = (props: any) => {
     const { t } = useTranslation();
-    const tableLocalization = useTableLocalization();
 
     const [limitsModalOpen, setLimitsModalOpen] = React.useState(false);
     const [addModalOpen, setAddModalOpen] = React.useState(false);
     const [moveModalOpen, setMoveModalOpen] = React.useState(false);
+    const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
     const [orderModalOpen, setOrderModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
@@ -43,13 +43,11 @@ const Products: React.FC = (props: any) => {
     const [productInfo, setProductInfo] = React.useState<ProductInfo>({id: 0, limits: null, warehouse: null});
     const [count, setCount] = React.useState<number>(0);
     const [columns, setColumns] = React.useState<any[]>([]);
-    const [currentSortColumn, setCurrentSortColumn] = React.useState<number>(-1);
-    const [currentSortDirection, setCurrentSortDirection] = React.useState<string>("none");
     const [page, setPage] = React.useState<number>(0);
     const [shouldRefreshTable, setShouldRefreshTable] = React.useState<boolean>(true);
-    const [searchVal, setSearchVal] = React.useState<string>("");
     const [productInfoArray] = React.useState<ProductInfo[]>([]);
     const [firstStart, setFirstStart] = React.useState<boolean>(true);
+    const [sortItem, setSortItem] = React.useState<string>("-id");
 
     const classes = useStyles();
 
@@ -63,9 +61,9 @@ const Products: React.FC = (props: any) => {
     const productsRemoveData = useSelector((state: any) => state.main.productsRemoveData);
 
     const sortColumns = [
-        "name",
-        "warehouse",
-        "quantity"
+        [{item: "name"}],
+        [{item: "warehouse"}],
+        [{item: "quantity"}]
     ];
 
     useEffect(() => {
@@ -112,6 +110,13 @@ const Products: React.FC = (props: any) => {
                                         <ShoppingBasketIcon />
                                     </IconButton>
                                 </Tooltip>
+                                { user.is_superuser &&
+                                    <Tooltip title={t('products.updateProductQuantity')}>
+                                        <IconButton onClick={() => onUpdateProductQuantity(productInfo)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                }
                                 <Tooltip title={t('main.delete')}>
                                     <IconButton onClick={() => onDeleteClick(productInfo)}>
                                         <DeleteForeverIcon />
@@ -134,7 +139,7 @@ const Products: React.FC = (props: any) => {
             dispatch(setGlobalLoading(false));
         }
     }, [dispatch, globalLoadingState, loading]);
-    
+
     useEffect(() => {
         if (!productsGetProgress && productsData != null) {
             if(productsData.results != null) {
@@ -186,38 +191,6 @@ const Products: React.FC = (props: any) => {
             setShouldRefreshTable(true);
         }
     }, [dispatch, productsRemoveData, productsRemoveProgress, removeLoading, t]);
-    
-    useEffect(() => {
-        if (shouldRefreshTable) {
-            if (firstStart) {
-                setLoading(true);
-            }
-            if(currentSortColumn !== -1 && currentSortDirection !== 'none' && sortColumns[currentSortColumn] != null) {
-                let columnItem = sortColumns[currentSortColumn];
-
-                let prefix = "-";
-                if(currentSortDirection === 'asc') {
-                    prefix = '';
-                }
-
-                const sortItem = prefix + columnItem;
-
-                if(searchVal != null && searchVal.length > 0) {
-                    dispatch(getProducts(page, sortItem, searchVal));
-                } else {
-                    dispatch(getProducts(page, sortItem));
-                }
-            } else {
-                if(searchVal != null && searchVal.length > 0) {
-                    dispatch(getProducts(page, '-id', searchVal));
-                } else {
-                    dispatch(getProducts(page));
-                }
-            }
-            
-            setShouldRefreshTable(false);
-        }
-    }, [currentSortColumn, currentSortDirection, dispatch, firstStart, page, searchVal, shouldRefreshTable, sortColumns]);
 
     const onViewLimitsClick = (productInfoLocal: ProductInfo) => {
         setProductInfo(productInfoLocal);
@@ -239,6 +212,16 @@ const Products: React.FC = (props: any) => {
         setMoveModalOpen(false);
     };
 
+    const onUpdateProductQuantity = (productInfo: ProductInfo) => {
+        setProductInfo(productInfo);
+        setUpdateModalOpen(true);
+    };
+    const onUpdateProductQuantityCancel = (shouldRefresh: boolean) => {
+        setProductInfo({id: 0, limits: null, warehouse: null});
+        setShouldRefreshTable(shouldRefresh);
+        setUpdateModalOpen(false);
+    };
+
     const onOrderProductClick = (productInfo: ProductInfo) => {
         setProductInfo(productInfo);
         setOrderModalOpen(true);
@@ -249,86 +232,6 @@ const Products: React.FC = (props: any) => {
         setOrderModalOpen(false);
     };
 
-    let timeout: any;
-
-    const onTableChange = (action: string, tableState: any) => {
-        if (action === 'changePage') {
-            setLoading(true);
-
-            refreshPage(tableState.page, searchVal);
-
-            setPage(tableState.page);
-        } else if (action === 'sort') {
-            const columnId = tableState.activeColumn;
-
-            if (currentSortColumn !== -1 && currentSortColumn !== columnId) {
-                let tempColumns = [...columns];
-                let item = {...tempColumns[currentSortColumn]};
-                item.options.sortDirection = 'none';
-                tempColumns[currentSortColumn] = item;
-                setColumns(tempColumns);
-            }
-
-            setCurrentSortColumn(columnId);
-
-            let tempColumns = [...columns];
-            let item = {...tempColumns[columnId]};
-            if (item.options.sortDirection === 'none') {
-                item.options.sortDirection = 'desc';
-            } else if (item.options.sortDirection === 'desc') {
-                item.options.sortDirection = 'asc';
-            } else {
-                item.options.sortDirection = 'none';
-            }
-            tempColumns[columnId] = item;
-            setColumns(tempColumns);
-
-            let prefix = "-";
-            if(item.options.sortDirection === 'asc') {
-                prefix = '';
-            }
-
-            const serverColumn = columnId !== -1 || null ? item.options.sortDirection !== 'none' ? (prefix + sortColumns[columnId]) : "-id" : "-id";
-            setCurrentSortDirection(item.options.sortDirection);
-            setGlobalLoadingState(true);
-            dispatch(getProducts(tableState.page, serverColumn));
-        } else if (action === 'search') {
-            setSearchVal(tableState.searchText);
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-            timeout = setTimeout(function () {
-                setGlobalLoadingState(true);
-                refreshPage(tableState.page, tableState.searchText);
-            }, 1000);
-        }
-    };
-
-    const refreshPage = (localPage: number, searchValLocal: string = '') => {
-        if(currentSortColumn !== -1 && currentSortDirection !== 'none' && sortColumns[currentSortColumn] != null) {
-            let columnItem = sortColumns[currentSortColumn];
-
-            let prefix = "-";
-            if(currentSortDirection === 'asc') {
-                prefix = '';
-            }
-
-            const sortItem = prefix + columnItem;
-
-            if(searchValLocal != null && searchValLocal.length > 0) {
-                dispatch(getProducts(localPage, sortItem, searchValLocal));
-            } else {
-                dispatch(getProducts(localPage, sortItem));
-            }
-        } else {
-            if(searchValLocal != null && searchValLocal.length > 0) {
-                dispatch(getProducts(localPage, '-id', searchValLocal));
-            } else {
-                dispatch(getProducts(localPage));
-            }
-        }
-    };
-
     const handleAddClick = () => {
         setAddModalOpen(true);
     };
@@ -336,7 +239,7 @@ const Products: React.FC = (props: any) => {
     const onAddModalClose = (shouldRefresh: boolean) => {
         setAddModalOpen(false);
         if(shouldRefresh) {
-            refreshPage(page);
+            setShouldRefreshTable(true);
         }
     };
 
@@ -362,37 +265,61 @@ const Products: React.FC = (props: any) => {
         setRemoveModalOpen(false);
     };
 
+    const onRequest = (type: "sort" | "changePage" | "search" | "refreshTable", page: number, sortItem: string | null, searchVal: string | null) => {
+        if (firstStart) {
+            setLoading(true);
+        } else {
+            setGlobalLoadingState(true);
+        }
+
+        setPage(page);
+        if (sortItem != null) {
+            setSortItem(sortItem);
+        }
+        dispatch(getProducts(page, sortItem, searchVal));
+    };
+
+    const onTableRefreshed = () => {
+        setShouldRefreshTable(false);
+    };
+
+    const exportHeaders = [
+        {
+            name: t('products.name'),
+            download: true,
+        },
+        {
+            name: t('products.warehouse'),
+            download: true,
+        },
+        {
+            name: t('products.quantity'),
+            download: true,
+        },
+    ];
+
     const renderTable = () => {
         if (loading) {
             return <TablePlaceholder />;
         } else {
             return (
-                <div className={classes.paddingBottom}>
-                    <MUIDataTable
-                        title={t('main.products')}
-                        data={data}
-                        columns={columns}
-                        options={{
-                            rowsPerPageOptions: [],
-                            rowsPerPage: config.api.row_count,
-                            responsive: 'stacked',
-                            print: false,
-                            search: true,
-                            filter: false,
-                            rowHover: false,
-                            selectableRows: 'none',
-                            serverSide: true,
-                            download: false,
-                            page: page,
-                            count: count,
-                            textLabels: tableLocalization,
-                            searchText: searchVal,
-                            onSearchClose: () => setSearchVal(""),
-                            onTableChange: onTableChange,
-                            customToolbar: () => <DataTableToolbar isVisible={true} onAddButtonClick={handleAddClick}/>
-                        }}
-                    />
-                </div>
+                <StockedTable
+                    title={t('main.products')}
+                    count={count}
+                    columns={columns}
+                    data={data}
+                    sortColumns={sortColumns}
+                    sortItem={sortItem}
+                    addEnabled={true}
+                    onAddClick={handleAddClick}
+                    onRequest={onRequest}
+                    exportEnabled={true}
+                    exportFileName="products.csv"
+                    exportHeader={exportHeaders}
+                    page={page}
+                    refreshTable={shouldRefreshTable}
+                    onTableRefreshed={onTableRefreshed}
+                />
             );
         }
     };
@@ -403,6 +330,7 @@ const Products: React.FC = (props: any) => {
             <LimitsViewer open={limitsModalOpen} onClose={onViewLimitsCancel} productData={productInfo} />
             <ProductMove open={moveModalOpen} onClose={onMoveClickCancel} productData={productInfo} />
             <ProductOrder open={orderModalOpen} onClose={onOrderProductCancel} productData={productInfo} />
+            <ProductQuantityUpdate open={updateModalOpen} productData={productInfo} onClose={onUpdateProductQuantityCancel} />
             <StockedModal
                 form
                 title={t('products.removeProductTitle')}

@@ -32,10 +32,10 @@ const Loader = () => (
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
-            <Suspense fallback={<Loader/>}>
-                <CssBaseline />
-                <App />
-            </Suspense>
+                <Suspense fallback={<Loader/>}>
+                    <CssBaseline />
+                    <App />
+                </Suspense>
         </ThemeProvider>
     </Provider>,
     document.getElementById('root')

@@ -9,11 +9,23 @@ import LoginPage from "./routes/login";
 import Cookies from "js-cookie";
 import { setUserData } from "./redux/actions";
 import config from "./config";
+import MomentUtils from "@date-io/moment";
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import moment from "moment";
+import {useTranslation} from "react-i18next";
+import "moment/locale/uk";
 
 
 const App: React.FC = () => {
     const [shouldLogin, setShouldLogin] = React.useState(true);
+    const [locale, setLocale] = React.useState("en");
+    const { i18n } = useTranslation();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        moment.locale(i18n.language);
+        setLocale(i18n.language);
+    }, [i18n.language]);
 
     useEffect(() => {
         const userData = Cookies.get('user_data');
@@ -24,25 +36,38 @@ const App: React.FC = () => {
                 Cookies.remove('token');
                 setShouldLogin(true);
             } else {
-                const userDataParsed = JSON.parse(userData);
-                if (userDataParsed.auth_token !== token) {
+                try {
+                    const decodedUserData = Base64.decode(userData);
+                    const userDataParsed = JSON.parse(decodedUserData);
+                    if (userDataParsed.auth_token !== token) {
+                        Cookies.remove('user_data');
+                        Cookies.remove('token');
+
+                        dispatch(setUserData({}));
+
+                        setShouldLogin(true);
+                    } else {
+                        dispatch(setUserData(userDataParsed));
+                        setShouldLogin(false);
+                    }
+                } catch (e) {
                     Cookies.remove('user_data');
-                    Cookies.remove('token');
-
-                    dispatch(setUserData({}));
-
                     setShouldLogin(true);
-                } else {
-                    dispatch(setUserData(userDataParsed));
-                    setShouldLogin(false);
                 }
             }
         } else {
             if (userData != null) {
-                const userDataParsed = JSON.parse(userData);
-                dispatch(setUserData(userDataParsed));
-                setShouldLogin(false);
+                try {
+                    const decodedUserData = Base64.decode(userData);
+                    const userDataParsed = JSON.parse(decodedUserData);
+                    dispatch(setUserData(userDataParsed));
+                    setShouldLogin(false);
+                } catch (e) {
+                    Cookies.remove('user_data');
+                    setShouldLogin(true);
+                }
             } else {
+                dispatch(setUserData({}));
                 setShouldLogin(true);
             }
         }
@@ -50,13 +75,17 @@ const App: React.FC = () => {
 
     if (shouldLogin) {
         return (
-            <LoginPage />
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+                <LoginPage />
+            </MuiPickersUtilsProvider>
         );
     } else {
         return (
-            <Router>
-                <StockedDrawer />
-            </Router>
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+                <Router>
+                    <StockedDrawer />
+                </Router>
+            </MuiPickersUtilsProvider>
         );
     }
 };

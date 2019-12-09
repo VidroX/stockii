@@ -4,35 +4,32 @@ import useToolbarTitle from "../hooks/toolbarTitle";
 import StockedModal from "../components/modal";
 import {IconButton, makeStyles, Theme, Tooltip} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
-import TablePlaceholder from "../components/tablePlaceholder";
 import {
-    getWarehouses,
-    removeWarehouse,
+    getUsers,
+    removeUser,
     setGlobalLoading,
     setSnackbar,
     showSnackbar
 } from "../redux/actions";
 import config from "../config";
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
 import {green, red} from "@material-ui/core/colors";
-import FaceIcon from '@material-ui/icons/Face';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import WarehouseAccess from "../components/warehouses/warehouseAccess";
-import WarehouseAdd from "../components/warehouses/warehouseAdd";
-import {Warehouse} from "../intefaces";
+import {ProviderInterface} from "../intefaces";
 import StockedTable from "../components/stockedTable";
+import TablePlaceholder from "../components/tablePlaceholder";
+import UsersAdd from "../components/users/usersAdd";
+import moment from "moment";
 
-const Warehouses: React.FC = (props: any) => {
-    const { t } = useTranslation();
+const Users: React.FC = (props: any) => {
+    const { t, i18n } = useTranslation();
+
     const [modalOpen, setModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
-    const [accessModalOpen, setAccessModalOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const [removeWarehouseLoading, setRemoveWarehouseLoading] = React.useState(false);
+    const [removeLoading, setRemoveLoading] = React.useState(false);
     const [globalLoadingState, setGlobalLoadingState] = React.useState(false);
-    const [data, setData] = React.useState<Warehouse[]>([]);
-    const [columnId, setColumnId] = React.useState<number>(0);
+    const [userId, setUserId] = React.useState<number>(0);
+    const [data, setData] = React.useState<ProviderInterface[]>([]);
     const [count, setCount] = React.useState<number>(0);
     const [columns, setColumns] = React.useState<any[]>([]);
     const [shouldRefreshTable, setShouldRefreshTable] = React.useState<boolean>(true);
@@ -42,65 +39,49 @@ const Warehouses: React.FC = (props: any) => {
 
     const classes = useStyles();
 
-    useToolbarTitle(t('main.warehouses'));
+    useToolbarTitle(t('main.users'));
 
     const dispatch = useDispatch();
-    const warehousesData = useSelector((state: any) => state.main.warehousesData);
+    const userListProgress = useSelector((state: any) => state.main.userListProgress);
+    const userListData = useSelector((state: any) => state.main.userListData);
+    const userRemoveProgress = useSelector((state: any) => state.main.userRemoveProgress);
+    const userRemoveData = useSelector((state: any) => state.main.userRemoveData);
     const user = useSelector((state: any) => state.main.userData);
-    const warehouseRemoveProgress = useSelector((state: any) => state.main.warehouseRemoveProgress);
-    const removeWarehousesData = useSelector((state: any) => state.main.removeWarehousesData);
 
     const sortColumns = [
-        [{item: "location"}],
-        [{item: "working_from"}],
-        [{item: "working_to"}],
-        [{item: "weekends"}],
-        [{item: "phone"}]
+        [{item: "last_name"}],
+        [{item: "email"}],
+        [{item: "birthday"}],
+        [{item: "mobile_phone"}]
     ];
 
     useEffect(() => {
         let columns: any[] = [
             {
-                name: t('main.location'),
+                name: t('users.fullName'),
                 options: {
                     sortDirection: 'none'
                 }
             },
             {
-                name: t('main.workingFrom'),
+                name: t('main.email'),
                 options: {
                     sortDirection: 'none'
                 }
             },
             {
-                name: t('main.workingTo'),
+                name: t('users.birthday'),
                 options: {
                     sortDirection: 'none'
                 }
             },
             {
-                name: t('main.weekends'),
-                options: {
-                    sortDirection: 'none',
-                    customBodyRender: (value: boolean) => {
-                        if (value) {
-                            return <DoneIcon className={classes.available} />;
-                        } else {
-                            return <ClearIcon className={classes.notAvailable} />;
-                        }
-                    }
-                }
-            },
-            {
-                name: t('main.phone'),
+                name: t('users.mobilePhone'),
                 options: {
                     sortDirection: 'none'
                 }
-            }
-        ];
-
-        if(user.is_superuser) {
-            columns.push({
+            },
+            {
                 name: t('main.actions'),
                 options: {
                     sort: false,
@@ -108,11 +89,6 @@ const Warehouses: React.FC = (props: any) => {
                     customBodyRender: (id: number) => {
                         return (
                             <div className={classes.actions}>
-                                <Tooltip title={t('main.giveAccess')}>
-                                    <IconButton onClick={() => onGiveAccessClick(id)}>
-                                        <FaceIcon />
-                                    </IconButton>
-                                </Tooltip>
                                 <Tooltip title={t('main.delete')}>
                                     <IconButton onClick={() => onDeleteClick(id)}>
                                         <DeleteForeverIcon />
@@ -122,8 +98,8 @@ const Warehouses: React.FC = (props: any) => {
                         );
                     }
                 }
-            });
-        }
+            }
+        ];
 
         setColumns(columns);
     }, [classes, t, user.is_superuser]);
@@ -137,33 +113,24 @@ const Warehouses: React.FC = (props: any) => {
     }, [dispatch, globalLoadingState, loading]);
 
     useEffect(() => {
-        if (warehousesData != null && !warehousesData.isFetching) {
-            if(warehousesData.error) {
+        if (!userListProgress && userListData != null) {
+            if(userListData.error) {
                 setFirstStart(false);
                 setLoading(false);
                 setGlobalLoadingState(false);
-            } else if(warehousesData.data != null && warehousesData.data.results != null) {
-                let warehouseMap = [];
-                if(user.is_superuser) {
-                    warehouseMap = warehousesData.data.results.map((obj: any) => [
-                        obj.location,
-                        obj.working_from,
-                        obj.working_to,
-                        obj.weekends,
-                        obj.phone,
+            } else if(userListData.results != null) {
+                const usersMap = userListData.results.filter((obj: any) => obj.id !== user.id).map((obj: any) => {
+                    return [
+                        obj.last_name + " " + obj.first_name + (obj.patronymic != null ? ' ' + obj.patronymic : ''),
+                        obj.email,
+                        moment(obj.birthday, "YYYY-MM-DD").format(i18n.language === 'en' ? 'DD/MM/YYYY' : 'DD.MM.YYYY').toString(),
+                        obj.mobile_phone,
                         obj.id
-                    ]);
-                } else {
-                    warehouseMap = warehousesData.data.results.map((obj: any) => [
-                        obj.location,
-                        obj.working_from,
-                        obj.working_to,
-                        obj.weekends,
-                        obj.phone
-                    ]);
-                }
-                setData(warehouseMap);
-                setCount(warehousesData.data.count);
+                    ];
+                });
+                setData(usersMap);
+                const localCount = userListData.count - 1;
+                setCount(localCount >= 0 ? localCount : 0);
             }
             setFirstStart(false);
             setLoading(false);
@@ -174,33 +141,24 @@ const Warehouses: React.FC = (props: any) => {
             setLoading(false);
             setGlobalLoadingState(false);
         }, config.main.connectionTimeout)
-    }, [user.is_superuser, warehousesData]);
+    }, [userListProgress, userListData, user, i18n.language]);
 
     useEffect(() => {
-        if (removeWarehouseLoading && !warehouseRemoveProgress && removeWarehousesData != null) {
-            if (removeWarehousesData.detail == null && removeWarehousesData.status === 12) {
-                dispatch(setSnackbar(t('main.warehouseDeleted'), 'success'));
-            } else if (removeWarehousesData.detail == null && removeWarehousesData.status !== 12) {
-                dispatch(setSnackbar(t('main.unableToDeleteWarehouse'), 'error'));
+        if (removeLoading && !userRemoveProgress && userRemoveData != null) {
+            if (userRemoveData.detail == null && userRemoveData.status === 12) {
+                dispatch(setSnackbar(t('users.userRemoved'), 'success'));
+            } else if (userRemoveData.detail == null && userRemoveData.status !== 12) {
+                dispatch(setSnackbar(t('users.unableToRemoveUser'), 'error'));
             } else {
-                dispatch(setSnackbar(removeWarehousesData.detail, 'error'));
+                dispatch(setSnackbar(userRemoveData.detail, 'error'));
             }
 
-            setRemoveWarehouseLoading(false);
+            setRemoveLoading(false);
             dispatch(setGlobalLoading(false));
             dispatch(showSnackbar(true));
             setShouldRefreshTable(true);
         }
-    }, [dispatch, removeWarehouseLoading, removeWarehousesData, t, warehouseRemoveProgress]);
-
-    const onGiveAccessClick = (id: number) => {
-        setColumnId(id);
-        setAccessModalOpen(true);
-    };
-    const onGiveAccessCancel = () => {
-        setColumnId(0);
-        setAccessModalOpen(false);
-    };
+    }, [dispatch, userRemoveData, userRemoveProgress, removeLoading, t]);
 
     const handleAddClick = () => {
         setModalOpen(true);
@@ -209,26 +167,28 @@ const Warehouses: React.FC = (props: any) => {
     const onModalClose = (shouldRefresh: boolean) => {
         setModalOpen(false);
         if(shouldRefresh) {
-            setShouldRefreshTable(true);
+            setShouldRefreshTable(shouldRefresh);
         }
     };
 
     const onRemoveModalClose = () => {
-        setColumnId(0);
+        setUserId(0);
         setRemoveModalOpen(false);
     };
 
     const onDeleteClick = (id: number) => {
-        setColumnId(id);
+        setUserId(id);
         setRemoveModalOpen(true);
     };
 
     const onDeleteClickSubmit = (e: any) => {
         e.preventDefault();
 
-        setRemoveWarehouseLoading(true);
-        dispatch(setGlobalLoading(true));
-        dispatch(removeWarehouse(columnId));
+        if (userId != null && userId > 0) {
+            setRemoveLoading(true);
+            dispatch(setGlobalLoading(true));
+            dispatch(removeUser(userId));
+        }
 
         setRemoveModalOpen(false);
     };
@@ -244,35 +204,12 @@ const Warehouses: React.FC = (props: any) => {
         if (sortItem != null) {
             setSortItem(sortItem);
         }
-        dispatch(getWarehouses(page, sortItem, searchVal));
+        dispatch(getUsers(page, sortItem, searchVal));
     };
 
     const onTableRefreshed = () => {
         setShouldRefreshTable(false);
     };
-
-    const exportHeaders = [
-        {
-            name: t('main.location'),
-            download: true
-        },
-        {
-            name: t('main.workingFrom'),
-            download: true
-        },
-        {
-            name: t('main.workingTo'),
-            download: true
-        },
-        {
-            name: t('main.weekends'),
-            download: true
-        },
-        {
-            name: t('main.phone'),
-            download: true
-        }
-    ];
 
     const renderTable = () => {
         if (loading) {
@@ -280,19 +217,16 @@ const Warehouses: React.FC = (props: any) => {
         } else {
             return (
                 <StockedTable
-                    page={page}
-                    title={user.is_superuser ? t('main.yourWarehouses') : t('main.availableWarehouses')}
+                    title={t('main.users')}
                     count={count}
                     columns={columns}
                     data={data}
-                    exportEnabled={true}
-                    exportFileName="warehouses.csv"
-                    exportHeader={exportHeaders}
                     sortColumns={sortColumns}
                     sortItem={sortItem}
-                    addEnabled={false}
+                    addEnabled={user.is_superuser != null ? user.is_superuser : false}
                     onAddClick={handleAddClick}
                     onRequest={onRequest}
+                    page={page}
                     refreshTable={shouldRefreshTable}
                     onTableRefreshed={onTableRefreshed}
                 />
@@ -302,12 +236,11 @@ const Warehouses: React.FC = (props: any) => {
 
     return (
         <React.Fragment>
-            <WarehouseAccess open={accessModalOpen} warehouseId={columnId} onClose={onGiveAccessCancel} />
-            <WarehouseAdd open={modalOpen} onClose={onModalClose} />
+            <UsersAdd open={modalOpen} onClose={onModalClose} />
             <StockedModal
                 form
-                title={t('main.removeWarehouseTitle')}
-                contentText={t('main.removeWarehouseBody')}
+                title={t('users.removeUserTitle')}
+                contentText={t('users.removeUserBody')}
                 actionOk={t('main.yes')}
                 actionCancel={t("main.no")}
                 open={removeModalOpen}
@@ -320,12 +253,6 @@ const Warehouses: React.FC = (props: any) => {
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
-    available: {
-        color: green[300]
-    },
-    notAvailable: {
-        color: red[300]
-    },
     paddingBottom: {
         paddingBottom: 24
     },
@@ -338,7 +265,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         [theme.breakpoints.down('sm')]: {
             marginLeft: -14
         }
+    },
+    available: {
+        color: green[300]
+    },
+    notAvailable: {
+        color: red[300]
     }
 }));
 
-export default Warehouses;
+export default Users;

@@ -14,12 +14,12 @@ class ProvidersListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, SuperUserCreateOnly]
     queryset = Provider.objects.all()
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
-    ordering_fields = ['id', 'name', 'working_from', 'working_to', 'weekends']
-    search_fields = ['name', 'working_from', 'working_to']
+    ordering_fields = ['id', 'name', 'working_from', 'working_to', 'weekends', 'average_delivery_time', 'phone']
+    search_fields = ['name', 'working_from', 'working_to', 'phone']
 
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated, IsAdminUser])
+@permission_classes([IsAdminUser])
 def delete_provider(request, provider_id):
     if provider_id is not None and provider_id > 0:
         user = request.user

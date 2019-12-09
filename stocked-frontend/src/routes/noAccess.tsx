@@ -1,18 +1,18 @@
 import React from "react";
-import useToolbarTitle from "../hooks/toolbarTitle";
 import {useTranslation} from "react-i18next";
+import useToolbarTitle from "../hooks/toolbarTitle";
 
-const NoMatch: React.FC = () => {
+const NoAccess: React.FC = () => {
     const { t } = useTranslation();
-    useToolbarTitle(t('main.notFound'));
+    useToolbarTitle(t('main.noAccess'));
 
     return (
         <React.Fragment>
             <div>
-                404 - Not Found!
+                405 - Not Allowed!
             </div>
         </React.Fragment>
     );
 };
 
-export default NoMatch;
+export default NoAccess;

@@ -1,2 +1,2 @@
 # Stockii
-Inventory management system
+Warehouse Management System

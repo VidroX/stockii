@@ -44,6 +44,7 @@ const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAcc
     const isDataLoading = useSelector((state: any) => state.main.isDataLoading);
     const userAccessProgress = useSelector((state: any) => state.main.userAccessProgress);
     const userAccessData = useSelector((state: any) => state.main.userAccessData);
+    const user = useSelector((state: any) => state.main.userData);
 
     useEffect(() => {
         if (!open) {
@@ -62,7 +63,7 @@ const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAcc
                 dispatch(showSnackbar(true));
             }
 
-            setSuggestions(userListData.results.map((obj: any) => {
+            setSuggestions(userListData.results.filter((obj: any) => obj.id !== user.id).map((obj: any) => {
                 return {
                     id: obj.id,
                     label: obj.last_name + " " + obj.first_name + (obj.patronymic != null ? " " + obj.patronymic : "")
@@ -71,7 +72,7 @@ const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAcc
 
             setLoading(false);
         }
-    }, [dispatch, loading, userListData]);
+    }, [dispatch, loading, userListData, user.id]);
 
     useEffect(() => {
         if (resultLoading && !userAccessProgress && userAccessData != null && userAccessData.status === 15) {
@@ -108,7 +109,7 @@ const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAcc
 
     const onSubmit = (e: any) => {
         e.preventDefault();
-        
+
         setResultLoading(true);
         dispatch(setGlobalLoading(true));
         dispatch(addAccessToWarehouse(userId, warehouseId));

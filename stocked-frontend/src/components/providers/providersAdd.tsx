@@ -15,10 +15,10 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import MaskedInput from "react-text-mask";
 import config from "../../config";
-import {addWarehouse, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
+import {addProvider, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
 import PhoneMask from "../phoneMask";
 
-interface WarehouseAdd {
+interface ProvidersAddInterface {
     open: boolean,
     onOpen?(): void,
     onClose?(shouldRefresh: boolean): void
@@ -43,7 +43,7 @@ function TimeMask(props: TextMaskCustomProps) {
     );
 }
 
-const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
+const ProviderAdd: React.FC<ProvidersAddInterface> = (props: ProvidersAddInterface) => {
     const {
         onOpen,
         onClose,
@@ -56,10 +56,15 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
     const classes = useStyles();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [location, setLocation] = React.useState({
+    const [name, setName] = React.useState({
         error: false,
         errorText: "",
         value: ""
+    });
+    const [avgDelivery, setAvgDelivery] = React.useState({
+        error: false,
+        errorText: "",
+        value: 1
     });
     const [workingFrom, setWorkingFrom] = React.useState({
         error: false,
@@ -81,14 +86,19 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const dispatch = useDispatch();
-    const warehouseAddProgress = useSelector((state: any) => state.main.warehouseAddProgress);
-    const addWarehousesData = useSelector((state: any) => state.main.addWarehousesData);
+    const providersCreateProgress = useSelector((state: any) => state.main.providersCreateProgress);
+    const providersCreateData = useSelector((state: any) => state.main.providersCreateData);
 
     const clearFields = (clearValues: boolean = false) => {
-        setLocation({
+        setName({
            error: false,
            errorText: "",
-           value: clearValues ? "" : location.value
+           value: clearValues ? "" : name.value
+        });
+        setAvgDelivery({
+            error: false,
+            errorText: "",
+            value: clearValues ? 0 : avgDelivery.value
         });
         setWorkingFrom({
             error: false,
@@ -111,10 +121,15 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
 
     useEffect(() => {
         if (!open) {
-            setLocation({
+            setName({
                 error: false,
                 errorText: "",
                 value: ""
+            });
+            setAvgDelivery({
+                error: false,
+                errorText: "",
+                value: 1
             });
             setWorkingFrom({
                 error: false,
@@ -137,12 +152,12 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
     }, [open]);
 
     useEffect(() => {
-        if (loading && !warehouseAddProgress && addWarehousesData != null) {
-            if (addWarehousesData.id == null && addWarehousesData.location != null) {
-                setLocation({
+        if (loading && !providersCreateProgress && providersCreateData != null) {
+            if (providersCreateData.id == null && providersCreateData.name != null) {
+                setName({
                     error: true,
-                    errorText: t('main.warehouseAlreadyExists'),
-                    value: location.value
+                    errorText: t('shipments.providerAlreadyExists'),
+                    value: name.value
                 });
                 setLoading(false);
                 dispatch(setGlobalLoading(false));
@@ -151,24 +166,31 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
 
             setLoading(false);
             dispatch(setGlobalLoading(false));
-            dispatch(setSnackbar(t('main.warehouseAdded'), 'success'));
+            dispatch(setSnackbar(t('shipments.providerAdded'), 'success'));
             dispatch(showSnackbar(true));
 
             if(onClose) {
                 onClose(true);
             }
         }
-    }, [addWarehousesData, dispatch, loading, location.value, onClose, t, warehouseAddProgress]);
+    }, [dispatch, loading, name, onClose, providersCreateData, providersCreateProgress, t]);
 
     const onSubmit = (e: any) => {
         e.preventDefault();
         clearFields();
 
-        if (location.value.length < 1) {
-            setLocation({
+        if (name.value.length < 1) {
+            setName({
                 error: true,
                 errorText: t('common.fieldEmpty'),
-                value: location.value
+                value: name.value
+            });
+        }
+        if (avgDelivery.value < 1) {
+            setName({
+                error: true,
+                errorText: t('common.incorrectValue'),
+                value: name.value
             });
         }
         if (workingFrom.value.length !== 8) {
@@ -208,7 +230,7 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
             setLoading(true);
             dispatch(setGlobalLoading(true));
 
-            dispatch(addWarehouse(location.value, workingFrom.value, workingTo.value, phone.value, weekends));
+            dispatch(addProvider(name.value, workingFrom.value, workingTo.value, avgDelivery.value, phone.value, weekends));
 
             setTimeout(() => {
                 setLoading(false);
@@ -338,10 +360,11 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
     };
 
     const isEverythingCompleted = (): boolean => {
-        return (location.value.length > 0 && !location.error) &&
-            (workingFrom.value.length === 8 && !workingFrom.error) &&
-            (workingTo.value.length === 8 && !workingTo.error) &&
-            (phone.value.length === 13 && !phone.error);
+        return  (name.value.length > 0 && !name.error) &&
+                (avgDelivery.value != null && avgDelivery.value > 0) &&
+                (workingFrom.value.length === 8 && !workingFrom.error) &&
+                (workingTo.value.length === 8 && !workingTo.error) &&
+                (phone.value.length === 13 && !phone.error);
     };
 
     return (
@@ -355,19 +378,19 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
             scroll="body"
         >
             <form className={classes.form} onSubmit={onSubmit} method="post">
-                <DialogTitle>{ t('main.addWarehouse') }</DialogTitle>
+                <DialogTitle>{ t('shipments.addProvider') }</DialogTitle>
                 <DialogContent className={classes.content}>
                     <TextField
                         className={classes.textField}
-                        label={t('main.location')}
+                        label={t('main.name')}
                         variant="outlined"
-                        value={location.value}
+                        value={name.value}
                         required
                         margin={fullScreen ? "normal" : "dense"}
-                        error={location.error}
-                        helperText={location.errorText}
+                        error={name.error}
+                        helperText={name.errorText}
                         onChange={(e) => {
-                            setLocation({
+                            setName({
                                 error: false,
                                 errorText: "",
                                 value: e.target.value
@@ -412,6 +435,25 @@ const WarehouseAdd: React.FC<WarehouseAdd> = (props: WarehouseAdd) => {
                         }}
                         InputProps={{
                             inputComponent: TimeMask as any,
+                        }}
+                    />
+                    <TextField
+                        className={classes.textField}
+                        label={t('main.averageDeliveryTime')}
+                        variant="outlined"
+                        value={isNaN(avgDelivery.value) ? 0 : avgDelivery.value}
+                        required
+                        error={avgDelivery.error}
+                        helperText={avgDelivery.errorText}
+                        type="number"
+                        margin={fullScreen ? "normal" : "dense"}
+                        inputProps={{ min: "1", step: "1" }}
+                        onChange={(e) => {
+                            setAvgDelivery({
+                                error: false,
+                                errorText: "",
+                                value: parseInt(e.target.value) != null ? parseInt(e.target.value) : 0
+                            });
                         }}
                     />
                     <TextField
@@ -486,4 +528,4 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export default WarehouseAdd;
+export default ProviderAdd;

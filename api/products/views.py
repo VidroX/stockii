@@ -1,12 +1,54 @@
+import requests
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, filters, status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from api.products.serializers import ProductSerializer, ProductCreateSerializer
 from api.statuses import STATUS_CODE
+from api.tokens import get_token_from_header
 from products.models import Product, ProductLimit
+from shipments.models import Shipment, Provider
+from stocked.settings import CONFIG
+from tasks import get_estimated_time
 from warehouses.models import WarehouseAccess, Warehouse
+
+
+def initiate_stock_refill(token, product, quantity):
+    if product is None and (quantity is None or (quantity is not None and int(quantity) < 0)):
+        raise ValidationError('Please provide product data and quantity')
+
+    if token is None:
+        raise ValidationError('Please provide user and token data')
+
+    endpoint = CONFIG['api']['localUrl'] + 'products/refill/' + str(product.id) + '/'
+
+    data = {
+        'quantity': quantity
+    }
+
+    return requests.post(url=endpoint, data=data, headers={'Authorization': 'Bearer ' + str(token)})
+
+
+def refill_stock(token, product, provider, delivery_date, quantity):
+    if product is None or provider is None or delivery_date is None or\
+            (quantity is None or (quantity is not None and int(quantity) < 0)):
+        raise ValidationError('Please provide product, provider, delivery_date and quantity data')
+
+    if token is None:
+        raise ValidationError('Please provide user and token data')
+
+    endpoint = CONFIG['api']['localUrl'] + 'shipments/'
+
+    data = {
+        'product': product.id,
+        'quantity': quantity,
+        'provider': provider.id,
+        'approximate_delivery': delivery_date.strftime('%Y-%m-%d')
+    }
+
+    return requests.post(url=endpoint, data=data, headers={'Authorization': 'Bearer ' + str(token)})
 
 
 class ProductsListView(generics.ListCreateAPIView):
@@ -73,35 +115,54 @@ def change_product(request, product_id):
         elif request.method == "PUT":
             product = get_object_or_404(Product, id=product_id)
 
-            try:
-                product_limit = ProductLimit.objects.get(product=product)
-            except ProductLimit.DoesNotExist:
-                product_limit = None
-
-            quantity = int(request.data.get('quantity', -1))
+            force = request.data.get('force', False)
+            quantity = request.data.get('quantity', None)
             warehouse = request.data.get('warehouse', None)
             name = request.data.get('name', None)
 
-            if product_limit is not None and quantity >= 0:
-                if quantity < product_limit.min_amount:
-                    return Response({
-                        'status': 22,
-                        'message': STATUS_CODE[22]
-                    })
-                if quantity > product_limit.max_amount:
-                    return Response({
-                        'status': 23,
-                        'message': STATUS_CODE[23]
-                    })
+            if quantity is not None and int(quantity) < 0:
+                return Response({
+                    'status': 29,
+                    'message': STATUS_CODE[29]
+                })
+
+            new_quantity = -1
+            if quantity is not None and int(quantity) >= 0:
+                shipments = Shipment.objects.filter(product=product)
+                new_quantity = int(quantity)
+                for shipment in shipments:
+                    if shipment.status == 1:
+                        new_quantity += shipment.quantity
+
+                try:
+                    product_limit = ProductLimit.objects.get(product=product)
+                except ProductLimit.DoesNotExist:
+                    product_limit = None
+
+                if not force and product_limit is not None and new_quantity >= 0:
+                    if new_quantity < product_limit.min_amount:
+                        return Response({
+                            'status': 22,
+                            'message': STATUS_CODE[22]
+                        })
+                    if new_quantity > product_limit.max_amount:
+                        return Response({
+                            'status': 23,
+                            'message': STATUS_CODE[23]
+                        })
+                elif force and product_limit is not None and new_quantity < product_limit.min_amount:
+                    token = get_token_from_header(request.headers)
+                    refill_quantity = product_limit.min_amount - new_quantity
+                    initiate_stock_refill(token, product, refill_quantity)
 
             if name is not None:
                 product.name = name
-            if quantity >= 0:
-                product.quantity = quantity
+            if quantity is not None and int(quantity) >= 0:
+                product.quantity = int(quantity)
             if warehouse is not None and int(warehouse) > 0:
                 _warehouse = get_object_or_404(Warehouse, id=warehouse)
                 product.warehouse = _warehouse
-            if (warehouse is not None and int(warehouse) > 0) or quantity >= 0 or name is not None:
+            if (warehouse is not None and int(warehouse) > 0) or new_quantity >= 0 or name is not None:
                 product.save()
 
             return Response({
@@ -148,28 +209,41 @@ def set_product_limit(request, product_id):
                     'message': STATUS_CODE[26]
                 })
 
+            shipments = Shipment.objects.filter(product=product)
+
             try:
                 product_limit = ProductLimit.objects.get(product=product)
             except ProductLimit.DoesNotExist:
                 product_limit = ProductLimit(product=product, min_amount=min_amount, max_amount=max_amount)
-                if product_limit.min_amount > product.quantity:
+
+                new_quantity = product.quantity
+                for shipment in shipments:
+                    if shipment.status == 1:
+                        new_quantity += shipment.quantity
+
+                if product_limit.min_amount > new_quantity:
                     return Response({
                         'status': 24,
                         'message': STATUS_CODE[24]
                     })
-                if product_limit.max_amount < product.quantity:
+                if product_limit.max_amount < new_quantity:
                     return Response({
                         'status': 25,
                         'message': STATUS_CODE[25]
                     })
                 product_limit.save()
 
-            if product.quantity < min_amount:
+            new_quantity = product.quantity
+            for shipment in shipments:
+                if shipment.status == 1:
+                    new_quantity += shipment.quantity
+
+            if new_quantity < min_amount:
                 return Response({
                     'status': 22,
                     'message': STATUS_CODE[22]
                 })
-            if product.quantity > max_amount:
+            if new_quantity > max_amount:
                 return Response({
                     'status': 23,
                     'message': STATUS_CODE[23]
@@ -196,3 +270,52 @@ def set_product_limit(request, product_id):
             'status': 21,
             'message': STATUS_CODE[21]
         })
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def refill_product(request, product_id):
+    if product_id is not None and product_id > 0:
+        if request.method == "POST":
+            product = get_object_or_404(Product, id=product_id)
+            token = get_token_from_header(request.headers)
+            fastest_provider = Provider.objects.order_by(
+                'average_delivery_time',
+                '-weekends'
+            )[0]
+            quantity = request.data.get('quantity', 1)
+
+            if quantity is not None and int(quantity) < 1:
+                return Response({
+                    'status': 29,
+                    'message': STATUS_CODE[29]
+                })
+
+            estimated = get_estimated_time(fastest_provider)
+
+            r = refill_stock(token, product, fastest_provider, estimated, quantity)
+
+            if r:
+                return Response({
+                    'status': 12,
+                    'message': STATUS_CODE[12]
+                })
+            else:
+                return Response({
+                    'status': 30,
+                    'message': STATUS_CODE[30]
+                })
+        else:
+            response = Response({
+                'status': 20,
+                'message': STATUS_CODE[20]
+            })
+            response.status_code = 405
+            return response
+
+    else:
+        return Response({
+            'status': 21,
+            'message': STATUS_CODE[21]
+        })
+

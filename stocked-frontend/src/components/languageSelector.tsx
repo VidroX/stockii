@@ -1,9 +1,14 @@
 import React from "react";
-import { Button, makeStyles, Menu, MenuItem } from "@material-ui/core";
+import {Button, IconButton, makeStyles, Menu, MenuItem} from "@material-ui/core";
 import { FlagIcon } from "react-flag-kit";
 import { useTranslation } from "react-i18next";
+import { LanguageSelectorInterface } from "../intefaces";
+import Cookies from "js-cookie";
+import moment from "moment";
 
-const LanguageSelector: React.FC = () => {
+const LanguageSelector: React.FC<LanguageSelectorInterface> = (props: LanguageSelectorInterface) => {
+    const { type } = props;
+
     const [anchorLanguageEl, setAnchorLanguageEl] = React.useState(null);
     const isLanguageMenuOpened = Boolean(anchorLanguageEl);
     const { t, i18n } = useTranslation();
@@ -27,21 +32,50 @@ const LanguageSelector: React.FC = () => {
     };
 
     const changeLanguage = (language: string) => {
-        i18n.changeLanguage(language);
-        setAnchorLanguageEl(null);
+        i18n.changeLanguage(language).then(() => {
+            setAnchorLanguageEl(null);
+
+            document.documentElement.lang = i18n.language;
+
+            Cookies.set(
+                'language',
+                i18n.language,
+                {
+                    expires: moment().add(1, 'year').toDate(),
+                    secure: document.location.protocol === 'https:',
+                    sameSite: 'lax'
+                }
+            );
+        });
+    };
+
+    const renderButton = () => {
+        if (type === 'IconButton') {
+            return <IconButton
+                        aria-label="Language select"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleSelectLanguageMenu}
+                        color="inherit"
+                    >
+                        {getLanguageFlag()}
+                    </IconButton>;
+        } else {
+            return <Button
+                        aria-label="Language select"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleSelectLanguageMenu}
+                        color="inherit"
+                    >
+                        {getLanguageFlag()}
+                    </Button>;
+        }
     };
 
     return (
         <div>
-            <Button
-                aria-label="Language select"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleSelectLanguageMenu}
-                color="inherit"
-            >
-                {getLanguageFlag()}
-            </Button>
+            { renderButton() }
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorLanguageEl}

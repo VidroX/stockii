@@ -1,6 +1,3 @@
-from django.utils.translation import ugettext as _
-
-
 STATUS_CODE = {
     0: "You have successfully registered.",
     1: "You have successfully registered. You can login now.",
@@ -29,5 +26,10 @@ STATUS_CODE = {
     24: "Minimum quantity is more than product quantity.",
     25: "Maximum quantity is less than product quantity.",
     26: "Incorrect quantity range.",
-    27: "Incorrect status."
+    27: "Incorrect status.",
+    28: "Total quantity more than allowed.",
+    29: "Quantity can't be a negative number.",
+    30: "Unable to contact API server. Please, try again later.",
+    31: "You don't have enough rights to change this object.",
+    32: "You don't have enough rights to view this object."
 }

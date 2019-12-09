@@ -15,18 +15,18 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import config from "../../config";
 import {createShipment, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
-import {GenericProductInterface, ProviderDeliveryTimes, ProviderOptionType} from "../../intefaces";
+import {GenericCreateInterface, ProviderDeliveryTimes, ProviderOptionType, OptionType} from "../../intefaces";
 import ProviderSelector from "../providers/providerSelector";
 import moment from "moment";
+import ProductSelector from "../products/productSelector";
 
 const placeholderDate = moment().add(2, 'days').format('YYYY-MM-DD');
 
-const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductInterface) => {
+const ShipmentsCreate: React.FC<GenericCreateInterface> = (props: GenericCreateInterface) => {
     const {
         onOpen,
         onClose,
-        open,
-        productData
+        open
     } = props;
 
     const { t } = useTranslation();
@@ -35,6 +35,12 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
     const classes = useStyles();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const [product, setProduct] = React.useState({
+        error: false,
+        errorText: "",
+        value: "",
+        id: 0
+    });
     const [provider, setProvider] = React.useState({
         error: false,
         errorText: "",
@@ -60,6 +66,12 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
     const shipmentsCreateData = useSelector((state: any) => state.main.shipmentsCreateData);
 
     const clearFields = (clearValues: boolean = false) => {
+        setProduct({
+            error: false,
+            errorText: "",
+            value: clearValues ? "" : product.value,
+            id: clearValues ? 0 : product.id
+        });
         setProvider({
             error: false,
             errorText: "",
@@ -75,6 +87,12 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
 
     useEffect(() => {
         if (!open) {
+            setProduct({
+                error: false,
+                errorText: "",
+                value: "",
+                id: 0
+            });
             setProvider({
                 error: false,
                 errorText: "",
@@ -152,6 +170,16 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
     }, [deliveryTimes, open]);
 
     useEffect(() => {
+        if (loading && !shipmentsCreateProgress && shipmentsCreateData.id == null && shipmentsCreateData.product != null) {
+            setProduct({
+                error: true,
+                errorText: t('shipments.incorrectProduct'),
+                value: product.value,
+                id: product.id
+            });
+            setLoading(false);
+            return;
+        }
         if (loading && !shipmentsCreateProgress && shipmentsCreateData.id == null && shipmentsCreateData.provider != null) {
             setProvider({
                 error: true,
@@ -185,12 +213,20 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
                 onClose(true);
             }
         }
-    }, [dispatch, loading, onClose, provider, shipmentsCreateData, shipmentsCreateProgress, t, quantity]);
+    }, [dispatch, loading, onClose, provider, product, shipmentsCreateData, shipmentsCreateProgress, t, quantity]);
 
     const onSubmit = (e: any) => {
         e.preventDefault();
         clearFields();
 
+        if (product.value.length < 1 || product.id < 1) {
+            setProduct({
+                error: true,
+                errorText: t('products.incorrectProduct'),
+                value: product.value,
+                id: product.id
+            });
+        }
         if (provider.value.length < 1 || provider.id < 1) {
             setProvider({
                 error: true,
@@ -211,7 +247,7 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
             setLoading(true);
             dispatch(setGlobalLoading(true));
 
-            dispatch(createShipment(provider.id, productData.id, estimatedDate, quantity.value));
+            dispatch(createShipment(provider.id, product.id, estimatedDate, quantity.value));
 
             setTimeout(() => {
                 setLoading(false);
@@ -224,8 +260,9 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
     };
 
     const isEverythingCompleted = (): boolean => {
-        return  (provider != null && quantity != null) &&
+        return  (provider != null && quantity != null && product != null) &&
                 (provider.value.length > 0 && provider.id > 0 && !provider.error) &&
+                (product.value.length > 0 && product.id > 0 && !product.error) &&
                 (!isNaN(quantity.value) && quantity.value > 0 && !quantity.error);
     };
 
@@ -242,6 +279,26 @@ const ProductOrder: React.FC<GenericProductInterface> = (props: GenericProductIn
             <form className={classes.form} onSubmit={onSubmit} method="post">
                 <DialogTitle>{ t('products.orderProduct') }</DialogTitle>
                 <DialogContent className={classes.content}>
+                    <ProductSelector
+                        error={product.error}
+                        helperText={product.errorText}
+                        onClear={() => {
+                            setProduct({
+                                error: false,
+                                errorText: "",
+                                value: "",
+                                id: 0
+                            });
+                        }}
+                        onSelect={(obj: OptionType) => {
+                            setProduct({
+                                error: false,
+                                errorText: "",
+                                value: obj.label,
+                                id: obj.id
+                            });
+                        }}
+                    />
                     <ProviderSelector
                         error={provider.error}
                         helperText={provider.errorText}
@@ -333,4 +390,4 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export default ProductOrder;
+export default ShipmentsCreate;
