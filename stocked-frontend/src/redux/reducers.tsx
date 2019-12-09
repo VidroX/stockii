@@ -17,15 +17,22 @@ import {
     PROVIDERS_CREATE,
     PROVIDERS_CREATE_FAIL,
     PROVIDERS_CREATE_SUCCESS,
-    PROVIDERS_GET, PROVIDERS_GET_FAIL,
-    PROVIDERS_GET_SUCCESS, PROVIDERS_REMOVE, PROVIDERS_REMOVE_FAIL, PROVIDERS_REMOVE_SUCCESS,
+    PROVIDERS_GET,
+    PROVIDERS_GET_FAIL,
+    PROVIDERS_GET_SUCCESS,
+    PROVIDERS_REMOVE,
+    PROVIDERS_REMOVE_FAIL,
+    PROVIDERS_REMOVE_SUCCESS,
     SET_LOADING,
     SET_SNACKBAR,
     SET_TOOLBAR_TITLE,
     SET_USER_DATA,
     SHIPMENTS_CREATE,
     SHIPMENTS_CREATE_FAIL,
-    SHIPMENTS_CREATE_SUCCESS, SHIPMENTS_DELETE, SHIPMENTS_DELETE_FAIL, SHIPMENTS_DELETE_SUCCESS,
+    SHIPMENTS_CREATE_SUCCESS,
+    SHIPMENTS_DELETE,
+    SHIPMENTS_DELETE_FAIL,
+    SHIPMENTS_DELETE_SUCCESS,
     SHIPMENTS_GET,
     SHIPMENTS_GET_FAIL,
     SHIPMENTS_GET_SUCCESS,
@@ -33,9 +40,18 @@ import {
     SHIPMENTS_UPDATE_FAIL,
     SHIPMENTS_UPDATE_SUCCESS,
     SHOW_SNACKBAR,
+    TRIGGERS_CREATE,
+    TRIGGERS_CREATE_FAIL,
+    TRIGGERS_CREATE_SUCCESS,
+    TRIGGERS_DELETE, TRIGGERS_DELETE_FAIL, TRIGGERS_DELETE_SUCCESS,
+    TRIGGERS_GET, TRIGGERS_GET_FAIL,
+    TRIGGERS_GET_SUCCESS,
     USER_ACCESS_ADD,
     USER_ACCESS_ADD_FAIL,
-    USER_ACCESS_ADD_SUCCESS, USER_CREATE, USER_CREATE_FAIL, USER_CREATE_SUCCESS,
+    USER_ACCESS_ADD_SUCCESS,
+    USER_CREATE,
+    USER_CREATE_FAIL,
+    USER_CREATE_SUCCESS,
     USER_LIST,
     USER_LIST_FAIL,
     USER_LIST_SUCCESS,
@@ -44,7 +60,10 @@ import {
     USER_LOGIN_SUCCESS,
     USER_LOGOUT,
     USER_LOGOUT_FAIL,
-    USER_LOGOUT_SUCCESS, USER_REMOVE, USER_REMOVE_FAIL, USER_REMOVE_SUCCESS,
+    USER_LOGOUT_SUCCESS,
+    USER_REMOVE,
+    USER_REMOVE_FAIL,
+    USER_REMOVE_SUCCESS,
     WAREHOUSES_ADD,
     WAREHOUSES_ADD_FAIL,
     WAREHOUSES_ADD_SUCCESS,
@@ -254,6 +273,33 @@ export default function mainReducer(state = initialState, action: any){
         }
         case PROVIDERS_REMOVE_FAIL:{
             return {...state, providersRemoveProgress: false, providersRemoveData: action.error.response.data, error: 'Cannot remove provider'}
+        }
+        case TRIGGERS_CREATE:{
+            return {...state, triggersCreateProgress: true}
+        }
+        case TRIGGERS_CREATE_SUCCESS:{
+            return {...state, triggersCreateProgress: false, triggersCreateData: action.payload.data}
+        }
+        case TRIGGERS_CREATE_FAIL:{
+            return {...state, triggersCreateProgress: false, triggersCreateData: action.error.response.data, error: 'Cannot create trigger'}
+        }
+        case TRIGGERS_GET:{
+            return {...state, triggersGetProgress: true}
+        }
+        case TRIGGERS_GET_SUCCESS:{
+            return {...state, triggersGetProgress: false, triggersData: action.payload.data}
+        }
+        case TRIGGERS_GET_FAIL:{
+            return {...state, triggersGetProgress: false, triggersData: action.error.response.data, error: 'Cannot get triggers'}
+        }
+        case TRIGGERS_DELETE:{
+            return {...state, triggersDeleteProgress: true}
+        }
+        case TRIGGERS_DELETE_SUCCESS:{
+            return {...state, triggersDeleteProgress: false, triggersDeleteData: action.payload.data}
+        }
+        case TRIGGERS_DELETE_FAIL:{
+            return {...state, triggersDeleteProgress: false, triggersDeleteData: action.error.response.data, error: 'Cannot delete trigger'}
         }
         case SET_TOOLBAR_TITLE:{
             return {...state, toolbarTitle: action.payload.toolbarTitle}

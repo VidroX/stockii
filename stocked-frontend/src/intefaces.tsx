@@ -8,6 +8,15 @@ export interface Warehouse {
     phone: string
 }
 
+export interface WarehouseFull {
+    id: number,
+    location: string,
+    workingFrom: string,
+    workingTo: string,
+    weekends: boolean,
+    phone: string
+}
+
 export interface ProviderInterface {
     name: string,
     workingFrom: string,
@@ -82,7 +91,7 @@ export interface GenericProductInterface {
     onClose?(shouldRefresh: boolean): void
 }
 
-export interface ShipmentsCreateInterface {
+export interface GenericCreateInterface {
     open: boolean,
     onOpen?(): void,
     onClose?(shouldRefresh: boolean): void
@@ -98,6 +107,13 @@ export interface GenericSelectorInterface {
     error?: boolean,
     helperText?: string,
     onSelect?(value: OptionType): void,
+    onClear?(): void
+}
+
+export interface ProductSelectorInterface {
+    error?: boolean,
+    helperText?: string,
+    onSelect?(value: OptionType, warehouse: WarehouseFull): void,
     onClear?(): void
 }
 
@@ -128,6 +144,11 @@ export interface SortColumn {
     prefixDesc?: string
 }
 
+export interface HeaderOption {
+    name: string,
+    download: boolean
+}
+
 export interface StockedTableInterface {
     title: string,
     count: number,
@@ -139,6 +160,9 @@ export interface StockedTableInterface {
     onRequest(type: "sort" | "changePage" | "search" | "refreshTable", page: number, sortItem: string | null, searchVal: string | null): void,
     refreshTable?: boolean,
     sortItem?: string,
+    exportEnabled?: boolean,
+    exportFileName?: string,
+    exportHeader?: Array<HeaderOption>,
     onTableRefreshed?(): void,
     onAddClick?(): void
 }
@@ -156,4 +180,20 @@ export interface ShipmentObjectInterface {
     startDate: Date,
     approximateDeliveryDate: Date,
     delivered: boolean
+}
+
+export interface TriggersInterface {
+    name: string,
+    product: string,
+    type: string,
+    activationDate: string,
+    activated: number
+}
+
+export interface TriggerObjectInterface {
+    id: number,
+    creationDate: Date,
+    activationDate: Date,
+    type: number,
+    activated: boolean
 }

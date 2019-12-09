@@ -13,9 +13,9 @@ import {
     setSnackbar,
     showSnackbar
 } from "../../redux/actions";
-import {GenericSelectorInterface, OptionType} from "../../intefaces";
+import {ProductSelectorInterface, OptionType, WarehouseFull} from "../../intefaces";
 
-const ProductSelector: React.FC<GenericSelectorInterface> = (props: GenericSelectorInterface) => {
+const ProductSelector: React.FC<ProductSelectorInterface> = (props: ProductSelectorInterface) => {
     const {
         onSelect,
         onClear,
@@ -25,6 +25,8 @@ const ProductSelector: React.FC<GenericSelectorInterface> = (props: GenericSelec
 
     const { t } = useTranslation();
     const classes = useStyles();
+
+    const [warehouseArray, setWarehouseArray] = React.useState<WarehouseFull[]>([]);
 
     const [suggestions, setSuggestions] = React.useState<OptionType[]>([]);
     const [suggestionsLoading, setSuggestionsLoading] = React.useState<boolean>(false);
@@ -46,6 +48,8 @@ const ProductSelector: React.FC<GenericSelectorInterface> = (props: GenericSelec
             }
 
             setSuggestions(productsData.results.map((obj: any) => {
+                warehouseArray[obj.id] = obj.warehouse;
+
                 return {
                     id: obj.id,
                     label: obj.name + (obj.warehouse != null ? ' (' + obj.warehouse.location + ')' : '')
@@ -54,7 +58,7 @@ const ProductSelector: React.FC<GenericSelectorInterface> = (props: GenericSelec
 
             setSuggestionsLoading(false);
         }
-    }, [dispatch, productsData, productsGetProgress, suggestionsLoading]);
+    }, [dispatch, productsData, productsGetProgress, suggestionsLoading, warehouseArray]);
 
     return (
         <Autocomplete
@@ -73,7 +77,7 @@ const ProductSelector: React.FC<GenericSelectorInterface> = (props: GenericSelec
             onChange={(event: object, value: OptionType) => {
                 if (value != null) {
                     if(onSelect != null) {
-                        onSelect(value);
+                        onSelect(value, warehouseArray[value.id]);
                     }
                     setValue(value);
                 }
@@ -84,11 +88,13 @@ const ProductSelector: React.FC<GenericSelectorInterface> = (props: GenericSelec
                         id: 0,
                         label: ''
                     });
+                    setWarehouseArray([]);
                     if (onClear != null) {
                         onClear();
                     }
                 }
                 if (value == null) {
+                    setWarehouseArray([]);
                     setValue({
                         id: 0,
                         label: ''

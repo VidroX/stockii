@@ -29,5 +29,7 @@ STATUS_CODE = {
     27: "Incorrect status.",
     28: "Total quantity more than allowed.",
     29: "Quantity can't be a negative number.",
-    30: "Unable to contact API server. Please, try again later."
+    30: "Unable to contact API server. Please, try again later.",
+    31: "You don't have enough rights to change this object.",
+    32: "You don't have enough rights to view this object."
 }

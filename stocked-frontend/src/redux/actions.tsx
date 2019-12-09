@@ -1,5 +1,6 @@
 // Action types
 import config from "../config";
+import moment, {Moment} from "moment";
 
 export const USER_LOGIN = "stocked/user/LOGIN";
 export const USER_LOGIN_SUCCESS = "stocked/user/LOGIN_SUCCESS";
@@ -69,6 +70,16 @@ export const PROVIDERS_CREATE_FAIL = "stocked/providers/CREATE_FAIL";
 export const PROVIDERS_REMOVE = "stocked/providers/REMOVE";
 export const PROVIDERS_REMOVE_SUCCESS = "stocked/providers/REMOVE_SUCCESS";
 export const PROVIDERS_REMOVE_FAIL = "stocked/providers/REMOVE_FAIL";
+
+export const TRIGGERS_GET = "stocked/triggers/GET";
+export const TRIGGERS_GET_SUCCESS = "stocked/triggers/GET_SUCCESS";
+export const TRIGGERS_GET_FAIL = "stocked/triggers/GET_FAIL";
+export const TRIGGERS_CREATE = "stocked/triggers/CREATE";
+export const TRIGGERS_CREATE_SUCCESS = "stocked/triggers/CREATE_SUCCESS";
+export const TRIGGERS_CREATE_FAIL = "stocked/triggers/CREATE_FAIL";
+export const TRIGGERS_DELETE = "stocked/triggers/DELETE";
+export const TRIGGERS_DELETE_SUCCESS = "stocked/triggers/DELETE_SUCCESS";
+export const TRIGGERS_DELETE_FAIL = "stocked/triggers/DELETE_FAIL";
 
 export const SET_TOOLBAR_TITLE = "stocked/toolbar/TITLE_SET";
 
@@ -392,6 +403,128 @@ export function removeProvider(providerId: number) {
     }
 }
 
+export function getTriggers(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
+    const offset = page * config.api.row_count;
+
+    let params: any = {
+        'offset': offset
+    };
+
+    if (ordering != null) {
+        params.ordering = ordering;
+    }
+    if (search != null) {
+        params.search = search;
+    }
+
+    return {
+        type: TRIGGERS_GET,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/triggers/',
+                method: 'GET',
+                params: params
+            }
+        }
+    }
+}
+
+export function createRestockTrigger(name: string, productId: number, quantity: number = 1, activationDate: Moment = moment()) {
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('product', productId.toString());
+    formData.append('resourcetype', "RestockTrigger");
+    formData.append('quantity', quantity.toString());
+    formData.append('activation_date', activationDate.format("YYYY-MM-DD").toString());
+
+    return {
+        type: TRIGGERS_CREATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/triggers/',
+                method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
+export function createMoveTrigger(name: string, productId: number, fromWarehouse: number, toWarehouse: number, activationDate: Moment = moment()) {
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('product', productId.toString());
+    formData.append('resourcetype', "MoveTrigger");
+    formData.append('from_warehouse', fromWarehouse.toString());
+    formData.append('to_warehouse', toWarehouse.toString());
+    formData.append('activation_date', activationDate.format("YYYY-MM-DD").toString());
+
+    return {
+        type: TRIGGERS_CREATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/triggers/',
+                method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
+export function deleteTrigger(triggerId: number) {
+    return {
+        type: TRIGGERS_DELETE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/triggers/' + triggerId + '/',
+                method: 'DELETE'
+            }
+        }
+    }
+}
+
+export function setShipmentStatus(shipmentId: number, status: 1 | 2) {
+    let formData = new FormData();
+    formData.append('status', status.toString());
+
+    return {
+        type: SHIPMENTS_UPDATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/shipments/' + shipmentId  + '/',
+                method: 'PUT',
+                data: formData
+            }
+        }
+    }
+}
+
+export function addProvider(name: string, workingFrom: string, workingTo: string, avgDeliveryTime: number, phone: string, weekends: boolean) {
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('working_from', workingFrom);
+    formData.append('working_to', workingTo);
+    formData.append('average_delivery_time', avgDeliveryTime.toString());
+    formData.append('phone', phone);
+    formData.append('weekends', weekends ? "True" : "False");
+
+    return {
+        type: PROVIDERS_CREATE,
+        payload: {
+            client: 'default',
+            request: {
+                url: '/providers/',
+                method: 'POST',
+                data: formData
+            }
+        }
+    }
+}
+
 export function getShipments(page: number = 0, ordering: string | null = '-id', search: string | null = null) {
     const offset = page * config.api.row_count;
 
@@ -450,45 +583,6 @@ export function removeShipment(shipmentId: number) {
             request: {
                 url: '/shipments/' + shipmentId + '/',
                 method: 'DELETE'
-            }
-        }
-    }
-}
-
-export function setShipmentStatus(shipmentId: number, status: 1 | 2) {
-    let formData = new FormData();
-    formData.append('status', status.toString());
-
-    return {
-        type: SHIPMENTS_UPDATE,
-        payload: {
-            client: 'default',
-            request: {
-                url: '/shipments/' + shipmentId  + '/',
-                method: 'PUT',
-                data: formData
-            }
-        }
-    }
-}
-
-export function addProvider(name: string, workingFrom: string, workingTo: string, avgDeliveryTime: number, phone: string, weekends: boolean) {
-    let formData = new FormData();
-    formData.append('name', name);
-    formData.append('working_from', workingFrom);
-    formData.append('working_to', workingTo);
-    formData.append('average_delivery_time', avgDeliveryTime.toString());
-    formData.append('phone', phone);
-    formData.append('weekends', weekends ? "True" : "False");
-
-    return {
-        type: PROVIDERS_CREATE,
-        payload: {
-            client: 'default',
-            request: {
-                url: '/providers/',
-                method: 'POST',
-                data: formData
             }
         }
     }

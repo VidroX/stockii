@@ -61,7 +61,9 @@
     "email": "E-Mail",
     "create": "Створити",
     "selectProduct": "Виберіть товар",
-    "update": "Оновити"
+    "update": "Оновити",
+    "triggers": "Тригери",
+    "select": "Вибирати"
   },
   "languages": {
     "en": "English",
@@ -167,5 +169,22 @@
     "incorrectMobilePhone": "Неправильний мобільний телефон",
     "passwordToSmall": "Пароль занадто малий. Довжина має бути більше 5 символів.",
     "selectDate": "Виберіть дату"
+  },
+  "triggers": {
+    "type": "Тип",
+    "activationDate": "Дата активації",
+    "activated": "Активовано",
+    "activatingToday": "Буде активовано сьогодні",
+    "triggerType1": "Замовлення партії товару",
+    "triggerType2": "Переміщення товару",
+    "selectType": "Виберіть тип тригера",
+    "triggerRemoved": "Тригер успішно видалено!",
+    "unableToRemoveTrigger": "Не можливо видалити тригер",
+    "removeTriggerTitle": "Видалити тригер",
+    "removeTriggerBody": "Ви впевнені, що хочете видалити цей тригер?",
+    "incorrectName": "Неправильне ім’я",
+    "triggerCreated": "Тригер був успішно створений!",
+    "unableToCreateTrigger": "Неможливо створити тригер.",
+    "createTrigger": "Створити тригер"
   }
 }

@@ -34,6 +34,7 @@ import StarIcon from '@material-ui/icons/Star';
 import PeopleIcon from '@material-ui/icons/People';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
 
 const RouterLink = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => (
     <Link innerRef={ref} {...props} />
@@ -62,7 +63,7 @@ const StockedDrawer: React.FC = (props: any) => {
             setWindowWidth(window.innerWidth)
         });
     }, [windowWidth]);
-    
+
     useEffect(() => {
         if (props.logoutInitiated && !props.logoutProgress) {
             Cookies.remove('token');
@@ -151,6 +152,17 @@ const StockedDrawer: React.FC = (props: any) => {
                     >
                         <ListItemIcon><LocalShippingIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.shipments')}/>
+                    </ListItem>
+                    <ListItem
+                        button
+                        component={RouterLink}
+                        to="/triggers/"
+                        className={classes.listRoot}
+                        key="triggers"
+                        selected={location.pathname === '/triggers/'}
+                    >
+                        <ListItemIcon><FlashOnIcon /></ListItemIcon>
+                        <ListItemText className={classes.drawerMenuItem} primary={t('main.triggers')}/>
                     </ListItem>
                     { renderAdminItems() }
                 </List>

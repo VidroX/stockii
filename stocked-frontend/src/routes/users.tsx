@@ -18,9 +18,10 @@ import {ProviderInterface} from "../intefaces";
 import StockedTable from "../components/stockedTable";
 import TablePlaceholder from "../components/tablePlaceholder";
 import UsersAdd from "../components/users/usersAdd";
+import moment from "moment";
 
 const Users: React.FC = (props: any) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const [modalOpen, setModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
@@ -122,7 +123,7 @@ const Users: React.FC = (props: any) => {
                     return [
                         obj.last_name + " " + obj.first_name + (obj.patronymic != null ? ' ' + obj.patronymic : ''),
                         obj.email,
-                        obj.birthday,
+                        moment(obj.birthday, "YYYY-MM-DD").format(i18n.language === 'en' ? 'DD/MM/YYYY' : 'DD.MM.YYYY').toString(),
                         obj.mobile_phone,
                         obj.id
                     ];
@@ -140,7 +141,7 @@ const Users: React.FC = (props: any) => {
             setLoading(false);
             setGlobalLoadingState(false);
         }, config.main.connectionTimeout)
-    }, [userListProgress, userListData, user]);
+    }, [userListProgress, userListData, user, i18n.language]);
 
     useEffect(() => {
         if (removeLoading && !userRemoveProgress && userRemoveData != null) {

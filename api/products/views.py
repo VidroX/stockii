@@ -1,5 +1,4 @@
 import requests
-from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, filters, status
 from rest_framework.decorators import api_view, permission_classes
@@ -12,6 +11,7 @@ from api.tokens import get_token_from_header
 from products.models import Product, ProductLimit
 from shipments.models import Shipment, Provider
 from stocked.settings import CONFIG
+from tasks import get_estimated_time
 from warehouses.models import WarehouseAccess, Warehouse
 
 
@@ -291,37 +291,7 @@ def refill_product(request, product_id):
                     'message': STATUS_CODE[29]
                 })
 
-            today = datetime.now()
-            working_to_time = datetime.now().replace(
-                hour=fastest_provider.working_to.hour,
-                minute=fastest_provider.working_to.minute,
-                second=fastest_provider.working_to.second
-            )
-            is_weekend = working_to_time.weekday() == 6 or working_to_time.weekday() == 7
-            is_saturday = working_to_time.weekday() == 6
-
-            additional_days = 0
-            estimated = today
-            if today > working_to_time:
-                additional_days = 1
-
-            if fastest_provider.weekends:
-                estimated += timedelta(days=(fastest_provider.average_delivery_time + additional_days))
-            else:
-                if is_weekend:
-                    if today > working_to_time:
-                        if is_saturday:
-                            additional_days += 1
-                    else:
-                        additional_days += is_saturday if 2 else 1
-
-                approximate_date = today + timedelta(days=(fastest_provider.average_delivery_time + additional_days))
-                if approximate_date.weekday() == 6:
-                    approximate_date += timedelta(days=2)
-                elif approximate_date.weekday() == 7:
-                    approximate_date += timedelta(days=1)
-
-                estimated = approximate_date
+            estimated = get_estimated_time(fastest_provider)
 
             r = refill_stock(token, product, fastest_provider, estimated, quantity)
 

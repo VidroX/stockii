@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import NoAccess from "./noAccess";
 import Users from "./users";
 import Shipments from "./shipments";
+import Triggers from "./triggers";
 
 const AdminRoute = ({ children, ...rest }: RouteProps) => {
     const user = useSelector((state: any) => state.main.userData);
@@ -37,6 +38,9 @@ const Routes: React.FC = () => {
             </Route>
             <Route exact path="/shipments/">
                 <Shipments />
+            </Route>
+            <Route exact path="/triggers/">
+                <Triggers />
             </Route>
             <AdminRoute exact path="/providers/">
                 <Providers />

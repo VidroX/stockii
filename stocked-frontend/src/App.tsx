@@ -9,11 +9,23 @@ import LoginPage from "./routes/login";
 import Cookies from "js-cookie";
 import { setUserData } from "./redux/actions";
 import config from "./config";
+import MomentUtils from "@date-io/moment";
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import moment from "moment";
+import {useTranslation} from "react-i18next";
+import "moment/locale/uk";
 
 
 const App: React.FC = () => {
     const [shouldLogin, setShouldLogin] = React.useState(true);
+    const [locale, setLocale] = React.useState("en");
+    const { i18n } = useTranslation();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        moment.locale(i18n.language);
+        setLocale(i18n.language);
+    }, [i18n.language]);
 
     useEffect(() => {
         const userData = Cookies.get('user_data');
@@ -63,13 +75,17 @@ const App: React.FC = () => {
 
     if (shouldLogin) {
         return (
-            <LoginPage />
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+                <LoginPage />
+            </MuiPickersUtilsProvider>
         );
     } else {
         return (
-            <Router>
-                <StockedDrawer />
-            </Router>
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+                <Router>
+                    <StockedDrawer />
+                </Router>
+            </MuiPickersUtilsProvider>
         );
     }
 };

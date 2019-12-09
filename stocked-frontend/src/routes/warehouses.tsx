@@ -20,7 +20,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import WarehouseAccess from "../components/warehouses/warehouseAccess";
 import WarehouseAdd from "../components/warehouses/warehouseAdd";
-import { Warehouse } from "../intefaces";
+import {Warehouse} from "../intefaces";
 import StockedTable from "../components/stockedTable";
 
 const Warehouses: React.FC = (props: any) => {
@@ -251,6 +251,29 @@ const Warehouses: React.FC = (props: any) => {
         setShouldRefreshTable(false);
     };
 
+    const exportHeaders = [
+        {
+            name: t('main.location'),
+            download: true
+        },
+        {
+            name: t('main.workingFrom'),
+            download: true
+        },
+        {
+            name: t('main.workingTo'),
+            download: true
+        },
+        {
+            name: t('main.weekends'),
+            download: true
+        },
+        {
+            name: t('main.phone'),
+            download: true
+        }
+    ];
+
     const renderTable = () => {
         if (loading) {
             return <TablePlaceholder />;
@@ -262,6 +285,9 @@ const Warehouses: React.FC = (props: any) => {
                     count={count}
                     columns={columns}
                     data={data}
+                    exportEnabled={true}
+                    exportFileName="warehouses.csv"
+                    exportHeader={exportHeaders}
                     sortColumns={sortColumns}
                     sortItem={sortItem}
                     addEnabled={false}

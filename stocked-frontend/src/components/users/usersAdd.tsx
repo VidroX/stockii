@@ -39,13 +39,17 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
         open
     } = props;
 
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const theme = useTheme();
     const classes = useStyles();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const todayDate = moment().format("DD.MM.YYYY").toString();
+    const [todayDate, setTodayDate] = React.useState(moment().format(i18n.language === 'en' ? "DD/MM/YYYY" : "DD.MM.YYYY").toString());
+
+    useEffect(() => {
+        setTodayDate(moment().format(i18n.language === 'en' ? "DD/MM/YYYY" : "DD.MM.YYYY").toString());
+    }, [i18n.language]);
 
     const [lastName, setLastName] = React.useState({
         error: false,
@@ -238,13 +242,6 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
                 value: lastName.value
             });
         }
-        if (patronymic.value.length < 1) {
-            setPatronymic({
-                error: true,
-                errorText: t('common.fieldEmpty'),
-                value: patronymic.value
-            });
-        }
         if (email.value.length < 1) {
             setEmail({
                 error: true,
@@ -319,7 +316,15 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
             setLoading(true);
             dispatch(setGlobalLoading(true));
 
-            dispatch(register(email.value, password.value, mobilePhone.value, lastName.value, firstName.value, patronymic.value, moment(birthday.value, "DD.MM.YYYY").format("YYYY-MM-DD").toString()));
+            dispatch(register(
+                email.value,
+                password.value,
+                mobilePhone.value,
+                lastName.value,
+                firstName.value,
+                patronymic.value,
+                moment(birthday.value, i18n.language === 'en' ? "DD/MM/YYYY" : "DD.MM.YYYY").format("YYYY-MM-DD").toString()
+            ));
 
             setTimeout(() => {
                 setLoading(false);
@@ -331,7 +336,7 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
         if (!checkPassword) {
             return  (lastName.value.length > 0 && !lastName.error) &&
                     (firstName.value.length > 0 && !firstName.error) &&
-                    (patronymic.value.length > 0 && !patronymic.error) &&
+                    (!patronymic.error) &&
                     (email.value.length > 0 && !email.error) &&
                     (password.value.length > 5 && !password.error) &&
                     (birthday.value != null && birthday.value.length === 10 && !birthday.error) &&
@@ -339,7 +344,7 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
         } else {
             return  (lastName.value.length > 0 && !lastName.error) &&
                     (firstName.value.length > 0 && !firstName.error) &&
-                    (patronymic.value.length > 0 && !patronymic.error) &&
+                    (!patronymic.error) &&
                     (email.value.length > 0 && !email.error) &&
                     (password.value.length > 5 && !password.error) &&
                     (repeatPassword.value.length > 5 && !repeatPassword.error) &&
@@ -401,7 +406,6 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
                         label={t('users.patronymic')}
                         variant="outlined"
                         value={patronymic.value}
-                        required
                         margin={fullScreen ? "normal" : "dense"}
                         error={patronymic.error}
                         helperText={patronymic.errorText}
@@ -436,20 +440,22 @@ const UsersAdd: React.FC<UsersAddInterface> = (props: UsersAddInterface) => {
                         margin={fullScreen ? "normal" : "dense"}
                         id="date-picker-dialog"
                         label={t('users.birthday')}
-                        format="DD.MM.YYYY"
+                        format={i18n.language === 'en' ? "DD/MM/YYYY" : "DD.MM.YYYY"}
                         variant="dialog"
                         inputVariant="outlined"
                         required
+                        cancelLabel={t('main.cancel')}
+                        okLabel={t('main.select')}
                         maxDate={new Date()}
                         minDate={moment().subtract(130, 'years').toDate()}
-                        value={birthday.value != null ? moment(birthday.value, "DD.MM.YYYY").toDate() : null}
+                        value={birthday.value != null ? moment(birthday.value, i18n.language === 'en' ? "DD/MM/YYYY" : "DD.MM.YYYY").toDate() : null}
                         error={birthday.error}
                         helperText={birthday.errorText}
                         onChange={(date: MaterialUiPickersDate | null) => {
                             setBirthday({
                                 error: false,
                                 errorText: "",
-                                value: date != null ? date.format("DD.MM.YYYY").toString() : null
+                                value: date != null ? date.format(i18n.language === 'en' ? "DD/MM/YYYY" : "DD.MM.YYYY").toString() : null
                             });
                         }}
                         KeyboardButtonProps={{

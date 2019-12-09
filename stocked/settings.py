@@ -42,6 +42,7 @@ with open(os.path.join(BASE_DIR, 'config.json')) as f:
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'polymorphic',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -182,3 +183,5 @@ CORS_ORIGIN_WHITELIST = [
 CORS_ALLOW_CREDENTIALS = True
 
 TOKEN_HTTP_ONLY = False
+
+BACKGROUND_TASK_RUN_ASYNC = True

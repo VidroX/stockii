@@ -20,7 +20,10 @@ const StockedTable: React.FC<StockedTableInterface> = (props: StockedTableInterf
         onRequest,
         refreshTable,
         onTableRefreshed,
-        sortItem
+        sortItem,
+        exportEnabled,
+        exportFileName,
+        exportHeader
     } = props;
 
     const tableLocalization = useTableLocalization();
@@ -122,7 +125,7 @@ const StockedTable: React.FC<StockedTableInterface> = (props: StockedTableInterf
             const serverColumn = columnId !== -1 || null ? item.options.sortDirection !== 'none' ? columns : "-id" : "-id";
 
             if (onRequest != null) {
-                onRequest("sort", tableState.page, serverColumn, searchVal);
+                onRequest("sort", tableState.page, serverColumn, searchVal != null && searchVal.length > 0 ? searchVal : null);
             }
         } else if (action === 'search') {
             setSearchVal(tableState.searchText);
@@ -147,31 +150,64 @@ const StockedTable: React.FC<StockedTableInterface> = (props: StockedTableInterf
         }
     };
 
+
+    let options: any = {
+        rowsPerPageOptions: [],
+        rowsPerPage: config.api.row_count,
+        responsive: 'stacked',
+        print: false,
+        search: true,
+        filter: false,
+        rowHover: false,
+        selectableRows: 'none',
+        serverSide: true,
+        download: exportEnabled != null && exportEnabled,
+        downloadOptions: {filename: exportEnabled != null && exportFileName != null ? exportFileName : 'tableDownload.csv', separator: ','},
+        page: page,
+        count: count,
+        textLabels: tableLocalization,
+        searchText: searchVal,
+        onSearchClose: () => setSearchVal(""),
+        onTableChange: onTableChange,
+        customToolbar: () => <DataTableToolbar isVisible={addEnabled} onAddButtonClick={onAddClick}/>
+    };
+
+    if (exportEnabled != null && exportHeader != null && exportHeader.length > 0) {
+        options = {
+            rowsPerPageOptions: [],
+            rowsPerPage: config.api.row_count,
+            responsive: 'stacked',
+            print: false,
+            search: true,
+            filter: false,
+            rowHover: false,
+            selectableRows: 'none',
+            serverSide: true,
+            download: exportEnabled,
+            downloadOptions: {filename: exportFileName != null ? exportFileName : 'tableDownload.csv', separator: ','},
+            onDownload: (buildHead: any, buildBody: any, columns: any, data: any) => {
+                return buildHead(exportHeader) + buildBody(data.map((obj: any) => {
+                    obj.data = obj.data.splice(0, exportHeader.length);
+                    return obj;
+                }));
+            },
+            page: page,
+            count: count,
+            textLabels: tableLocalization,
+            searchText: searchVal,
+            onSearchClose: () => setSearchVal(""),
+            onTableChange: onTableChange,
+            customToolbar: () => <DataTableToolbar isVisible={addEnabled} onAddButtonClick={onAddClick}/>
+        }
+    }
+
     return (
         <div className={classes.paddingBottom}>
             <MUIDataTable
                 title={title}
                 data={data}
                 columns={localColumns}
-                options={{
-                    rowsPerPageOptions: [],
-                    rowsPerPage: config.api.row_count,
-                    responsive: 'stacked',
-                    print: false,
-                    search: true,
-                    filter: false,
-                    rowHover: false,
-                    selectableRows: 'none',
-                    serverSide: true,
-                    download: false,
-                    page: page,
-                    count: count,
-                    textLabels: tableLocalization,
-                    searchText: searchVal,
-                    onSearchClose: () => setSearchVal(""),
-                    onTableChange: onTableChange,
-                    customToolbar: () => <DataTableToolbar isVisible={addEnabled} onAddButtonClick={onAddClick}/>
-                }}
+                options={options}
             />
         </div>
     );

@@ -283,6 +283,21 @@ const Products: React.FC = (props: any) => {
         setShouldRefreshTable(false);
     };
 
+    const exportHeaders = [
+        {
+            name: t('products.name'),
+            download: true,
+        },
+        {
+            name: t('products.warehouse'),
+            download: true,
+        },
+        {
+            name: t('products.quantity'),
+            download: true,
+        },
+    ];
+
     const renderTable = () => {
         if (loading) {
             return <TablePlaceholder />;
@@ -298,6 +313,9 @@ const Products: React.FC = (props: any) => {
                     addEnabled={true}
                     onAddClick={handleAddClick}
                     onRequest={onRequest}
+                    exportEnabled={true}
+                    exportFileName="products.csv"
+                    exportHeader={exportHeaders}
                     page={page}
                     refreshTable={shouldRefreshTable}
                     onTableRefreshed={onTableRefreshed}

@@ -5,32 +5,30 @@ import StockedModal from "../components/modal";
 import {IconButton, LinearProgress, makeStyles, Theme, Tooltip, useTheme} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    getShipments,
-    removeShipment,
-    setGlobalLoading, setShipmentStatus,
+    deleteTrigger,
+    getTriggers,
+    setGlobalLoading,
     setSnackbar,
     showSnackbar
 } from "../redux/actions";
 import config from "../config";
 import {green, orange, red} from "@material-ui/core/colors";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import {ShipmentObjectInterface, ShipmentsInterface} from "../intefaces";
+import {ShipmentsInterface, TriggerObjectInterface} from "../intefaces";
 import StockedTable from "../components/stockedTable";
 import TablePlaceholder from "../components/tablePlaceholder";
 import moment, {Moment} from "moment";
-import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
 import DoneIcon from '@material-ui/icons/Done';
-import CloseIcon from '@material-ui/icons/Close';
-import ShipmentsCreate from "../components/shipments/shipmentsCreate";
+import TriggerCreate from "../components/triggers/triggersCreate";
 
-const Shipments: React.FC = (props: any) => {
-    const { t } = useTranslation();
+const Triggers: React.FC = (props: any) => {
+    const { t, i18n } = useTranslation();
 
     const [modalOpen, setModalOpen] = React.useState(false);
     const [removeModalOpen, setRemoveModalOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [removeLoading, setRemoveLoading] = React.useState(false);
-    const [changeStatusLoading, setChangeStatusLoading] = React.useState(false);
     const [globalLoadingState, setGlobalLoadingState] = React.useState(false);
     const [data, setData] = React.useState<ShipmentsInterface[]>([]);
     const [count, setCount] = React.useState<number>(0);
@@ -40,54 +38,51 @@ const Shipments: React.FC = (props: any) => {
     const [page, setPage] = React.useState<number>(0);
     const [sortItem, setSortItem] = React.useState<string>("-id");
 
-    const defaultShipmentInfo = {
+    const defaultTriggerInfo = {
         id: 0,
-        startDate: new Date(),
-        approximateDeliveryDate: new Date(),
-        delivered: false
+        creationDate: new Date(),
+        activationDate: new Date(),
+        type: 0,
+        activated: false
     };
-    const [shipmentInfo, setShipmentInfo] = React.useState<ShipmentObjectInterface>(defaultShipmentInfo);
-    const [shipmentInfoArray] = React.useState<ShipmentObjectInterface[]>([]);
+    const [triggerInfo, setTriggerInfo] = React.useState<TriggerObjectInterface>(defaultTriggerInfo);
+    const [triggerInfoArray] = React.useState<TriggerObjectInterface[]>([]);
 
     const classes = useStyles();
     const theme = useTheme();
 
-    useToolbarTitle(t('main.shipments'));
+    useToolbarTitle(t('main.triggers'));
 
     const dispatch = useDispatch();
-    const shipmentsGetProgress = useSelector((state: any) => state.main.shipmentsGetProgress);
-    const shipmentsData = useSelector((state: any) => state.main.shipmentsData);
     const user = useSelector((state: any) => state.main.userData);
-    const shipmentsRemoveProgress = useSelector((state: any) => state.main.shipmentsRemoveProgress);
-    const shipmentsRemoveData = useSelector((state: any) => state.main.shipmentsRemoveData);
-    const shipmentsUpdateProgress = useSelector((state: any) => state.main.shipmentsUpdateProgress);
-    const shipmentsUpdateData = useSelector((state: any) => state.main.shipmentsUpdateData);
+    const triggersGetProgress = useSelector((state: any) => state.main.triggersGetProgress);
+    const triggersData = useSelector((state: any) => state.main.triggersData);
+    const triggersDeleteProgress = useSelector((state: any) => state.main.triggersDeleteProgress);
+    const triggersDeleteData = useSelector((state: any) => state.main.triggersDeleteData);
 
     const sortColumns = [
+        [{item: "name"}],
         [{item: "product"}],
-        [{item: "provider"}],
-        [{item: "product__warehouse__location"}],
-        [{item: "quantity"}],
-        [{item: "status"}, {item: "approximate_delivery", prefixAsc: '-', prefixDesc: ''}],
+        [{item: "polymorphic_ctype"}],
+        [{item: "status"}, {item: "activation_date", prefixAsc: '-', prefixDesc: ''}],
     ];
 
     useEffect(() => {
-        const renderIcon = (iconType = 1) => {
-            switch (iconType) {
-                case 1:
-                    return <DoneIcon className={classes.deliveredIcon} />;
-                case 2:
-                    return <CloseIcon className={classes.overdueIcon} />;
-                default:
-                    return <LocalShippingIcon className={classes.inProgressIcon} />;
+        const renderIcon = (activated = false) => {
+            if (activated) {
+                return <DoneIcon className={classes.deliveredIcon} />;
+            } else {
+                return <FlashOnIcon className={classes.inProgressIcon} />;
             }
         };
 
-        const timeDifferenceInPercentage = (startDate: Moment, endDate: Moment) => {
+        const timeDifferenceInPercentage = (startDate: Moment, endDate: Moment, toTheEndOfDay = false) => {
             const today = moment();
 
-            startDate = startDate.startOf('day');
-            endDate = endDate.endOf('day');
+            endDate = endDate.startOf('day');
+            if (toTheEndOfDay) {
+                endDate = endDate.endOf('day');
+            }
 
             const total     =   endDate.toDate().getTime() - startDate.toDate().getTime();
             const elapsed   =   today.toDate().getTime() - startDate.toDate().getTime();
@@ -101,15 +96,13 @@ const Shipments: React.FC = (props: any) => {
             return Math.floor(elapsed / total * 100);
         };
 
-        const onChangeStatus = (status: 1 | 2, localShipmentInfo: ShipmentObjectInterface) => {
-            if (localShipmentInfo != null && localShipmentInfo.id > 0) {
-                setChangeStatusLoading(true);
-                dispatch(setGlobalLoading(true));
-                dispatch(setShipmentStatus(localShipmentInfo.id, status));
-            }
-        };
-
         let columns: any[] = [
+            {
+                name: t('main.name'),
+                options: {
+                    sortDirection: 'none'
+                }
+            },
             {
                 name: t('shipments.product'),
                 options: {
@@ -117,19 +110,7 @@ const Shipments: React.FC = (props: any) => {
                 }
             },
             {
-                name: t('shipments.provider'),
-                options: {
-                    sortDirection: 'none'
-                }
-            },
-            {
-                name: t('products.warehouse'),
-                options: {
-                    sortDirection: 'none'
-                }
-            },
-            {
-                name: t('products.quantity'),
+                name: t('triggers.type'),
                 options: {
                     sortDirection: 'none'
                 }
@@ -139,27 +120,21 @@ const Shipments: React.FC = (props: any) => {
                 options: {
                     sortDirection: 'none',
                     customBodyRender: (id: number) => {
-                        const localShipmentInfo = shipmentInfoArray[id];
+                        const localTriggerInfo = triggerInfoArray[id];
 
-                        const startDate = moment(localShipmentInfo.startDate);
-                        const endDate = moment(localShipmentInfo.approximateDeliveryDate);
+                        const startDate = moment(localTriggerInfo.creationDate);
+                        const endDate = moment(localTriggerInfo.activationDate);
 
                         const difference = endDate.endOf('day').diff(new Date(), 'days', false);
                         let calculatedPercentage = timeDifferenceInPercentage(startDate, endDate);
 
                         let daysLeft = t('shipments.daysLeft', {count: difference});
-                        let iconType = 0;
 
-                        if (difference < 0) {
-                            iconType = 2;
-                            daysLeft = t('shipments.overdue');
-                            calculatedPercentage = 100;
-                        } else if (difference === 0) {
-                            daysLeft = t('shipments.arrivingToday');
+                        if (difference === 0) {
+                            daysLeft = t('triggers.activatingToday');
                         }
-                        if (localShipmentInfo.delivered) {
-                            iconType = 1;
-                            daysLeft = t('shipments.productArrived');
+                        if (localTriggerInfo.activated) {
+                            daysLeft = t('triggers.activated');
                             calculatedPercentage = 100;
                         }
 
@@ -169,7 +144,7 @@ const Shipments: React.FC = (props: any) => {
                                     <LinearProgress variant="determinate" value={calculatedPercentage} valueBuffer={100} />
                                 </div>
                                 <span className={classes.bottomText}>
-                                    { renderIcon(iconType) } { daysLeft }
+                                    { renderIcon(localTriggerInfo.activated) } { daysLeft } ({i18n.language === 'en' ? endDate.format('DD/MM/YYYY').toString() : endDate.format('DD.MM.YYYY').toString()})
                                 </span>
                             </div>
                         );
@@ -182,26 +157,14 @@ const Shipments: React.FC = (props: any) => {
                     sort: false,
                     sortDirection: 'none',
                     customBodyRender: (id: number) => {
-                        const localShipmentInfo = shipmentInfoArray[id];
+                        const localTriggerInfo = triggerInfoArray[id];
                         return (
                             <div className={classes.actions}>
-                                { !localShipmentInfo.delivered && <Tooltip title={t('shipments.markAsArrived')}>
-                                    <IconButton onClick={() => onChangeStatus(2, localShipmentInfo)}>
-                                        <DoneIcon />
+                                <Tooltip title={t('main.delete')}>
+                                    <IconButton onClick={() => onDeleteClick(localTriggerInfo)}>
+                                        <DeleteForeverIcon />
                                     </IconButton>
-                                </Tooltip> }
-                                { localShipmentInfo.delivered && <Tooltip title={t('shipments.markAsInProgress')}>
-                                    <IconButton onClick={() => onChangeStatus(1, localShipmentInfo)}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                </Tooltip> }
-                                { user.is_superuser &&
-                                    <Tooltip title={t('main.delete')}>
-                                        <IconButton onClick={() => onDeleteClick(localShipmentInfo)}>
-                                            <DeleteForeverIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                }
+                                </Tooltip>
                             </div>
                         );
                     }
@@ -210,7 +173,7 @@ const Shipments: React.FC = (props: any) => {
         ];
 
         setColumns(columns);
-    }, [classes, t, user.is_superuser, shipmentInfoArray, theme, dispatch]);
+    }, [classes, t, user.is_superuser, triggerInfoArray, theme, dispatch, i18n.language]);
 
     useEffect(() => {
         if(loading || globalLoadingState) {
@@ -221,31 +184,31 @@ const Shipments: React.FC = (props: any) => {
     }, [dispatch, globalLoadingState, loading]);
 
     useEffect(() => {
-        if (!shipmentsGetProgress && shipmentsData != null) {
-            if(shipmentsData.error) {
+        if (!triggersGetProgress && triggersData != null) {
+            if(triggersData.error) {
                 setFirstStart(false);
                 setLoading(false);
                 setGlobalLoadingState(false);
-            } else if(shipmentsData.results != null) {
-                const shipmentsMap = shipmentsData.results.map((obj: any) => {
-                    shipmentInfoArray[obj.id] = {
+            } else if(triggersData.results != null) {
+                const triggersMap = triggersData.results.map((obj: any) => {
+                    triggerInfoArray[obj.id] = {
                         id: obj.id,
-                        startDate: moment(obj.start_date).toDate(),
-                        approximateDeliveryDate: moment(obj.approximate_delivery, "YYYY-MM-DD").toDate(),
-                        delivered: obj.status === 2
+                        creationDate: moment(obj.creation_date, "YYYY-MM-DD").toDate(),
+                        activationDate: moment(obj.activation_date, "YYYY-MM-DD").toDate(),
+                        type: obj.type,
+                        activated: obj.status === 2
                     };
 
                     return [
+                        obj.name,
                         obj.product.name,
-                        obj.provider.name,
-                        obj.product.warehouse.location,
-                        parseInt(obj.quantity, 10),
+                        obj.resourcetype === "RestockTrigger" ? t('triggers.triggerType1') : t('triggers.triggerType2'),
                         obj.id,
                         obj.id
                     ];
                 });
-                setData(shipmentsMap);
-                setCount(shipmentsData.count);
+                setData(triggersMap);
+                setCount(triggersData.count);
             }
             setFirstStart(false);
             setLoading(false);
@@ -256,16 +219,16 @@ const Shipments: React.FC = (props: any) => {
             setLoading(false);
             setGlobalLoadingState(false);
         }, config.main.connectionTimeout)
-    }, [shipmentsGetProgress, shipmentsData, shipmentInfoArray]);
+    }, [triggersGetProgress, triggersData, triggerInfoArray, t]);
 
     useEffect(() => {
-        if (removeLoading && !shipmentsRemoveProgress && shipmentsRemoveData != null) {
-            if (shipmentsRemoveData.detail == null && shipmentsRemoveData.status === 12) {
-                dispatch(setSnackbar(t('shipments.shipmentRemoved'), 'success'));
-            } else if (shipmentsRemoveData.detail == null && shipmentsRemoveData.status !== 12) {
-                dispatch(setSnackbar(t('shipments.unableToRemoveShipment'), 'error'));
+        if (removeLoading && !triggersDeleteProgress && triggersDeleteData != null) {
+            if (triggersDeleteData.detail == null && triggersDeleteData.status === 12) {
+                dispatch(setSnackbar(t('triggers.triggerRemoved'), 'success'));
+            } else if (triggersDeleteData.detail == null && triggersDeleteData.status !== 12) {
+                dispatch(setSnackbar(t('triggers.unableToRemoveTrigger'), 'error'));
             } else {
-                dispatch(setSnackbar(shipmentsRemoveData.detail, 'error'));
+                dispatch(setSnackbar(triggersDeleteData.detail, 'error'));
             }
 
             setRemoveLoading(false);
@@ -273,24 +236,7 @@ const Shipments: React.FC = (props: any) => {
             dispatch(showSnackbar(true));
             setShouldRefreshTable(true);
         }
-    }, [dispatch, shipmentsRemoveData, shipmentsRemoveProgress, removeLoading, t]);
-
-    useEffect(() => {
-        if (changeStatusLoading && !shipmentsUpdateProgress && shipmentsUpdateData != null) {
-            if (shipmentsUpdateData.detail == null && shipmentsUpdateData.status === 12) {
-                dispatch(setSnackbar(t('shipments.statusChanged'), 'success'));
-            } else if (shipmentsUpdateData.detail == null && shipmentsUpdateData.status !== 12) {
-                dispatch(setSnackbar(t('shipments.unableToChangeStatus'), 'error'));
-            } else {
-                dispatch(setSnackbar(shipmentsUpdateData.detail, 'error'));
-            }
-
-            setChangeStatusLoading(false);
-            dispatch(setGlobalLoading(false));
-            dispatch(showSnackbar(true));
-            setShouldRefreshTable(true);
-        }
-    }, [dispatch, shipmentsUpdateData, shipmentsUpdateProgress, changeStatusLoading, t]);
+    }, [dispatch, triggersDeleteData, triggersDeleteProgress, removeLoading, t]);
 
     const handleAddClick = () => {
         setModalOpen(true);
@@ -304,22 +250,22 @@ const Shipments: React.FC = (props: any) => {
     };
 
     const onRemoveModalClose = () => {
-        setShipmentInfo(defaultShipmentInfo);
+        setTriggerInfo(defaultTriggerInfo);
         setRemoveModalOpen(false);
     };
 
-    const onDeleteClick = (localShipmentInfo: ShipmentObjectInterface) => {
-        setShipmentInfo(localShipmentInfo);
+    const onDeleteClick = (localTriggerInfo: TriggerObjectInterface) => {
+        setTriggerInfo(localTriggerInfo);
         setRemoveModalOpen(true);
     };
 
     const onDeleteClickSubmit = (e: any) => {
         e.preventDefault();
 
-        if (shipmentInfo != null && shipmentInfo.id > 0) {
+        if (triggerInfo != null && triggerInfo.id > 0) {
             setRemoveLoading(true);
             dispatch(setGlobalLoading(true));
-            dispatch(removeShipment(shipmentInfo.id));
+            dispatch(deleteTrigger(triggerInfo.id));
         }
 
         setRemoveModalOpen(false);
@@ -337,7 +283,7 @@ const Shipments: React.FC = (props: any) => {
             setSortItem(sortItem);
         }
 
-        dispatch(getShipments(page, sortItem, searchValLocal));
+        dispatch(getTriggers(page, sortItem, searchValLocal));
     };
 
     const onTableRefreshed = () => {
@@ -350,13 +296,13 @@ const Shipments: React.FC = (props: any) => {
         } else {
             return (
                 <StockedTable
-                    title={t('main.shipments')}
+                    title={t('main.triggers')}
                     count={count}
                     columns={columns}
                     data={data}
                     sortColumns={sortColumns}
                     sortItem={sortItem}
-                    addEnabled={user.is_superuser != null ? user.is_superuser : false}
+                    addEnabled={true}
                     onAddClick={handleAddClick}
                     onRequest={onRequest}
                     page={page}
@@ -369,11 +315,11 @@ const Shipments: React.FC = (props: any) => {
 
     return (
         <React.Fragment>
-            <ShipmentsCreate open={modalOpen} onClose={onModalClose} />
+            <TriggerCreate open={modalOpen} onClose={onModalClose} />
             <StockedModal
                 form
-                title={t('shipments.removeShipmentTitle')}
-                contentText={t('shipments.removeShipmentBody')}
+                title={t('triggers.removeTriggerTitle')}
+                contentText={t('triggers.removeTriggerBody')}
                 actionOk={t('main.yes')}
                 actionCancel={t("main.no")}
                 open={removeModalOpen}
@@ -428,4 +374,4 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export default Shipments;
+export default Triggers;

@@ -15,14 +15,14 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import config from "../../config";
 import {createShipment, setGlobalLoading, setSnackbar, showSnackbar} from "../../redux/actions";
-import {ShipmentsCreateInterface, ProviderDeliveryTimes, ProviderOptionType, OptionType} from "../../intefaces";
+import {GenericCreateInterface, ProviderDeliveryTimes, ProviderOptionType, OptionType} from "../../intefaces";
 import ProviderSelector from "../providers/providerSelector";
 import moment from "moment";
 import ProductSelector from "../products/productSelector";
 
 const placeholderDate = moment().add(2, 'days').format('YYYY-MM-DD');
 
-const ShipmentsCreate: React.FC<ShipmentsCreateInterface> = (props: ShipmentsCreateInterface) => {
+const ShipmentsCreate: React.FC<GenericCreateInterface> = (props: GenericCreateInterface) => {
     const {
         onOpen,
         onClose,
