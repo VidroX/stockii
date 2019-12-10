@@ -195,5 +195,5 @@ export interface TriggerObjectInterface {
     creationDate: Date,
     activationDate: Date,
     type: number,
-    activated: boolean
+    status: number
 }

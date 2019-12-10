@@ -21,6 +21,7 @@ import moment, {Moment} from "moment";
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import DoneIcon from '@material-ui/icons/Done';
 import TriggerCreate from "../components/triggers/triggersCreate";
+import CloseIcon from '@material-ui/icons/Close';
 
 const Triggers: React.FC = (props: any) => {
     const { t, i18n } = useTranslation();
@@ -43,7 +44,7 @@ const Triggers: React.FC = (props: any) => {
         creationDate: new Date(),
         activationDate: new Date(),
         type: 0,
-        activated: false
+        status: 1
     };
     const [triggerInfo, setTriggerInfo] = React.useState<TriggerObjectInterface>(defaultTriggerInfo);
     const [triggerInfoArray] = React.useState<TriggerObjectInterface[]>([]);
@@ -68,11 +69,17 @@ const Triggers: React.FC = (props: any) => {
     ];
 
     useEffect(() => {
-        const renderIcon = (activated = false) => {
-            if (activated) {
-                return <DoneIcon className={classes.deliveredIcon} />;
-            } else {
-                return <FlashOnIcon className={classes.inProgressIcon} />;
+        const renderIcon = (status: number = 1) => {
+            switch (status) {
+                case 2: {
+                    return <DoneIcon className={classes.deliveredIcon} />;
+                }
+                case 3: {
+                    return <CloseIcon className={classes.failedIcon} />;
+                }
+                default: {
+                    return <FlashOnIcon className={classes.inProgressIcon} />;
+                }
             }
         };
 
@@ -133,8 +140,11 @@ const Triggers: React.FC = (props: any) => {
                         if (difference === 0) {
                             daysLeft = t('triggers.activatingToday');
                         }
-                        if (localTriggerInfo.activated) {
+                        if (localTriggerInfo.status === 2) {
                             daysLeft = t('triggers.activated');
+                            calculatedPercentage = 100;
+                        } else if (localTriggerInfo.status === 3 || difference < 0) {
+                            daysLeft = t('triggers.failed');
                             calculatedPercentage = 100;
                         }
 
@@ -144,7 +154,7 @@ const Triggers: React.FC = (props: any) => {
                                     <LinearProgress variant="determinate" value={calculatedPercentage} valueBuffer={100} />
                                 </div>
                                 <span className={classes.bottomText}>
-                                    { renderIcon(localTriggerInfo.activated) } { daysLeft } ({i18n.language === 'en' ? endDate.format('DD/MM/YYYY').toString() : endDate.format('DD.MM.YYYY').toString()})
+                                    { renderIcon(localTriggerInfo.status) } { daysLeft } ({i18n.language === 'en' ? endDate.format('DD/MM/YYYY').toString() : endDate.format('DD.MM.YYYY').toString()})
                                 </span>
                             </div>
                         );
@@ -196,7 +206,7 @@ const Triggers: React.FC = (props: any) => {
                         creationDate: moment(obj.creation_date, "YYYY-MM-DD").toDate(),
                         activationDate: moment(obj.activation_date, "YYYY-MM-DD").toDate(),
                         type: obj.type,
-                        activated: obj.status === 2
+                        status: obj.status
                     };
 
                     return [
@@ -368,7 +378,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginRight: 8,
         color: orange[300]
     },
-    overdueIcon: {
+    failedIcon: {
         marginRight: 8,
         color: red[300]
     }

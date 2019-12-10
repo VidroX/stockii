@@ -184,6 +184,7 @@
     "incorrectName": "Incorrect name",
     "triggerCreated": "Trigger has been successfully created!",
     "unableToCreateTrigger": "Unable to create trigger.",
-    "createTrigger": "Create trigger"
+    "createTrigger": "Create trigger",
+    "failed": "Failed"
   }
 }

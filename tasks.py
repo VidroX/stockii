@@ -56,7 +56,7 @@ def restock_product(trigger_id, product_id, quantity):
         fastest_provider = Provider.objects.order_by(
             'average_delivery_time',
             '-weekends'
-        )[0]
+        ).first()
     except Provider.DoesNotExist:
         fastest_provider = None
     try:
@@ -75,6 +75,9 @@ def restock_product(trigger_id, product_id, quantity):
             approximate_delivery=estimated
         )
         trigger.status = 2
+        trigger.save()
+    elif trigger is not None:
+        trigger.status = 3
         trigger.save()
 
 
@@ -99,5 +102,8 @@ def move_product(trigger_id, product_id, from_warehouse_id, to_warehouse_id):
             from_warehouse is not None and to_warehouse is not None and from_warehouse_id != to_warehouse_id:
         product.warehouse = to_warehouse
         product.save()
-        trigger.status = 2
+        trigger.status = 3
+        trigger.save()
+    elif trigger is not None:
+        trigger.status = 3
         trigger.save()

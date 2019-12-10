@@ -185,6 +185,7 @@
     "incorrectName": "Неправильне ім’я",
     "triggerCreated": "Тригер був успішно створений!",
     "unableToCreateTrigger": "Неможливо створити тригер.",
-    "createTrigger": "Створити тригер"
+    "createTrigger": "Створити тригер",
+    "failed": "Помилка запуску"
   }
 }

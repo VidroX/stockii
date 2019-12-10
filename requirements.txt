@@ -1,9 +1,10 @@
-certifi==2019.9.11
+asgiref==3.2.3
+certifi==2019.11.28
 chardet==3.0.4
-Django==2.2.7
-django-background-tasks==1.2.0
+Django==3.0
+git+git://github.com/monarchmoney/django-background-tasks.git@97b0a98823ef560837c6cab8e50d1530c2bcf572 # django-background-tasks==1.2.4 with fixes for Django 3.0
 django-compat==1.0.15
-django-cors-headers==3.1.1
+django-cors-headers==3.2.0
 django-oauth-toolkit==1.2.0
 django-polymorphic==2.1.2
 django-rest-polymorphic==0.1.8
@@ -16,4 +17,4 @@ pytz==2019.3
 requests==2.22.0
 six==1.13.0
 sqlparse==0.3.0
-urllib3==1.25.6
+urllib3==1.25.7

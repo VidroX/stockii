@@ -10,7 +10,8 @@ from warehouses.models import Warehouse
 class Trigger(PolymorphicModel):
     TRIGGER_STATUSES = (
         (1, 'Awaiting activation'),
-        (2, 'Completed')
+        (2, 'Completed'),
+        (3, 'Failed')
     )
 
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
