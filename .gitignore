@@ -1,134 +1,140 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
 
 # C extensions
-*.so
+**/*.so
 
 # Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+api/.Python
+api/build/
+api/develop-eggs/
+api/dist/
+api/downloads/
+api/eggs/
+api/.eggs/
+api/lib/
+api/lib64/
+api/parts/
+api/sdist/
+api/var/
+api/wheels/
+api/*.egg-info/
+api/.installed.cfg
+api/*.egg
+api/MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+api/*.manifest
+api/*.spec
 
 # Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+api/**/pip-log.txt
+api/**/pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
+api/htmlcov/
+api/.tox/
+api/.coverage
+api/.coverage.*
+api/.cache
+api/nosetests.xml
+api/coverage.xml
+api/*.cover
+api/.hypothesis/
+api/.pytest_cache/
 
 # Translations
-*.mo
-*.pot
+api/*.mo
+api/*.pot
 
 # Django stuff:
-*.log
-local_settings.py
-db.sqlite3
+api/*.log
+api/local_settings.py
+api/db.sqlite3
 
 # Flask stuff:
-instance/
-.webassets-cache
+api/instance/
+api/.webassets-cache
 
 # Scrapy stuff:
-.scrapy
+api/.scrapy
 
 # Sphinx documentation
-docs/_build/
+api/docs/_build/
 
 # PyBuilder
-target/
+api/target/
 
 # Jupyter Notebook
-.ipynb_checkpoints
+api/.ipynb_checkpoints
 
 # pyenv
-.python-version
+api/.python-version
 
 # celery beat schedule file
-celerybeat-schedule
+api/celerybeat-schedule
 
 # SageMath parsed files
-*.sage.py
+api/*.sage.py
 
 # Environments
 .env
 .venv
+api/.env
+api/.venv
 env/
+api/env/
 venv/
+api/venv/
 ENV/
+api/ENV/
 env.bak/
+api/env.bak/
 venv.bak/
+api/venv.bak/
 
 # Spyder project settings
-.spyderproject
-.spyproject
+api/.spyderproject
+api/.spyproject
 
 # Rope project settings
-.ropeproject
+api/.ropeproject
 
 # mkdocs documentation
-/site
+**/site
 
 # mypy
-.mypy_cache/
+api/.mypy_cache/
 
-.idea/
+**/.idea/
 **/migrations/
 
 # React
-stocked-frontend/.idea/
-stocked-frontend/yarn.lock
+frontend/yarn.lock
 
 # dependencies
-stocked-frontend/node_modules
-stocked-frontend/.pnp
-stocked-frontend/.pnp.js
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
 
 # testing
-stocked-frontend/coverage
+frontend/coverage
 
 # production
-stocked-frontend/build
+frontend/build
 
 # misc
-stocked-frontend/.DS_Store
-stocked-frontend/.env.local
-stocked-frontend/.env.development.local
-stocked-frontend/.env.test.local
-stocked-frontend/.env.production.local
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
 
-stocked-frontend/npm-debug.log*
-stocked-frontend/yarn-debug.log*
-stocked-frontend/yarn-error.log*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
 
