@@ -5,7 +5,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile.prod
-    command: gunicorn --workers=4 --worker-class="egg:meinheld#gunicorn_worker" stocked.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn --workers=2 --worker-class="egg:meinheld#gunicorn_worker" stocked.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/docker-api/staticfiles
       - media_volume:/docker-api/mediafiles
@@ -18,6 +18,8 @@ services:
       - ./.prod.env
     depends_on:
       - db
+    networks:
+      - docker-network
 
   db:
     image: postgres:12.1-alpine
@@ -28,6 +30,8 @@ services:
       - postgres-data:/var/lib/postgresql/data/
     env_file:
       - ./.db.prod.env
+    networks:
+      - docker-network
 
   frontend:
     build:
@@ -43,21 +47,34 @@ services:
       - ./.prod.env
     depends_on:
       - api
+    networks:
+      - docker-network
 
   nginx:
     build: ./nginx
     ports:
       - 80:80
+      - 443:443
     volumes:
       - frontend_build:/docker-frontend/build
       - static_volume:/docker-api/staticfiles
       - media_volume:/docker-api/mediafiles
+      - ./certs/dh-2048.pem:/etc/ssl/certs/dh-2048.pem
+      - /docker-volumes/etc/letsencrypt/live/server.vidrox.me/fullchain.pem:/etc/letsencrypt/live/server.vidrox.me/fullchain.pem
+      - /docker-volumes/etc/letsencrypt/live/server.vidrox.me/privkey.pem:/etc/letsencrypt/live/server.vidrox.me/privkey.pem
+      - /docker-volumes/data/letsencrypt:/data/letsencrypt
     depends_on:
       - api
       - frontend
+    networks:
+      - docker-network
 
 volumes:
   postgres-data:
   static_volume:
   media_volume:
   frontend_build:
+
+networks:
+  docker-network:
+    driver: bridge
