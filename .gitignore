@@ -83,6 +83,9 @@ api/*.sage.py
 
 # Environments
 .env
+.db.env
+.prod.env
+.db.prod.env
 .venv
 api/.env
 api/.venv
@@ -111,21 +114,21 @@ api/.ropeproject
 api/.mypy_cache/
 
 **/.idea/
-**/migrations/
+api/**/migrations/*
+!api/**/migrations/0001_initial.py
+!api/**/migrations/__init__.py
 
 # React
 frontend/yarn.lock
 
 # dependencies
 frontend/node_modules
+frontend/build
 frontend/.pnp
 frontend/.pnp.js
 
 # testing
 frontend/coverage
-
-# production
-frontend/build
 
 # misc
 frontend/.DS_Store

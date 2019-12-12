@@ -22,7 +22,7 @@ def initiate_stock_refill(token, product, quantity):
     if token is None:
         raise ValidationError('Please provide user and token data')
 
-    endpoint = CONFIG['api']['localUrl'] + 'products/refill/' + str(product.id) + '/'
+    endpoint = CONFIG['api']['url'] + 'products/refill/' + str(product.id) + '/'
 
     data = {
         'quantity': quantity
@@ -39,7 +39,7 @@ def refill_stock(token, product, provider, delivery_date, quantity):
     if token is None:
         raise ValidationError('Please provide user and token data')
 
-    endpoint = CONFIG['api']['localUrl'] + 'shipments/'
+    endpoint = CONFIG['api']['url'] + 'shipments/'
 
     data = {
         'product': product.id,

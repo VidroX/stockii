@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.prod
+    command: gunicorn --workers=4 --worker-class="egg:meinheld#gunicorn_worker" stocked.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/docker-api/staticfiles
+      - media_volume:/docker-api/mediafiles
+    expose:
+      - 8000
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:12.1-alpine
+    restart: unless-stopped
+    expose:
+      - 5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    env_file:
+      - ./.db.prod.env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./frontend/:/docker-frontend/
+      - /docker-frontend/node_modules
+      - frontend_build:/docker-frontend/build
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - api
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - frontend_build:/docker-frontend/build
+      - static_volume:/docker-api/staticfiles
+      - media_volume:/docker-api/mediafiles
+    depends_on:
+      - api
+      - frontend
+
+volumes:
+  postgres-data:
+  static_volume:
+  media_volume:
+  frontend_build:

@@ -61,7 +61,7 @@ def restock_product(trigger_id, product_id, quantity):
         fastest_provider = None
     try:
         trigger = Trigger.objects.get(id=trigger_id)
-    except Provider.DoesNotExist:
+    except Trigger.DoesNotExist:
         trigger = None
 
     if product is not None and trigger is not None and\
@@ -95,7 +95,7 @@ def move_product(trigger_id, product_id, from_warehouse_id, to_warehouse_id):
         to_warehouse = None
     try:
         trigger = Trigger.objects.get(id=trigger_id)
-    except Provider.DoesNotExist:
+    except Trigger.DoesNotExist:
         trigger = None
 
     if product is not None and trigger is not None and\

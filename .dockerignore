@@ -1,0 +1,16 @@
+**/.DS_Store
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+frontend/yarn.lock
+
+frontend/node_modules
+frontend/build
+**/.pnp
+**/.pnp.js
