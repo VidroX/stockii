@@ -72,6 +72,11 @@ const ProviderSelector: React.FC<ProviderSelectorInterface> = (props: ProviderSe
         }
     }, [dispatch, providersData, providersGetProgress, suggestionsLoading]);
 
+    useEffect(() => {
+        setSuggestionsLoading(true);
+        dispatch(getProviders(0, '-id'));
+    }, [dispatch]);
+
     return (
         <Autocomplete
             className={classes.textField}
@@ -92,6 +97,9 @@ const ProviderSelector: React.FC<ProviderSelectorInterface> = (props: ProviderSe
                         onSelect(value);
                     }
                     setValue(value);
+                } else {
+                    setSuggestionsLoading(true);
+                    dispatch(getProviders(0, '-id'));
                 }
             }}
             onInputChange={(event: object, value: string) => {

@@ -51,6 +51,11 @@ const WarehouseSelector: React.FC<WarehouseSelectorInterface> = (props: Warehous
         }
     }, [dispatch, suggestionsLoading, warehousesData]);
 
+    useEffect(() => {
+        setSuggestionsLoading(true);
+        dispatch(getWarehouses(0, '-id'));
+    }, [dispatch]);
+
     return (
         <Autocomplete
             className={classes.textField}
@@ -71,6 +76,9 @@ const WarehouseSelector: React.FC<WarehouseSelectorInterface> = (props: Warehous
                         onSelect(value);
                     }
                     setValue(value);
+                } else {
+                    setSuggestionsLoading(true);
+                    dispatch(getWarehouses(0, '-id'));
                 }
             }}
             onInputChange={(event: object, value: string) => {

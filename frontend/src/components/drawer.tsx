@@ -87,7 +87,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         to="/providers/"
                         className={classes.listRoot}
                         key="providers"
-                        selected={location.pathname === '/providers/'}
+                        selected={location.pathname === '/providers/' || location.pathname === '/providers'}
                     >
                         <ListItemIcon><EmojiPeopleIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.providers')}/>
@@ -98,7 +98,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         to="/users/"
                         className={classes.listRoot}
                         key="users"
-                        selected={location.pathname === '/users/'}
+                        selected={location.pathname === '/users/' || location.pathname === '/users'}
                     >
                         <ListItemIcon><PeopleIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.users')}/>
@@ -137,7 +137,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         to="/products/"
                         className={classes.listRoot}
                         key="products"
-                        selected={location.pathname === '/products/'}
+                        selected={location.pathname === '/products/' || location.pathname === '/products'}
                     >
                         <ListItemIcon><AllInboxIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.products')}/>
@@ -148,7 +148,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         to="/shipments/"
                         className={classes.listRoot}
                         key="shipments"
-                        selected={location.pathname === '/shipments/'}
+                        selected={location.pathname === '/shipments/' || location.pathname === '/shipments'}
                     >
                         <ListItemIcon><LocalShippingIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.shipments')}/>
@@ -159,7 +159,7 @@ const StockedDrawer: React.FC = (props: any) => {
                         to="/triggers/"
                         className={classes.listRoot}
                         key="triggers"
-                        selected={location.pathname === '/triggers/'}
+                        selected={location.pathname === '/triggers/' || location.pathname === '/triggers'}
                     >
                         <ListItemIcon><FlashOnIcon /></ListItemIcon>
                         <ListItemText className={classes.drawerMenuItem} primary={t('main.triggers')}/>

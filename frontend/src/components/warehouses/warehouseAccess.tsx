@@ -104,7 +104,7 @@ const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAcc
 
     const handleSearch = (event: object, value: string) => {
         setLoading(true);
-        dispatch(getUsers(0, value));
+        dispatch(getUsers(0, '-id', value));
     };
 
     const onSubmit = (e: any) => {
@@ -135,6 +135,7 @@ const WarehouseAccess: React.FC<WarehouseAccessInterface> = (props: WarehouseAcc
                     <Autocomplete
                         style={{ width: fullScreen ? 'auto' : 300 }}
                         open={autocompleteOpen}
+                        autoHighlight
                         onOpen={() => {
                             setAutocompleteOpen(true);
                         }}

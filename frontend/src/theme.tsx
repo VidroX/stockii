@@ -58,19 +58,7 @@ export const theme = createMuiTheme({
             }
         },
         MUIDataTableBodyCell: {
-            cellStacked: {
-                [defaultTheme.breakpoints.down('sm')]: {
-                    width: 'auto',
-                    fontWeight: 'bold',
-                    border: 0,
-                    marginLeft: 24,
-                    marginRight: 24,
-                    marginTop: 8,
-                    marginBottom: 8,
-                    height: '1rem'
-                }
-            },
-            responsiveStacked: {
+            stackedCommon: {
                 "&&": {
                     [defaultTheme.breakpoints.down('sm')]: {
                         width: 'auto',
@@ -81,9 +69,29 @@ export const theme = createMuiTheme({
                         height: '1rem'
                     }
                 },
+                "&&:first-child": {
+                    [defaultTheme.breakpoints.down('sm')]: {
+                        marginTop: 16
+                    }
+                },
+                "&&:nth-child(2n+1)": {
+                    [defaultTheme.breakpoints.down('sm')]: {
+                        fontWeight: 'bold'
+                    }
+                },
+                "&&:nth-child(2n)": {
+                    [defaultTheme.breakpoints.down('sm')]: {
+                        width: 'auto',
+                        border: 0,
+                        marginLeft: 24,
+                        marginRight: 24,
+                        marginBottom: 16,
+                        height: '1rem'
+                    }
+                },
                 "&&:last-child": {
                     [defaultTheme.breakpoints.down('sm')]: {
-                        marginBottom: 36
+                        paddingBottom: 36
                     }
                 }
             }

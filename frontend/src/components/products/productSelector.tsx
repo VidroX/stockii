@@ -60,6 +60,11 @@ const ProductSelector: React.FC<ProductSelectorInterface> = (props: ProductSelec
         }
     }, [dispatch, productsData, productsGetProgress, suggestionsLoading, warehouseArray]);
 
+    useEffect(() => {
+        setSuggestionsLoading(true);
+        dispatch(getProducts(0, '-id'));
+    }, [dispatch]);
+
     return (
         <Autocomplete
             className={classes.textField}
@@ -80,6 +85,9 @@ const ProductSelector: React.FC<ProductSelectorInterface> = (props: ProductSelec
                         onSelect(value, warehouseArray[value.id]);
                     }
                     setValue(value);
+                } else {
+                    setSuggestionsLoading(true);
+                    dispatch(getProducts(0, '-id'));
                 }
             }}
             onInputChange={(event: object, value: string) => {

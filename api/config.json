@@ -3,10 +3,10 @@
     "appName": "Stockii"
   },
   "api": {
-    "url": "http://127.0.0.1/api/",
-    "localUrl": "http://127.0.0.1:8000/api/"
+    "url": "https://server.vidrox.me/api/",
+    "localUrl": "https://server.vidrox.me/api/"
   },
   "oauth": {
-    "serverUrl": "http://127.0.0.1/oauth/"
+    "serverUrl": "https://server.vidrox.me/oauth/"
   }
 }
