@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  api:
+    build: ./api
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./api/:/docker-api/
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend/:/docker-frontend/
+      - /docker-frontend/node_modules
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env
+    depends_on:
+      - api
+
+  db:
+    image: postgres:12.1-alpine
+    restart: unless-stopped
+    expose:
+      - 5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    env_file:
+      - .db.env
+
+volumes:
+  postgres-data:

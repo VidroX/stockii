@@ -1,0 +1,12 @@
+{
+  "main": {
+    "appName": "Stockii"
+  },
+  "api": {
+    "url": "https://server.vidrox.me/api/",
+    "localUrl": "https://server.vidrox.me/api/"
+  },
+  "oauth": {
+    "serverUrl": "https://server.vidrox.me/oauth/"
+  }
+}
