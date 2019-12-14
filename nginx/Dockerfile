@@ -1,4 +1,9 @@
-FROM nginx:1.17.6-alpine
+FROM pagespeed/nginx-pagespeed:latest
 
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/nginx.conf
+
+RUN mkdir -p /var/cache/nginx/pagespeed
+RUN chown nginx:root /var/cache/nginx/pagespeed
+RUN chmod 700 /var/cache/nginx/pagespeed
+RUN mkdir -p /var/log/pagespeed
+RUN chown nginx. /var/log/pagespeed

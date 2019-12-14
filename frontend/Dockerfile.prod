@@ -6,6 +6,8 @@ WORKDIR /docker-frontend
 COPY package.json /docker-frontend
 RUN yarn install --production=true
 
+RUN rm -rf /docker-frontend/build/
+
 COPY . /docker-frontend
 
 RUN yarn build

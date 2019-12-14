@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn --workers=2 --worker-class="egg:meinheld#gunicorn_worker" stocked.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/docker-api/staticfiles
-      - media_volume:/docker-api/mediafiles
+      - static_volume:/docker-api/staticfiles/
+      - media_volume:/docker-api/mediafiles/
     expose:
       - 8000
     environment:
@@ -56,13 +56,13 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - frontend_build:/docker-frontend/build
-      - static_volume:/docker-api/staticfiles
-      - media_volume:/docker-api/mediafiles
+      - frontend_build:/docker-frontend/build/
+      - static_volume:/docker-api/staticfiles/
+      - media_volume:/docker-api/mediafiles/
       - ./certs/dh-2048.pem:/etc/ssl/certs/dh-2048.pem
       - /docker-volumes/etc/letsencrypt/live/server.vidrox.me/fullchain.pem:/etc/letsencrypt/live/server.vidrox.me/fullchain.pem
       - /docker-volumes/etc/letsencrypt/live/server.vidrox.me/privkey.pem:/etc/letsencrypt/live/server.vidrox.me/privkey.pem
-      - /docker-volumes/data/letsencrypt:/data/letsencrypt
+      - /docker-volumes/data/letsencrypt/:/data/letsencrypt/
     depends_on:
       - api
       - frontend
