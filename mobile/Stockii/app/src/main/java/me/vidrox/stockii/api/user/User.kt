@@ -2,16 +2,20 @@ package me.vidrox.stockii.api.user
 
 import android.content.Context
 import android.util.Log
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import me.vidrox.stockii.Config
 import me.vidrox.stockii.utils.Crypto
 
+@JsonClass(generateAdapter = true)
 data class UserResponse (
-    val status: Int,
+    val status_code: Int?,
+    val status: Int?,
     val message: String,
     val data: User?
 )
 
+@JsonClass(generateAdapter = true)
 data class UserData (
     val id: Int,
     val email: String,
@@ -24,6 +28,7 @@ data class UserData (
     val date_joined: String
 )
 
+@JsonClass(generateAdapter = true)
 data class User(
     val user: UserData?,
     val token: String?,

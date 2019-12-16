@@ -1,7 +1,8 @@
 package me.vidrox.stockii.api
 
 import android.content.Context
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import me.vidrox.stockii.Config
 import me.vidrox.stockii.api.user.User
 import okhttp3.Interceptor
@@ -29,23 +30,32 @@ private class AuthInterceptor(private val context: Context) : Interceptor {
 }
 
 object ApiFactory {
-    private fun getHttpClient(context: Context?): OkHttpClient {
-        val okHttpClient = OkHttpClient().newBuilder()
+    fun getRetrofit(context: Context?) : Retrofit {
+        var okHttpClient: OkHttpClient =
+            OkHttpClient
+                .Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build()
 
         if (context != null) {
-            okHttpClient.addInterceptor(AuthInterceptor(context))
+            okHttpClient = OkHttpClient
+                .Builder()
+                .addInterceptor(AuthInterceptor(context))
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build()
         }
 
-        return okHttpClient
-            .readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+        val moshi: Moshi =
+            Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(Config.API_BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
-
-    fun getRetrofit(context: Context?) : Retrofit = Retrofit.Builder()
-        .client(getHttpClient(context))
-        .baseUrl(Config.API_BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .addCallAdapterFactory(CoroutineCallAdapterFactory())
-        .build()
 }
