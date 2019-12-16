@@ -5,4 +5,7 @@
     <string name="email" translatable="false">E-Mail</string>
     <string name="password">Password</string>
     <string name="log_into_stockii">Log into Stockii</string>
+    <string name="logged_in_successfully">You have successfully logged in!</string>
+    <string name="field_empty">Please fill out this field.</string>
+    <string name="email_or_pass_incorrect">E-Mail or Password is incorrect</string>
 </resources>

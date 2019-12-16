@@ -5,4 +5,7 @@
     <string name="log_in">Увійти</string>
     <string name="password">Пароль</string>
     <string name="log_into_stockii">Увійти у Stockii</string>
+    <string name="logged_in_successfully">Ви успішно увійшли!</string>
+    <string name="field_empty">Будь ласка, заповніть це поле.</string>
+    <string name="email_or_pass_incorrect">E-Mail або пароль неправильні</string>
 </resources>

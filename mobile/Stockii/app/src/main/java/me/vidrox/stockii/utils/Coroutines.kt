@@ -11,4 +11,9 @@ object Coroutines {
             asyncJob()
         }
 
+    fun ioThread(asyncJob: suspend (() -> Unit)) =
+        CoroutineScope(Dispatchers.IO).launch {
+            asyncJob()
+        }
+
 }

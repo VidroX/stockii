@@ -16,6 +16,12 @@ class AuthViewModel : ViewModel() {
     fun onLoginBtnClick(view: View) {
         authListener?.onRequest()
 
+        if (email.isNullOrEmpty() && password.isNullOrEmpty()) {
+            authListener?.onError(0, AuthInternalErrorCodes.BOTH_FIELDS_EMPTY, "E-Mail and Password fields are empty")
+
+            return
+        }
+
         if (email.isNullOrEmpty()) {
             authListener?.onError(0, AuthInternalErrorCodes.EMAIL_FIELD_EMPTY, "E-Mail field is empty")
 

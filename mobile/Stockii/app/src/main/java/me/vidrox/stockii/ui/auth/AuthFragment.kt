@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import me.vidrox.stockii.Config
 import me.vidrox.stockii.R
 import me.vidrox.stockii.api.user.User
 import me.vidrox.stockii.databinding.AuthFragmentBinding
@@ -52,23 +54,57 @@ class AuthFragment : Fragment(), AuthListener {
     }
 
     override fun onRequest() {
+        if (Config.DEBUG_TO_LOG) {
+            Log.w("AuthRequest", "Request started")
+        }
+
+        dataBinding.authBoxEmail.error = null
+        dataBinding.authBoxPassword.error = null
         progress.visibility = View.VISIBLE
-        Log.w("AuthRequest", "Request started")
     }
 
     override fun onSuccess(result: User) {
-        progress.visibility = View.GONE
-        Log.w("AuthRequest", "Request succeeded")
-        Log.w("AuthRequest", result.toString())
+        if (Config.DEBUG_TO_LOG) {
+            Log.w("AuthRequest", "Request succeeded")
+            Log.w("AuthRequest", result.toString())
+        }
 
-        fragmentManager?.beginTransaction()?.replace(R.id.container, MainFragment.newInstance())?.commitNow()
+        progress.visibility = View.GONE
+
+        Toast.makeText(context, getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT).show()
+
+        fragmentManager
+            ?.beginTransaction()
+            ?.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            ?.replace(R.id.container, MainFragment.newInstance())
+            ?.commitNow()
     }
 
     override fun onError(responseCode: Int, errorCode: Int, errorMessage: String) {
+        if (Config.DEBUG_TO_LOG) {
+            Log.e("AuthRequest", "Request failed")
+            Log.e("AuthRequest", "Response code: $responseCode")
+            Log.e("AuthRequest", "Error code: $errorCode")
+            Log.e("AuthRequest", "Error message: $errorMessage")
+        }
+
         progress.visibility = View.GONE
-        Log.e("AuthRequest", "Request failed")
-        Log.e("AuthRequest", "Response code: $responseCode")
-        Log.e("AuthRequest", "Error code: $errorCode")
-        Log.e("AuthRequest", "Error message: $errorMessage")
+
+        when (errorCode) {
+            AuthInternalErrorCodes.BOTH_FIELDS_EMPTY -> {
+                dataBinding.authBoxEmail.error = getString(R.string.field_empty)
+                dataBinding.authBoxPassword.error = getString(R.string.field_empty)
+            }
+            AuthInternalErrorCodes.EMAIL_FIELD_EMPTY -> {
+                dataBinding.authBoxEmail.error = getString(R.string.field_empty)
+            }
+            AuthInternalErrorCodes.PASSWORD_FIELD_EMPTY -> {
+                dataBinding.authBoxPassword.error = getString(R.string.field_empty)
+            }
+            10 -> {
+                dataBinding.authBoxEmail.error = getString(R.string.email_or_pass_incorrect)
+                dataBinding.authBoxPassword.error = getString(R.string.email_or_pass_incorrect)
+            }
+        }
     }
 }
