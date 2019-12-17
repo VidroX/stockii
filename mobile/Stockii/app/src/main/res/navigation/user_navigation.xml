@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_navigation"
+    app:startDestination="@id/warehouses_fragment">
+
+    <fragment
+        android:id="@+id/warehouses_fragment"
+        android:name="me.vidrox.stockii.ui.warehouses.WarehousesFragment"
+        android:label="@string/warehouses"
+        tools:layout="@layout/warehouses_fragment" />
+    <fragment
+        android:id="@+id/products_fragment"
+        android:name="me.vidrox.stockii.ui.products.ProductsFragment"
+        android:label="@string/products"
+        tools:layout="@layout/products_fragment" />
+    <fragment
+        android:id="@+id/shipments_fragment"
+        android:name="me.vidrox.stockii.ui.shipments.ShipmentsFragment"
+        android:label="@string/shipments"
+        tools:layout="@layout/shipments_fragment" />
+</navigation>

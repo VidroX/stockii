@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import me.vidrox.stockii.Config
 import me.vidrox.stockii.R
 import me.vidrox.stockii.api.user.User
@@ -38,11 +39,22 @@ class AuthFragment : Fragment(), AuthListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as AppCompatActivity).supportActionBar?.title = activity?.getString(R.string.log_in)
+        (activity as AppCompatActivity).supportActionBar?.title = activity?.getString(R.string.log_into_stockii)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // action_authFragment_to_mainFragment
+
+        if (context != null) {
+            val user = User.get(context!!)
+            if (user != null) {
+                val navController = findNavController()
+                val direction = AuthFragmentDirections.actionAuthFragmentToMainFragment()
+                navController.navigate(direction)
+            }
+        }
 
         viewModel = ViewModelProviders.of(this).get(AuthViewModel::class.java)
 

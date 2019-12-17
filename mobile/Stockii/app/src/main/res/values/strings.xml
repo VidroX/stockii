@@ -8,4 +8,8 @@
     <string name="logged_in_successfully">You have successfully logged in!</string>
     <string name="field_empty">Please fill out this field.</string>
     <string name="email_or_pass_incorrect">E-Mail or Password is incorrect</string>
+    <string name="warehouses">Warehouses</string>
+    <string name="products">Products</string>
+    <string name="shipments">Shipments</string>
+    <string name="log_out">Log out</string>
 </resources>

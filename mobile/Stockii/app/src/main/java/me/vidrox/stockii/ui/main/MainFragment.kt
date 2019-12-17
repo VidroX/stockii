@@ -6,7 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.vidrox.stockii.R
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 
 class MainFragment : Fragment() {
 
@@ -26,7 +32,29 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        setupBottomNavigationBar()
+    }
+
+    private fun setupBottomNavigationBar() {
+        val bottomNavigationView = activity?.findViewById<BottomNavigationView>(R.id.main_bottom_nav)
+        val fragmentContainer = activity?.findViewById<View>(R.id.auth_container)
+        if (fragmentContainer != null) {
+            val navController = Navigation.findNavController(fragmentContainer)
+
+            val appBarConfiguration = AppBarConfiguration(
+                setOf(
+                    R.id.warehouses_fragment, R.id.products_fragment, R.id.shipments_fragment
+                )
+            )
+            setupActionBarWithNavController(
+                (activity as AppCompatActivity),
+                navController,
+                appBarConfiguration
+            )
+
+            bottomNavigationView?.setupWithNavController(navController)
+        }
     }
 
 }

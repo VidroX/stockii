@@ -2,7 +2,8 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.auth.AuthFragment">
 
     <data>
         <variable
@@ -10,96 +11,87 @@
             type="me.vidrox.stockii.ui.auth.AuthViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/auth"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.auth.AuthFragment">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/auth_header"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/auth"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:text="@string/log_into_stockii"
-            android:textColor="@color/colorAccentDark"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/auth_box"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/auth_box"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:cardElevation="4dp">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/auth_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp" >
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:id="@+id/auth_box_email"
-                    app:errorEnabled="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardElevation="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" >
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp" >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/auth_email"
+                    android:orientation="vertical"
+                    android:padding="16dp" >
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:id="@+id/auth_box_email"
+                        app:errorEnabled="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:text="@={viewmodel.email}"
-                        android:hint="@string/email" />
+                        android:layout_marginBottom="8dp" >
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/auth_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:text="@={viewmodel.email}"
+                            android:hint="@string/email" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:id="@+id/auth_box_password"
-                    app:errorEnabled="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:passwordToggleEnabled="true"
-                    android:layout_marginBottom="8dp" >
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/auth_password"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:id="@+id/auth_box_password"
+                        app:errorEnabled="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:text="@={viewmodel.password}"
-                        android:hint="@string/password" />
+                        app:passwordToggleEnabled="true"
+                        android:layout_marginBottom="8dp" >
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/auth_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:text="@={viewmodel.password}"
+                            android:hint="@string/password" />
 
-                <Button
-                    android:id="@+id/auth_login_btn"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{viewmodel::onLoginBtnClick}"
-                    android:text="@string/log_in"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:textColor="@color/colorWhite"
-                    android:layout_gravity="center">
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                </Button>
+                    <Button
+                        android:id="@+id/auth_login_btn"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{viewmodel::onLoginBtnClick}"
+                        android:text="@string/log_in"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@color/colorWhite"
+                        android:layout_gravity="center">
 
-            </LinearLayout>
+                    </Button>
 
-        </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </layout>

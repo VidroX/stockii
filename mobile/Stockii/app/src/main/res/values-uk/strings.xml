@@ -8,4 +8,8 @@
     <string name="logged_in_successfully">Ви успішно увійшли!</string>
     <string name="field_empty">Будь ласка, заповніть це поле.</string>
     <string name="email_or_pass_incorrect">E-Mail або пароль неправильні</string>
+    <string name="products">Товари</string>
+    <string name="shipments">Поставки</string>
+    <string name="warehouses">Склади</string>
+    <string name="log_out">Вийти</string>
 </resources>
