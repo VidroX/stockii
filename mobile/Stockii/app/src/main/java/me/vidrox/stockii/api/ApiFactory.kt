@@ -1,6 +1,7 @@
 package me.vidrox.stockii.api
 
 import android.content.Context
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import me.vidrox.stockii.Config
@@ -14,15 +15,19 @@ import java.util.concurrent.TimeUnit
 
 private class AuthInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val newRequest = chain.request()
+        var newRequest = chain.request()
 
         val user = User.get(context)
 
         if (user != null) {
-            newRequest
+            newRequest = newRequest
                 .newBuilder()
                 .header("Authorization", "Bearer " + user.token)
                 .build()
+        }
+
+        if (Config.DEBUG_TO_LOG) {
+            Log.w("APIIntercetpor", newRequest.toString())
         }
 
         return chain.proceed(newRequest)

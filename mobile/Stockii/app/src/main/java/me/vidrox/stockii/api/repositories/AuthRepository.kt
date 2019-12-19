@@ -15,7 +15,6 @@ class AuthRepository : ApiRequest() {
     }
 
     suspend fun logout(context: Context): UserResponse {
-        User.clear(context)
         return request {
             ApiService.getUserService(context).logout()
         }

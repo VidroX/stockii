@@ -12,4 +12,5 @@
     <string name="shipments">Поставки</string>
     <string name="warehouses">Склади</string>
     <string name="log_out">Вийти</string>
+    <string name="user">Користувач</string>
 </resources>

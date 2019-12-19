@@ -17,6 +17,7 @@ import me.vidrox.stockii.R
 import me.vidrox.stockii.api.user.User
 import me.vidrox.stockii.databinding.AuthFragmentBinding
 import me.vidrox.stockii.ui.main.MainFragment
+import me.vidrox.stockii.ui.main.MainViewModel
 
 class AuthFragment : Fragment(), AuthListener {
 
@@ -47,6 +48,8 @@ class AuthFragment : Fragment(), AuthListener {
 
         // action_authFragment_to_mainFragment
 
+        val mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        mainViewModel.user.value = null
         if (context != null) {
             val user = User.get(context!!)
             if (user != null) {
@@ -75,7 +78,7 @@ class AuthFragment : Fragment(), AuthListener {
         progress.visibility = View.VISIBLE
     }
 
-    override fun onSuccess(result: User) {
+    override fun onSuccess(result: User?) {
         if (Config.DEBUG_TO_LOG) {
             Log.w("AuthRequest", "Request succeeded")
             Log.w("AuthRequest", result.toString())
@@ -85,11 +88,11 @@ class AuthFragment : Fragment(), AuthListener {
 
         Toast.makeText(context, getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT).show()
 
-        fragmentManager
-            ?.beginTransaction()
-            ?.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-            ?.replace(R.id.container, MainFragment.newInstance())
-            ?.commitNow()
+        result?.save(context!!)
+
+        val navController = findNavController()
+        val direction = AuthFragmentDirections.actionAuthFragmentToMainFragment()
+        navController.navigate(direction)
     }
 
     override fun onError(responseCode: Int, errorCode: Int, errorMessage: String) {

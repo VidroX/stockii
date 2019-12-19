@@ -5,7 +5,7 @@ import me.vidrox.stockii.api.user.User
 interface AuthListener {
 
     fun onRequest()
-    fun onSuccess(result: User)
+    fun onSuccess(result: User?)
     fun onError(responseCode: Int, errorCode: Int, errorMessage: String)
 
 }

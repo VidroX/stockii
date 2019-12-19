@@ -15,7 +15,6 @@ interface UserService {
         @Field("full_user_data") full_user_data: String
     ): Response<UserResponse>
 
-    @FormUrlEncoded
     @POST("auth/logout/")
     suspend fun logout(): Response<UserResponse>
 }

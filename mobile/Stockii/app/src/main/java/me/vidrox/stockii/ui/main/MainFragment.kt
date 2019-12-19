@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.vidrox.stockii.R
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import me.vidrox.stockii.api.user.User
 
 class MainFragment : Fragment() {
 
@@ -31,7 +32,12 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+
+        if (context != null) {
+            val user: User? = User.get(context!!)
+            viewModel.user.value = user
+        }
 
         setupBottomNavigationBar()
     }
