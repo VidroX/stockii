@@ -13,13 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import me.vidrox.stockii.Config
+import me.vidrox.stockii.InternalErrorCodes
 import me.vidrox.stockii.R
+import me.vidrox.stockii.api.RequestListener
 import me.vidrox.stockii.api.user.User
 import me.vidrox.stockii.databinding.AuthFragmentBinding
-import me.vidrox.stockii.ui.main.MainFragment
 import me.vidrox.stockii.ui.main.MainViewModel
 
-class AuthFragment : Fragment(), AuthListener {
+class AuthFragment : Fragment(), RequestListener<User> {
 
     companion object {
         fun newInstance() = AuthFragment()
@@ -106,14 +107,14 @@ class AuthFragment : Fragment(), AuthListener {
         progress.visibility = View.GONE
 
         when (errorCode) {
-            AuthInternalErrorCodes.BOTH_FIELDS_EMPTY -> {
+            InternalErrorCodes.BOTH_FIELDS_EMPTY -> {
                 dataBinding.authBoxEmail.error = getString(R.string.field_empty)
                 dataBinding.authBoxPassword.error = getString(R.string.field_empty)
             }
-            AuthInternalErrorCodes.EMAIL_FIELD_EMPTY -> {
+            InternalErrorCodes.EMAIL_FIELD_EMPTY -> {
                 dataBinding.authBoxEmail.error = getString(R.string.field_empty)
             }
-            AuthInternalErrorCodes.PASSWORD_FIELD_EMPTY -> {
+            InternalErrorCodes.PASSWORD_FIELD_EMPTY -> {
                 dataBinding.authBoxPassword.error = getString(R.string.field_empty)
             }
             10 -> {

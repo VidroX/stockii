@@ -13,4 +13,6 @@
     <string name="warehouses">Склади</string>
     <string name="log_out">Вийти</string>
     <string name="user">Користувач</string>
+    <string name="working_from">Працює з</string>
+    <string name="to">до</string>
 </resources>

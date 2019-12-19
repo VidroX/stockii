@@ -6,17 +6,17 @@
     android:id="@+id/user_navigation"
     app:startDestination="@id/warehouses_fragment">
 
-    <fragment
+    <keep_state_fragment
         android:id="@+id/warehouses_fragment"
         android:name="me.vidrox.stockii.ui.warehouses.WarehousesFragment"
         android:label="@string/warehouses"
         tools:layout="@layout/warehouses_fragment" />
-    <fragment
+    <keep_state_fragment
         android:id="@+id/products_fragment"
         android:name="me.vidrox.stockii.ui.products.ProductsFragment"
         android:label="@string/products"
         tools:layout="@layout/products_fragment" />
-    <fragment
+    <keep_state_fragment
         android:id="@+id/shipments_fragment"
         android:name="me.vidrox.stockii.ui.shipments.ShipmentsFragment"
         android:label="@string/shipments"

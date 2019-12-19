@@ -11,13 +11,13 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import me.vidrox.stockii.api.RequestListener
 import me.vidrox.stockii.api.user.User
-import me.vidrox.stockii.ui.auth.AuthListener
 import me.vidrox.stockii.ui.auth.AuthViewModel
 import me.vidrox.stockii.ui.main.MainFragmentDirections
 import me.vidrox.stockii.ui.main.MainViewModel
 
-class MainActivity : AppCompatActivity(), AuthListener {
+class MainActivity : AppCompatActivity(), RequestListener<User> {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var authViewModel: AuthViewModel

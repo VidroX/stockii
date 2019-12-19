@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.vidrox.stockii.R
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import me.vidrox.stockii.api.user.User
+import me.vidrox.stockii.components.KeepStateNavigator
 
 class MainFragment : Fragment() {
 
@@ -47,6 +50,11 @@ class MainFragment : Fragment() {
         val fragmentContainer = activity?.findViewById<View>(R.id.auth_container)
         if (fragmentContainer != null) {
             val navController = Navigation.findNavController(fragmentContainer)
+            val navHostFragment = childFragmentManager.findFragmentById(R.id.auth_container)!!
+            val navigator = KeepStateNavigator(activity!!, navHostFragment.childFragmentManager, R.id.auth_container)
+            navController.navigatorProvider += navigator
+
+            navController.setGraph(R.navigation.user_navigation)
 
             val appBarConfiguration = AppBarConfiguration(
                 setOf(

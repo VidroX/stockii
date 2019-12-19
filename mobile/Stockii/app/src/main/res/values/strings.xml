@@ -13,4 +13,6 @@
     <string name="shipments">Shipments</string>
     <string name="log_out">Log out</string>
     <string name="user">User</string>
+    <string name="working_from">Working from</string>
+    <string name="to">to</string>
 </resources>
