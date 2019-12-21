@@ -1,4 +1,4 @@
-package me.vidrox.stockii.api
+package me.vidrox.stockii.listeners
 
 interface RequestListener<T: Any> {
 

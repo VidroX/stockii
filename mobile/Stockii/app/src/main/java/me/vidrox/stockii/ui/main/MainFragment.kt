@@ -6,15 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.vidrox.stockii.R
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import kotlinx.android.synthetic.main.main_fragment.*
 import me.vidrox.stockii.api.user.User
 import me.vidrox.stockii.components.KeepStateNavigator
 

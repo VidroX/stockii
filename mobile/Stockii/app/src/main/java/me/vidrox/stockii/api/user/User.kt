@@ -6,6 +6,11 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import me.vidrox.stockii.Config
 import me.vidrox.stockii.utils.Crypto
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class UserResponse (
@@ -113,6 +118,27 @@ data class User(
             }
 
             return true
+        }
+
+        fun isTokenExpired(user: User?): Boolean {
+            if (user?.token != null && user.token_expiry != null) {
+                // EEE, dd-MMM-yyyy HH:mm:ss z -> Sat, 21-Dec-2019 08:02:24 GMT
+                // EEE, d MMM yyyy HH:mm:ss Z -> Wed, 4 Jul 2001 12:08:56 -0700
+
+                val formatter = SimpleDateFormat("EEE, dd-MMM-yyyy HH:mm:ss z", Locale.US)
+                try {
+                    val currentDate = Calendar.getInstance()
+                    val date: Date = formatter.parse(user.token_expiry)!!
+
+                    if (currentDate.after(date)) {
+                        return true
+                    }
+                } catch (e: ParseException) {
+                    e.printStackTrace()
+                }
+            }
+
+            return false
         }
     }
 }

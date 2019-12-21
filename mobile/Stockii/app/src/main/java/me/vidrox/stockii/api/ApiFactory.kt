@@ -5,13 +5,16 @@ import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import me.vidrox.stockii.Config
+import me.vidrox.stockii.R
 import me.vidrox.stockii.api.user.User
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 private class AuthInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -20,10 +23,14 @@ private class AuthInterceptor(private val context: Context) : Interceptor {
         val user = User.get(context)
 
         if (user != null) {
-            newRequest = newRequest
-                .newBuilder()
-                .header("Authorization", "Bearer " + user.token)
-                .build()
+            if (User.isTokenExpired(user)) {
+                User.clear(context)
+            } else {
+                newRequest = newRequest
+                    .newBuilder()
+                    .header("Authorization", "Bearer " + user.token)
+                    .build()
+            }
         }
 
         if (Config.DEBUG_TO_LOG) {

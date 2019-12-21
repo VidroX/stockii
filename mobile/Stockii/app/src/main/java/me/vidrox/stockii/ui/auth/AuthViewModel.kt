@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
 import me.vidrox.stockii.InternalErrorCodes
-import me.vidrox.stockii.api.RequestListener
+import me.vidrox.stockii.listeners.RequestListener
 import me.vidrox.stockii.api.repositories.AuthRepository
 import me.vidrox.stockii.api.user.User
 import me.vidrox.stockii.utils.ApiException

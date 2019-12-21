@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:text="@string/location" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:text="Location value" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:text="@string/phone" />
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:text="Phone value" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:text="@string/working_from_title" />
+
+        <TextView
+            android:id="@+id/working_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:text="Working from value" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:text="@string/working_to_title" />
+
+        <TextView
+            android:id="@+id/working_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:text="Working to value" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:text="@string/working_on_weekends" />
+
+        <TextView
+            android:id="@+id/working_on_weekends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Is working on weekends value" />
+
+    </LinearLayout>
+
+</ScrollView>

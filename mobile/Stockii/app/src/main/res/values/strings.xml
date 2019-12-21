@@ -15,4 +15,13 @@
     <string name="user">User</string>
     <string name="working_from">Working from</string>
     <string name="to">to</string>
+    <string name="location">Location</string>
+    <string name="working_from_title">Working From</string>
+    <string name="working_to_title">Working To</string>
+    <string name="phone">Phone number</string>
+    <string name="working_on_weekends">Is working on weekends?</string>
+    <string name="warehouse_information">Warehouse Information</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

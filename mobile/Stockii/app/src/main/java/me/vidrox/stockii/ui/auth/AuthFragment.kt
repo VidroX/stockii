@@ -15,12 +15,13 @@ import androidx.navigation.fragment.findNavController
 import me.vidrox.stockii.Config
 import me.vidrox.stockii.InternalErrorCodes
 import me.vidrox.stockii.R
-import me.vidrox.stockii.api.RequestListener
+import me.vidrox.stockii.listeners.RequestListener
 import me.vidrox.stockii.api.user.User
 import me.vidrox.stockii.databinding.AuthFragmentBinding
 import me.vidrox.stockii.ui.main.MainViewModel
 
-class AuthFragment : Fragment(), RequestListener<User> {
+class AuthFragment : Fragment(),
+    RequestListener<User> {
 
     companion object {
         fun newInstance() = AuthFragment()

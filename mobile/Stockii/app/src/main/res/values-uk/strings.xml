@@ -15,4 +15,12 @@
     <string name="user">Користувач</string>
     <string name="working_from">Працює з</string>
     <string name="to">до</string>
+    <string name="location">Місцезнаходження</string>
+    <string name="phone">Телефон</string>
+    <string name="working_from_title">Працює з</string>
+    <string name="working_to_title">Працює до</string>
+    <string name="working_on_weekends">Працює у вихідні дні?</string>
+    <string name="warehouse_information">Інформація про склад</string>
+    <string name="no">Ні</string>
+    <string name="yes">Так</string>
 </resources>
