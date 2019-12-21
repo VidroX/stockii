@@ -20,6 +20,12 @@ class WarehousesViewModel(application: Application) : AndroidViewModel(applicati
 
     private val repository: WarehousesRepository = WarehousesRepository()
 
+    fun reset() {
+        page = MutableLiveData(0)
+        lastPage = MutableLiveData(false)
+        warehousesLiveData = MutableLiveData(arrayListOf())
+    }
+
     fun getWarehouses(page: Int) {
         val offset = page * Config.API_ROW_COUNT
         val ordering = "-id"

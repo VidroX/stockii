@@ -128,9 +128,9 @@ data class User(
                 val formatter = SimpleDateFormat("EEE, dd-MMM-yyyy HH:mm:ss z", Locale.US)
                 try {
                     val currentDate = Calendar.getInstance()
-                    val date: Date = formatter.parse(user.token_expiry)!!
+                    val date: Date? = formatter.parse(user.token_expiry)
 
-                    if (currentDate.after(date)) {
+                    if (currentDate.time.after(date)) {
                         return true
                     }
                 } catch (e: ParseException) {

@@ -13,4 +13,10 @@ class WarehousesRepository : ApiRequest() {
         }
     }
 
+    suspend fun getWarehouses(offset: Int, ordering: String, name: String, context: Context?): WarehousesResponse {
+        return request {
+            ApiService.getWarehousesService(context).getWarehouses(offset, ordering, name)
+        }
+    }
+
 }

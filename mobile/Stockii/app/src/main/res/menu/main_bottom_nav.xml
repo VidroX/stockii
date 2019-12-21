@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/warehouses_fragment"
-        android:icon="@drawable/ic_location_city_black_24dp"
+        android:icon="@drawable/ic_warehouse_solid"
         android:title="@string/warehouses" />
     <item
         android:id="@+id/products_fragment"

@@ -10,4 +10,11 @@ interface WarehousesService {
         @Query("offset") offset: Int,
         @Query("ordering") ordering: String
     ): Response<WarehousesResponse>
+
+    @GET("warehouses/")
+    suspend fun getWarehouses(
+        @Query("offset") offset: Int,
+        @Query("ordering") ordering: String,
+        @Query("name") name: String
+    ): Response<WarehousesResponse>
 }

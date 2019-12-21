@@ -29,31 +29,31 @@
             android:layout_weight="0.8" >
 
                 <TextView
-                    android:id="@+id/warehouse_location"
+                    android:id="@+id/shipments_product"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Location"/>
+                    android:text="Product"/>
 
                 <TextView
-                    android:id="@+id/warehouse_working_from"
+                    android:id="@+id/shipments_provider"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Working from 00:00 to 00:00"/>
+                    android:text="Provider"/>
 
                 <TextView
-                    android:id="@+id/warehouse_phone"
+                    android:id="@+id/shipments_warehouse_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Phone"/>
+                    android:text="Warehouse location"/>
 
         </LinearLayout>
 
@@ -66,10 +66,10 @@
             android:padding="8dp" >
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/warehouse_status"
+                android:id="@+id/shipments_status"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                app:srcCompat="@drawable/indicator_gray" />
+                app:srcCompat="@drawable/ic_close_black_24dp" />
 
         </LinearLayout>
 
