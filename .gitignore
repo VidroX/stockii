@@ -142,3 +142,6 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
 certs
+
+iot/user.json
+iot/**/__pycache__
