@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/warehouses_fragment"
+        android:icon="@drawable/ic_warehouse_solid"
+        android:title="@string/warehouses" />
+    <item
+        android:id="@+id/products_fragment"
+        android:icon="@drawable/ic_box"
+        android:title="@string/products" />
+    <item
+        android:id="@+id/shipments_fragment"
+        android:icon="@drawable/ic_local_shipping_black_24dp"
+        android:title="@string/shipments" />
+</menu>
