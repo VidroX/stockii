@@ -38,4 +38,12 @@
     <string name="shipping_to_warehouse">Shipping to warehouse</string>
     <string name="arrived">Arrived</string>
     <string name="overdue">Overdue</string>
+    <string name="move_product">Move product</string>
+    <string name="actions">Actions</string>
+    <string name="select_warehouse">Select warehouse</string>
+    <string name="cancel">Cancel</string>
+    <string name="move">Move</string>
+    <string name="please_select_warehouse">Please select warehouse</string>
+    <string name="product_moved">Product has been successfully moved!</string>
+    <string name="cannot_move_product">Cannot move product.</string>
 </resources>

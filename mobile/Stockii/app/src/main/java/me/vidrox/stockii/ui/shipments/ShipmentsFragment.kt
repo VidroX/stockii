@@ -174,6 +174,7 @@ class ShipmentsFragment : Fragment(), PageRequestListener<List<Shipment>>,
     private fun refresh() {
         refreshing = true
         page = 0
+        shipments_recycler.removeOnScrollListener(mScrollListener!!)
         mScrollListener = RecyclerScrollListener(mLayoutManager)
         mScrollListener?.setOnLoadMoreListener(this)
         shipments_recycler.addOnScrollListener(mScrollListener!!)
@@ -278,6 +279,10 @@ class ShipmentsFragment : Fragment(), PageRequestListener<List<Shipment>>,
             alert.setTitle(getString(R.string.shipment_information))
             alert.show()
         }
+    }
+
+    override fun onLongClick(view: View, itemData: Shipment?) {
+
     }
 
 }

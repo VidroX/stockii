@@ -81,6 +81,10 @@ class ProductsRecyclerViewAdapter(var products: ArrayList<Product?>) :
             productLocation.text = product.warehouse.location
             productQuantity.text = amountText
             itemView.setOnClickListener { itemClickListener?.onClick(product) }
+            itemView.setOnLongClickListener {
+                itemClickListener?.onLongClick(it, product)
+                true
+            }
         }
     }
 }

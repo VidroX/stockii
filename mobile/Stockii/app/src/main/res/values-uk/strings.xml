@@ -37,4 +37,12 @@
     <string name="provider">Постачальник</string>
     <string name="arrived">Доставлено</string>
     <string name="overdue">Прострочено</string>
+    <string name="move_product">Перемістити товар</string>
+    <string name="actions">Дії</string>
+    <string name="select_warehouse">Виберіть склад</string>
+    <string name="cancel">Скасувати</string>
+    <string name="move">Перемістити</string>
+    <string name="please_select_warehouse">Будь ласка, виберіть склад</string>
+    <string name="product_moved">Товар успішно переміщено!</string>
+    <string name="cannot_move_product">Неможливо перемістити продукт.</string>
 </resources>

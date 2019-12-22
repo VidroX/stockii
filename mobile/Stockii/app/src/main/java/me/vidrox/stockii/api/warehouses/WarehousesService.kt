@@ -15,6 +15,6 @@ interface WarehousesService {
     suspend fun getWarehouses(
         @Query("offset") offset: Int,
         @Query("ordering") ordering: String,
-        @Query("name") name: String
+        @Query("search") search: String
     ): Response<WarehousesResponse>
 }

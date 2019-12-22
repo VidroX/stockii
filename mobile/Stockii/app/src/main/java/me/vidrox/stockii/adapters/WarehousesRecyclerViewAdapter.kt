@@ -30,6 +30,11 @@ class WarehousesRecyclerViewAdapter(var warehouses: ArrayList<Warehouse?>, var w
         notifyDataSetChanged()
     }
 
+    fun clearData() {
+        warehouses.clear()
+        warehouseIcons.clear()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WarehousesViewHolder {
         return if (viewType == Constants.VIEW_TYPE_ITEM) {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.warehouse_card, parent, false)
@@ -93,6 +98,10 @@ class WarehousesRecyclerViewAdapter(var warehouses: ArrayList<Warehouse?>, var w
             warehousePhone.text = warehouse.phone
             warehouseStatus.load(icon)
             itemView.setOnClickListener { itemClickListener?.onClick(warehouse) }
+            itemView.setOnLongClickListener {
+                itemClickListener?.onLongClick(it, warehouse)
+                true
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ object InternalErrorCodes {
 
     const val UNEXPECTED_ERROR = BASE_PREFIX + 0
     const val NO_RESULTS = BASE_PREFIX + 1
+    const val NOT_FOUND = BASE_PREFIX + 2
 
     private const val BASE_PREFIX_AUTH = 1000
 

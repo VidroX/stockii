@@ -13,4 +13,10 @@ class ProductsRepository : ApiRequest() {
         }
     }
 
+    suspend fun updateProduct(id: Int, warehouse: Int, context: Context?): ProductsResponse {
+        return request {
+            ApiService.getProductsService(context).updateProduct(id, warehouse)
+        }
+    }
+
 }

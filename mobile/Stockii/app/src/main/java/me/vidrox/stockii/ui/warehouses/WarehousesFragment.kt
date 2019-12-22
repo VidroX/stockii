@@ -122,7 +122,9 @@ class WarehousesFragment : Fragment(), PageRequestListener<List<Warehouse>>, Rec
         }
 
         if (viewModel.warehousesLiveData.value.isNullOrEmpty() || viewModel.warehousesLiveData.value!!.size <= 0) {
-            viewModel.getWarehouses(0)
+            if (!refreshing) {
+                viewModel.getWarehouses(0)
+            }
         }
 
         if (!viewModel.warehousesLiveData.value.isNullOrEmpty() && viewModel.warehousesLiveData.value != warehousesAdapter.warehouses) {
@@ -133,6 +135,7 @@ class WarehousesFragment : Fragment(), PageRequestListener<List<Warehouse>>, Rec
     private fun refresh() {
         refreshing = true
         page = 0
+        warehouses_recycler.removeOnScrollListener(mScrollListener!!)
         mScrollListener = RecyclerScrollListener(mLayoutManager)
         mScrollListener?.setOnLoadMoreListener(this)
         warehouses_recycler.addOnScrollListener(mScrollListener!!)
@@ -140,7 +143,7 @@ class WarehousesFragment : Fragment(), PageRequestListener<List<Warehouse>>, Rec
     }
 
     override fun onLoadMore() {
-        if (!viewModel.lastPage.value!! && viewModel.warehousesLiveData.value!!.size >= Config.API_ROW_COUNT) {
+        if (!viewModel.lastPage.value!! && viewModel.warehousesLiveData.value!!.size >= Config.API_ROW_COUNT && !refreshing) {
             viewModel.getWarehouses(viewModel.page.value!!)
         }
     }
@@ -152,7 +155,9 @@ class WarehousesFragment : Fragment(), PageRequestListener<List<Warehouse>>, Rec
             }
         } else {
             if (!viewModel.lastPage.value!! && viewModel.warehousesLiveData.value!!.size >= Config.API_ROW_COUNT) {
-                warehousesAdapter.setLoading(true)
+                if (!refreshing) {
+                    warehousesAdapter.setLoading(true)
+                }
             }
         }
     }
@@ -218,5 +223,9 @@ class WarehousesFragment : Fragment(), PageRequestListener<List<Warehouse>>, Rec
             alert.setTitle(getString(R.string.warehouse_information))
             alert.show()
         }
+    }
+
+    override fun onLongClick(view: View, itemData: Warehouse?) {
+
     }
 }

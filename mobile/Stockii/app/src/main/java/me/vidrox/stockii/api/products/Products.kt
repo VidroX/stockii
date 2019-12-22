@@ -5,6 +5,7 @@ import me.vidrox.stockii.api.warehouses.Warehouse
 
 @JsonClass(generateAdapter = true)
 data class ProductsResponse (
+    val status: Int?,
     val count: Int?,
     val results: List<Product>?
 )

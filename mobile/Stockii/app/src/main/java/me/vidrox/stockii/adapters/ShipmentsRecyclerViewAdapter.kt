@@ -88,6 +88,10 @@ class ShipmentsRecyclerViewAdapter(var shipments: ArrayList<Shipment?>, var ship
             shipmentProvider.text = shipment.provider.name
             shipmentStatus.load(icon)
             itemView.setOnClickListener { itemClickListener?.onClick(shipment) }
+            itemView.setOnLongClickListener {
+                itemClickListener?.onLongClick(it, shipment)
+                true
+            }
         }
     }
 }
